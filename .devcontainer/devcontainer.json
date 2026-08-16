@@ -20,8 +20,8 @@
   // Astro dev server default port.
   "forwardPorts": [4321],
 
-  // Install JS deps and wire up git hooks once the container is created.
-  "postCreateCommand": "pnpm install && (pre-commit install --install-hooks || echo 'pre-commit: no git repo yet, run `just hooks` after `git init`')",
+  // Install JS deps and configure the versioned hook wrapper once created.
+  "postCreateCommand": "pnpm install && (just hooks || echo 'pre-commit: no git repo yet, run `just hooks` after `git init`')",
 
   "customizations": {
     "vscode": {

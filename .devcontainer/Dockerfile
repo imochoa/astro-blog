@@ -33,7 +33,9 @@ RUN pipx install pre-commit \
     && pre-commit --version
 
 # Enable Corepack. The concrete pnpm version is pinned by package.json's
-# "packageManager" field and fetched on first use.
+# "packageManager" field and fetched on first use. Disable Corepack's prompt:
+# Temporal runs this devcontainer non-interactively.
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 
 # Everything below runs as the unprivileged "node" user (uid 1000) that ships

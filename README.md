@@ -27,8 +27,8 @@ Run these **inside the container** (`just` with no args lists everything):
 | `just format` | Prettier write                                            |
 | `just lint`   | ESLint                                                    |
 | `just fix`    | Prettier + ESLint auto-fix                                |
-| `just hooks`  | Install git pre-commit hooks                              |
-| `just ci`     | The full gate: install, format, lint, check, build, hooks |
+| `just hooks`  | Configure the versioned devcontainer-aware Git hook       |
+| `just ci`     | The full gate: install, format, lint, check, hooks, build |
 
 ## CI
 
@@ -38,6 +38,10 @@ devcontainer used for development, so local and CI results are identical. From t
 ```sh
 just ci-container   # boots the devcontainer, then runs `just ci` inside it
 ```
+
+`just hooks` configures Git to use the versioned `.githooks/pre-commit`
+wrapper. A host-side `git commit` starts or reuses the devcontainer and runs
+checks there; inside the devcontainer, it runs `pre-commit` directly.
 
 ## Dependency updates
 
