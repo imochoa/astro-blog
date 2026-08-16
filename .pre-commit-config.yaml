@@ -1,0 +1,39 @@
+# Runs inside the devcontainer (pnpm is provided there via corepack).
+# Local hooks shell out to pnpm so tool versions stay single-sourced in package.json.
+default_install_hook_types: [pre-commit]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+        # These are JSONC (comments allowed); Prettier still validates them.
+        exclude: ^(\.devcontainer/devcontainer\.json|tsconfig\.json|\.vscode/.*\.json)$
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (check)
+        entry: pnpm exec prettier --check
+        language: system
+        files: \.(astro|ts|tsx|js|jsx|mjs|cjs|json|md|css|ya?ml)$
+        pass_filenames: true
+
+      - id: eslint
+        name: eslint
+        entry: pnpm exec eslint
+        language: system
+        files: \.(astro|ts|tsx|js|jsx|mjs|cjs)$
+        pass_filenames: true
+
+      - id: astro-check
+        name: astro check
+        entry: pnpm run check
+        language: system
+        files: \.(astro|ts|tsx)$
+        pass_filenames: false

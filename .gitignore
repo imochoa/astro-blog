@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+# pnpm's content-addressable store (kept in-workspace so it shares a filesystem
+# with node_modules for hardlinking under the bind-mounted devcontainer)
+.pnpm-store/
+
+# build output
+dist/
+.astro/
+.output/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json

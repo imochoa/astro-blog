@@ -1,0 +1,5 @@
+# pnpm 11 reads project settings from here (no longer from the "pnpm" field in
+# package.json). `allowBuilds` replaces the old `onlyBuiltDependencies` list:
+# a map of dependency name -> whether its build scripts may run.
+allowBuilds:
+  esbuild: true

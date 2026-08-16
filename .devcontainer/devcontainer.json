@@ -1,0 +1,46 @@
+{
+  "name": "astro-blog",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+
+  // Run as the image's non-root "node" user.
+  "containerUser": "node",
+  "remoteUser": "node",
+  "updateRemoteUserUID": true,
+
+  // Rootless podman: map the host UID/GID onto the container's node user (1000)
+  // so bind-mounted files (source, node_modules) are owned by the host user.
+  // Harmless under docker; remove if you build with rootful docker and hit issues.
+  "runArgs": ["--userns=keep-id:uid=1000,gid=1000"],
+
+  // Astro dev server default port.
+  "forwardPorts": [4321],
+
+  // Install JS deps and wire up git hooks once the container is created.
+  "postCreateCommand": "pnpm install && (pre-commit install --install-hooks || echo 'pre-commit: no git repo yet, run `just hooks` after `git init`')",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
+      }
+    }
+  }
+}
