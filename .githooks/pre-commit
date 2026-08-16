@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Run the project's pre-commit configuration in the devcontainer when Git is
+# invoked on the host. Detect standard Docker and Podman container markers to
+# avoid recursively starting another devcontainer exec.
+set -euo pipefail
+
+if [[ -n ${container:-} || -f /.dockerenv ]]; then
+  exec pre-commit run --hook-stage pre-commit "$@"
+fi
+
+repo_root=$(git rev-parse --show-toplevel)
+devcontainer up --workspace-folder "$repo_root" --docker-path podman >/dev/null
+exec devcontainer exec --workspace-folder "$repo_root" --docker-path podman \
+  pre-commit run --hook-stage pre-commit "$@"
