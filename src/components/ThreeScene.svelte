@@ -4,7 +4,7 @@
 
   let container: HTMLDivElement;
   let canvas: HTMLCanvasElement;
-  let unavailable = false;
+  let errorMessage = "";
 
   onMount(() => {
     const scene = new THREE.Scene();
@@ -17,9 +17,14 @@
     let renderer: THREE.WebGLRenderer;
 
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        canvas,
+        powerPreference: "default",
+      });
     } catch {
-      unavailable = true;
+      errorMessage =
+        "WebGL 2 is unavailable or disabled. Enable WebGL in your browser to view this scene.";
       return;
     }
 
@@ -102,6 +107,14 @@
     motionPreference.addEventListener("change", updateMotionPreference);
 
     let animationFrame = 0;
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      window.cancelAnimationFrame(animationFrame);
+      errorMessage =
+        "The browser lost its WebGL context. Reload the page to try the scene again.";
+    };
+    canvas.addEventListener("webglcontextlost", handleContextLost);
+
     const animate = (time: number) => {
       if (!reduceMotion) {
         group.rotation.x = time * 0.00018;
@@ -118,6 +131,7 @@
       window.cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
       motionPreference.removeEventListener("change", updateMotionPreference);
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
       geometry.dispose();
       material.dispose();
       wireMaterial.dispose();
@@ -135,8 +149,8 @@
   bind:this={container}
 >
   <canvas bind:this={canvas} aria-hidden="true"></canvas>
-  {#if unavailable}
-    <p>WebGL is not available in this browser.</p>
+  {#if errorMessage}
+    <p>{errorMessage}</p>
   {/if}
 </div>
 
