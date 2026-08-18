@@ -9,9 +9,6 @@
   },
   "scripts": {
     "dev": "astro dev --background",
-    "dev:stop": "astro dev stop",
-    "dev:status": "astro dev status",
-    "dev:logs": "astro dev logs",
     "start": "astro dev --background",
     "build": "astro build",
     "preview": "astro preview",
