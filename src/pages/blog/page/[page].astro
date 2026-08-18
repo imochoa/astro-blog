@@ -1,0 +1,45 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+import Pagination from "@/components/Pagination.astro";
+import PostList from "@/components/PostList.astro";
+import { getPosts, POSTS_PER_PAGE } from "@/lib/posts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+
+  return paginate(posts, { pageSize: POSTS_PER_PAGE }).filter(
+    ({ props }) => props.page.currentPage > 1,
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<CollectionEntry<"posts">>;
+}
+
+const { page } = Astro.props;
+const title = `Blog – Page ${page.currentPage}`;
+const previousPage =
+  page.currentPage === 2 ? "/blog/" : `/blog/page/${page.currentPage - 1}/`;
+const nextPage =
+  page.currentPage < page.lastPage
+    ? `/blog/page/${page.currentPage + 1}/`
+    : undefined;
+---
+
+<BasicLayout
+  title={title}
+  description={`Page ${page.currentPage} of posts from astro-blog.`}
+  {previousPage}
+  {nextPage}
+>
+  <header class="page-header">
+    <p class="eyebrow">Writing</p>
+    <h1>Blog</h1>
+    <p>Notes and ideas, newest first. Page {page.currentPage}.</p>
+  </header>
+
+  <PostList posts={page.data} />
+  <Pagination currentPage={page.currentPage} totalPages={page.lastPage} />
+</BasicLayout>

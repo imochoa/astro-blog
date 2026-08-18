@@ -10,6 +10,10 @@ default:
 install:
     pnpm install
 
+# Update
+update:
+    pnpx @astrojs/upgrade
+
 # Install dependencies for CI (fails if the lockfile is stale)
 install-ci:
     pnpm install --frozen-lockfile
@@ -25,6 +29,10 @@ build:
 # Preview the production build
 preview:
     pnpm run preview
+
+# Build the site, then validate its internal links and heading fragments
+check-links: build
+    pnpm run check:links
 
 # Diagnostics / type check (astro check)
 check:
@@ -59,9 +67,10 @@ hooks:
 pre-commit:
     pre-commit run --all-files
 
-# Full CI gate: validate sources before generating dist/. The Temporal worker
-# deploys only after this recipe succeeds, leaving the prior published site intact.
-ci: install-ci format-check lint check pre-commit build
+# Full CI gate: validate sources, build dist/, then check its internal links.
+# The Temporal worker deploys only after this recipe succeeds, leaving the prior
+# published site intact.
+ci: install-ci format-check lint check pre-commit check-links
 
 # Bring the devcontainer up (podman via --docker-path)
 up:

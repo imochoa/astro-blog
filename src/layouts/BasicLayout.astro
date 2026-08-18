@@ -6,12 +6,53 @@ import "@/styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  pageType?: "website" | "article";
+  socialImage?: string;
+  publishedAt?: Date;
+  updatedAt?: Date;
+  tags?: string[];
+  previousPage?: string;
+  nextPage?: string;
+  noindex?: boolean;
 }
 
 const siteName = "astro-blog";
-const { title, description = "A small collection of notes and ideas." } =
-  Astro.props;
+const {
+  title,
+  description = "A small collection of notes and ideas.",
+  pageType = "website",
+  socialImage,
+  publishedAt,
+  updatedAt,
+  tags = [],
+  previousPage,
+  nextPage,
+  noindex = false,
+} = Astro.props;
 const documentTitle = title ? `${title} | ${siteName}` : siteName;
+const siteURL = Astro.site ?? new URL(Astro.url.origin);
+const canonicalURL = new URL(Astro.url.pathname, siteURL);
+const socialImageURL = socialImage
+  ? new URL(socialImage, siteURL).href
+  : undefined;
+const structuredData =
+  pageType === "article" && publishedAt
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description,
+        datePublished: publishedAt.toISOString(),
+        dateModified: (updatedAt ?? publishedAt).toISOString(),
+        mainEntityOfPage: canonicalURL.href,
+        url: canonicalURL.href,
+        ...(socialImageURL ? { image: socialImageURL } : {}),
+        ...(tags.length > 0 ? { keywords: tags } : {}),
+      }
+    : undefined;
+const serializedStructuredData = structuredData
+  ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
+  : undefined;
 ---
 
 <!doctype html>
@@ -20,9 +61,62 @@ const documentTitle = title ? `${title} | ${siteName}` : siteName;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={siteName}
+      href="/rss.xml"
+    />
+    {previousPage && <link rel="prev" href={previousPage} />}
+    {nextPage && <link rel="next" href={nextPage} />}
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:type" content={pageType} />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    {socialImageURL && <meta property="og:image" content={socialImageURL} />}
+    {
+      publishedAt && (
+        <meta
+          property="article:published_time"
+          content={publishedAt.toISOString()}
+        />
+      )
+    }
+    {
+      updatedAt && (
+        <meta
+          property="article:modified_time"
+          content={updatedAt.toISOString()}
+        />
+      )
+    }
+    {tags.map((tag) => <meta property="article:tag" content={tag} />)}
+
+    <meta
+      name="twitter:card"
+      content={socialImageURL ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={documentTitle} />
+    <meta name="twitter:description" content={description} />
+    {socialImageURL && <meta name="twitter:image" content={socialImageURL} />}
+
     <title>{documentTitle}</title>
+    {
+      serializedStructuredData && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={serializedStructuredData}
+        />
+      )
+    }
   </head>
   <body>
     <Header />

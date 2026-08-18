@@ -121,6 +121,19 @@ time {
   text-transform: uppercase;
 }
 
+.post-dates {
+  max-width: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .button {
   display: inline-block;
   padding: var(--space-sm) var(--space-md);
@@ -211,11 +224,31 @@ time {
 }
 
 .post {
+  width: 100%;
+}
+
+.post > .page-header {
   width: min(100%, 48rem);
   margin-inline: auto;
 }
 
+.post-body {
+  display: grid;
+  grid-template-columns: minmax(0, 48rem) minmax(12rem, 16rem);
+  gap: var(--space-xl);
+  justify-content: center;
+}
+
+.toc-column {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
 .prose {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
   font-size: 1.05rem;
 }
 
@@ -396,6 +429,22 @@ time {
   background: var(--color-accent-soft);
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+@media (max-width: 64rem) {
+  .post-body {
+    grid-template-columns: minmax(0, 48rem);
+  }
+
+  .toc-column {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .prose {
+    grid-column: 1;
+    grid-row: 2;
+  }
 }
 
 @media (max-width: 36rem) {

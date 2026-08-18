@@ -1,4 +1,6 @@
 ---
+import PagefindConfig from "astro-pagefind/components/PagefindConfig.astro";
+
 const links = [
   { href: "/", label: "Home" },
   { href: "/blog/", label: "Blog" },
@@ -24,6 +26,14 @@ const isActive = (href: string) =>
         ))
       }
     </ul>
+    <div class="site-search">
+      <PagefindConfig instance="site-search" lang="en" />
+      <pagefind-searchbox
+        instance="site-search"
+        placeholder="Search posts"
+        max-results="6"
+        show-sub-results></pagefind-searchbox>
+    </div>
   </nav>
 </header>
 
@@ -35,9 +45,9 @@ const isActive = (href: string) =>
 
   nav {
     min-height: 4rem;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr minmax(14rem, 20rem);
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-md);
   }
 
@@ -49,7 +59,11 @@ const isActive = (href: string) =>
 
   ul {
     display: flex;
+    justify-self: end;
     gap: var(--space-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   ul a {
@@ -60,5 +74,35 @@ const isActive = (href: string) =>
   ul a:hover,
   ul a[aria-current="page"] {
     color: var(--color-accent);
+  }
+
+  .site-search {
+    --pf-background: var(--color-surface);
+    --pf-border: var(--color-border);
+    --pf-border-focus: var(--color-accent);
+    --pf-border-radius: var(--radius);
+    --pf-font: var(--font-sans);
+    --pf-input-height: 2.5rem;
+    --pf-mark: var(--color-accent-soft);
+    --pf-searchbox-max-width: 20rem;
+    --pf-text: var(--color-text);
+    --pf-text-muted: var(--color-muted);
+    width: 100%;
+  }
+
+  pagefind-searchbox {
+    display: block;
+  }
+
+  @media (max-width: 48rem) {
+    nav {
+      grid-template-columns: auto 1fr;
+      padding-block: var(--space-sm);
+    }
+
+    .site-search {
+      grid-column: 1 / -1;
+      --pf-searchbox-max-width: none;
+    }
   }
 </style>

@@ -1,8 +1,11 @@
 // @ts-check
+import { URL } from "node:url";
 import { defineConfig, logHandlers } from "astro/config";
 import { satteri } from "@astrojs/markdown-satteri";
 import mdx from "@astrojs/mdx";
 import svelte from "@astrojs/svelte";
+import sitemap from "@astrojs/sitemap";
+import pagefind from "astro-pagefind";
 import {
   transformerMetaHighlight,
   transformerMetaWordHighlight,
@@ -16,7 +19,15 @@ import { directivePlugin } from "./src/markdown/directives.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [mdx(), svelte()],
+  site: "https://blog.imochoa.com",
+  integrations: [
+    mdx(),
+    svelte(),
+    sitemap({
+      filter: (page) => !/^\/404(?:\/|\.html)?$/.test(new URL(page).pathname),
+    }),
+    pagefind(),
+  ],
   logger: logHandlers.json(),
   vite: {
     // Draft routes are not part of production's static route scan. Pre-bundle

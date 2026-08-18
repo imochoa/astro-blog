@@ -19,16 +19,54 @@ Node 24, pnpm (via Corepack), `just`, and `pre-commit`.
 
 Run these **inside the container** (`just` with no args lists everything):
 
-| Recipe        | What it does                                              |
-| ------------- | --------------------------------------------------------- |
-| `just dev`    | Astro dev server on http://localhost:4321                 |
-| `just build`  | Production build                                          |
-| `just check`  | `astro check` (diagnostics / types)                       |
-| `just format` | Prettier write                                            |
-| `just lint`   | ESLint                                                    |
-| `just fix`    | Prettier + ESLint auto-fix                                |
-| `just hooks`  | Configure the versioned devcontainer-aware Git hook       |
-| `just ci`     | The full gate: install, format, lint, check, hooks, build |
+| Recipe             | What it does                                               |
+| ------------------ | ---------------------------------------------------------- |
+| `just dev`         | Start Astro in the background on http://localhost:4321     |
+| `just build`       | Production build                                           |
+| `just check`       | `astro check` (diagnostics / types)                        |
+| `just check-links` | Build and validate internal links and heading fragments    |
+| `just format`      | Prettier write                                             |
+| `just lint`        | ESLint                                                     |
+| `just fix`         | Prettier + ESLint auto-fix                                 |
+| `just hooks`       | Configure the versioned devcontainer-aware Git hook        |
+| `just ci`          | Full validation, production build, and internal link check |
+
+## Writing posts
+
+Add posts as MDX files under `src/content/posts/`. The filename becomes the
+post ID and URL. Frontmatter follows this shape:
+
+```mdx
+---
+title: My post
+description: A short summary.
+publishedAt: 2026-08-18
+updatedAt: 2026-08-20 # optional
+socialImage: /social/my-post.png # optional; place the file under public/
+tags:
+  - astro
+draft: false
+---
+```
+
+Define tags once in `src/content/tags.json`. Post tag references are checked
+against that file during `astro check`. Post-specific assets can live under
+`src/content/posts/assets/` and be imported from MDX with the `@posts/*` alias.
+The blog index uses Astro's built-in pagination, with the page size configured
+in `src/lib/posts.ts`.
+
+## Discovery and metadata
+
+Production builds generate `/sitemap-index.xml`, `/robots.txt`, and `/rss.xml`.
+The shared layout provides canonical URLs, Open Graph and Twitter metadata, RSS
+and sitemap discovery links, and `BlogPosting` structured data for posts.
+
+## Search
+
+Pagefind builds the search index into `dist/pagefind/` after every production
+build. In development, `astro-pagefind` serves the most recently built index
+from `dist/` through the Astro dev server. Run `pnpm run build` after changing
+published content when you need to refresh development search results.
 
 ## CI
 
@@ -41,7 +79,9 @@ just ci-container   # boots the devcontainer, then runs `just ci` inside it
 
 `just hooks` configures Git to use the versioned `.githooks/pre-commit`
 wrapper. A host-side `git commit` starts or reuses the devcontainer and runs
-checks there; inside the devcontainer, it runs `pre-commit` directly.
+checks there; inside the devcontainer, it runs `pre-commit` directly. The full
+CI gate builds the static site and then uses Linkinator to check internal URLs,
+assets, and server-rendered heading fragments.
 
 ## Dependency updates
 

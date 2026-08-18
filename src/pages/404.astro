@@ -1,0 +1,38 @@
+---
+import BasicLayout from "@/layouts/BasicLayout.astro";
+---
+
+<BasicLayout
+  title="Page not found"
+  description="The requested page could not be found."
+  noindex
+>
+  <section class="not-found">
+    <p class="eyebrow">404</p>
+    <h1>Page not found</h1>
+    <p>The page may have moved, or the address may be incorrect.</p>
+    <div class="actions">
+      <a class="button" href="/">Go home</a>
+      <a href="/blog/">Browse the blog</a>
+    </div>
+  </section>
+</BasicLayout>
+
+<style>
+  .not-found {
+    width: min(100%, 48rem);
+    min-height: 45vh;
+    margin-inline: auto;
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: var(--space-md);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+</style>

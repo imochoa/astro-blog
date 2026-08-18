@@ -20,6 +20,7 @@ const posts = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    socialImage: z.string().startsWith("/").optional(),
     draft: z.boolean().default(false),
     tags: z.array(reference("tags")).default([]),
   }),

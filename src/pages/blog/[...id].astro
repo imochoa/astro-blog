@@ -6,6 +6,7 @@ import {
   type CollectionEntry,
 } from "astro:content";
 import BasicLayout from "@/layouts/BasicLayout.astro";
+import TableOfContents from "@/components/TableOfContents.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection(
@@ -27,22 +28,52 @@ const { post } = Astro.props;
 const rendered = await render(post);
 const { Content } = rendered;
 const mdxComponents = "components" in rendered ? rendered.components : {};
+const tocHeadings = rendered.headings.filter(
+  ({ depth }) => depth >= 2 && depth <= 3,
+);
 const tags = await Promise.all(post.data.tags.map((tag) => getEntry(tag)));
+const tagNames = tags.flatMap((tag) => (tag ? [tag.data.name] : []));
 ---
 
-<BasicLayout title={post.data.title} description={post.data.description}>
-  <article class="post">
+<BasicLayout
+  title={post.data.title}
+  description={post.data.description}
+  pageType="article"
+  socialImage={post.data.socialImage}
+  publishedAt={post.data.publishedAt}
+  updatedAt={post.data.updatedAt}
+  tags={tagNames}
+>
+  <article class="post" data-pagefind-body>
     <header class="page-header">
-      <time datetime={post.data.publishedAt.toISOString()}>
+      <p class="post-dates">
+        Published
+        <time datetime={post.data.publishedAt.toISOString()}>
+          {
+            post.data.publishedAt.toLocaleDateString("en", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </time>
         {
-          post.data.publishedAt.toLocaleDateString("en", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
+          post.data.updatedAt && (
+            <>
+              <span aria-hidden="true"> · </span>
+              Updated
+              <time datetime={post.data.updatedAt.toISOString()}>
+                {post.data.updatedAt.toLocaleDateString("en", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+            </>
+          )
         }
-      </time>
-      <h1>{post.data.title}</h1>
+      </p>
+      <h1 data-pagefind-meta="title">{post.data.title}</h1>
       <p>{post.data.description}</p>
       {
         tags.length > 0 && (
@@ -62,8 +93,17 @@ const tags = await Promise.all(post.data.tags.map((tag) => getEntry(tag)));
       }
     </header>
 
-    <div class="prose">
-      <Content components={mdxComponents} />
+    <div class="post-body">
+      {
+        tocHeadings.length >= 2 && (
+          <aside class="toc-column" data-pagefind-ignore>
+            <TableOfContents headings={tocHeadings} />
+          </aside>
+        )
+      }
+      <div class="prose">
+        <Content components={mdxComponents} />
+      </div>
     </div>
   </article>
 </BasicLayout>
