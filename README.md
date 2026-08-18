@@ -88,6 +88,15 @@ checks there; inside the devcontainer, it runs `pre-commit` directly. The full
 CI gate builds the static site and then uses Linkinator to check internal URLs,
 assets, and server-rendered heading fragments.
 
+## Nginx deployment
+
+Build the site, copy `dist/` to the web root, and follow
+[`docs/nginx-traefik.md`](docs/nginx-traefik.md). The guide keeps TLS and public
+routing in Traefik while Nginx serves the static files over its internal container
+network. It covers clean Astro routes, the custom 404 page, caching, compression,
+security headers, the Hoppscotch iframe CSP allowlist, and the WebAssembly MIME
+type.
+
 ## Dependency updates
 
 [`renovate.json`](renovate.json) configures Renovate to keep npm dependencies and the

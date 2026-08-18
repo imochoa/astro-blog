@@ -1,0 +1,112 @@
+---
+import wasmURL from "@/wasm/add.wasm?url";
+---
+
+<form class="wasm-adder" data-wasm-adder data-wasm-url={wasmURL}>
+  <label>
+    First integer
+    <input name="left" type="number" step="1" value="20" required />
+  </label>
+  <span aria-hidden="true">+</span>
+  <label>
+    Second integer
+    <input name="right" type="number" step="1" value="22" required />
+  </label>
+  <button type="submit">Add with WebAssembly</button>
+  <output name="result" aria-live="polite">42</output>
+</form>
+
+<script is:inline>
+  for (const form of document.querySelectorAll("[data-wasm-adder]")) {
+    if (!(form instanceof HTMLFormElement) || form.dataset.initialized)
+      continue;
+    form.dataset.initialized = "true";
+
+    const instancePromise = (async () => {
+      const response = await fetch(form.dataset.wasmUrl);
+
+      try {
+        return (await WebAssembly.instantiateStreaming(response.clone()))
+          .instance;
+      } catch {
+        return (await WebAssembly.instantiate(await response.arrayBuffer()))
+          .instance;
+      }
+    })();
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const left = Number(data.get("left"));
+      const right = Number(data.get("right"));
+      const output = form.querySelector("output");
+
+      if (!(output instanceof HTMLOutputElement)) return;
+
+      try {
+        const instance = await instancePromise;
+        const add = instance.exports.add;
+        output.value =
+          typeof add === "function"
+            ? String(add(left, right))
+            : "Missing add() export";
+      } catch {
+        output.value = "Could not load Wasm";
+      }
+    });
+  }
+</script>
+
+<style>
+  .wasm-adder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  label {
+    display: grid;
+    gap: 0.25rem;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  input,
+  button,
+  output {
+    min-height: 2.5rem;
+    padding: 0.45rem var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  input {
+    width: 8rem;
+    color: var(--color-text);
+    background: var(--color-background);
+  }
+
+  button {
+    color: var(--color-on-accent);
+    background: var(--color-accent);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  output {
+    min-width: 5rem;
+    display: inline-grid;
+    place-items: center;
+    color: var(--color-text);
+    background: var(--color-accent-soft);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+</style>

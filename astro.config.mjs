@@ -16,6 +16,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { directivePlugin } from "./src/markdown/directives.mjs";
+import { katexPlugin } from "./src/markdown/katex.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -36,6 +37,11 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      defaultColor: false,
       transformers: [
         transformerMetaHighlight(),
         transformerMetaWordHighlight(),
@@ -48,6 +54,7 @@ export default defineConfig({
     },
     processor: satteri({
       mdastPlugins: [directivePlugin],
+      hastPlugins: [katexPlugin],
       features: {
         gfm: true,
         frontmatter: true,

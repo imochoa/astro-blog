@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#111714" />
+  <rect x="72" y="72" width="1056" height="486" rx="32" fill="#19211e" stroke="#33413c" stroke-width="4" />
+  <rect x="128" y="136" width="112" height="112" rx="25" fill="#83c7b4" />
+  <path fill="#10201b" fill-rule="evenodd" d="m184 154 36 76h-18l-7-17h-23l-7 17h-18l37-76Zm0 28-7 17h14l-7-17Z" />
+  <text x="128" y="350" fill="#e7eeeb" font-family="system-ui, sans-serif" font-size="76" font-weight="700">astro-blog</text>
+  <text x="128" y="422" fill="#a7b3af" font-family="system-ui, sans-serif" font-size="34">Notes and ideas about building for the web.</text>
+</svg>

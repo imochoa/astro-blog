@@ -13,6 +13,7 @@
   --color-text: #202724;
   --color-muted: #5e6865;
   --color-accent: #36665a;
+  --color-on-accent: #ffffff;
   --color-accent-soft: #e0ebe7;
   --color-border: #d9e0dd;
   --font-sans:
@@ -26,6 +27,32 @@
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
   --radius: 0.4rem;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-background: #111714;
+  --color-surface: #19211e;
+  --color-text: #e7eeeb;
+  --color-muted: #a7b3af;
+  --color-accent: #83c7b4;
+  --color-on-accent: #10201b;
+  --color-accent-soft: #243c35;
+  --color-border: #33413c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --color-background: #111714;
+    --color-surface: #19211e;
+    --color-text: #e7eeeb;
+    --color-muted: #a7b3af;
+    --color-accent: #83c7b4;
+    --color-on-accent: #10201b;
+    --color-accent-soft: #243c35;
+    --color-border: #33413c;
+  }
 }
 
 html {
@@ -97,6 +124,24 @@ a:hover {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(calc(-100% - var(--space-lg)));
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 ::selection {
   background: var(--color-accent-soft);
 }
@@ -138,7 +183,7 @@ time {
   display: inline-block;
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius);
-  color: white;
+  color: var(--color-on-accent);
   background: var(--color-accent);
   font-weight: 700;
   text-decoration: none;
@@ -331,8 +376,47 @@ time {
   font-size: 0.9em;
 }
 
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: var(--space-xs);
+}
+
+.prose .katex {
+  color: inherit;
+}
+
 .prose .astro-code {
   padding-inline: 0;
+}
+
+.prose .astro-code,
+.prose .astro-code span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+:root[data-theme="dark"] .prose .astro-code,
+:root[data-theme="dark"] .prose .astro-code span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .prose .astro-code,
+  :root:not([data-theme]) .prose .astro-code span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
+  }
 }
 
 .prose .astro-code code {

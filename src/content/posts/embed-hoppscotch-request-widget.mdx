@@ -1,0 +1,101 @@
+---
+title: Embed a Hoppscotch request in Astro
+publishedAt: 2026-08-18
+description: Add a runnable Hoppscotch request to an Astro or MDX page without shipping a custom API client.
+draft: false
+tags:
+  - astro
+  - hoppscotch
+---
+
+import HoppscotchRequest from "@/components/HoppscotchRequest.astro";
+
+Hoppscotch can turn a saved request into a link, a badge, or an interactive
+embed. The embed is handy in API documentation because readers can inspect and
+run the request without leaving the page.
+
+## Create the shared request
+
+Open the request in Hoppscotch, then use **Share request** from the menu next to
+**Save**. Choose **Embed**, select **Create**, and copy the generated code. A
+request saved in a collection has the same option in its context menu.
+
+This example uses the public request from the
+[Hoppscotch widget documentation](https://docs.hoppscotch.io/documentation/features/widgets):
+
+<HoppscotchRequest
+  requestId="MoTiZii3P2C4"
+  title="Hoppscotch example request"
+/>
+
+## Paste the iframe directly
+
+The code copied from Hoppscotch is an iframe. It works in an Astro component or
+an MDX file without a client directive:
+
+```astro
+<iframe
+  src="https://hopp.sh/e/YOUR_REQUEST_ID"
+  title="Try the example API request"
+  loading="lazy"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allow="clipboard-write"></iframe>
+```
+
+Give the iframe a useful title for screen readers. Lazy loading also keeps the
+third-party application out of the initial page load.
+
+## Wrap it in an Astro component
+
+A component keeps sizing and link behavior consistent when a request appears in
+more than one post:
+
+```astro
+---
+interface Props {
+  requestId: string;
+  title: string;
+}
+
+const { requestId, title } = Astro.props;
+const requestURL = `https://hopp.sh/e/${encodeURIComponent(requestId)}`;
+---
+
+<iframe
+  src={requestURL}
+  {title}
+  loading="lazy"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allow="clipboard-write"></iframe>
+```
+
+The component itself is server-rendered. Hoppscotch runs inside its own iframe,
+so adding `client:load` or another Astro hydration directive would not help.
+
+## Links and buttons
+
+An interactive embed is fairly heavy. For a short post, the generated link may
+be enough:
+
+```md
+[Run in Hoppscotch](https://hopp.sh/r/YOUR_REQUEST_ID)
+```
+
+Hoppscotch also provides a badge for Markdown documents. Use whichever version
+matches the amount of context a reader needs.
+
+## Do not share secrets
+
+A shared request is separate from the original request, but its values are still
+visible to anyone with the URL. Replace environment variables with safe example
+values and remove tokens, cookies, and private headers before creating the
+widget.
+
+If the site has a Content Security Policy, allow Hoppscotch as a frame source:
+
+```nginx
+add_header Content-Security-Policy "frame-src https://hopp.sh" always;
+```
+
+In a full policy, add `https://hopp.sh` to the existing `frame-src` directive
+rather than replacing the rest of the policy.

@@ -1,6 +1,7 @@
 ---
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import "katex/dist/katex.min.css";
 import "@/styles/global.css";
 
 interface Props {
@@ -21,7 +22,7 @@ const {
   title,
   description = "A small collection of notes and ideas.",
   pageType = "website",
-  socialImage,
+  socialImage = "/social/default-og.png",
   publishedAt,
   updatedAt,
   tags = [],
@@ -29,7 +30,9 @@ const {
   nextPage,
   noindex = false,
 } = Astro.props;
-const documentTitle = title ? `${title} | ${siteName}` : siteName;
+const documentTitle = title
+  ? `${title} | ${siteName}`
+  : `${siteName} | Notes and ideas`;
 const siteURL = Astro.site ?? new URL(Astro.url.origin);
 const canonicalURL = new URL(Astro.url.pathname, siteURL);
 const socialImageURL = socialImage
@@ -60,7 +63,34 @@ const serializedStructuredData = structuredData
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta id="theme-color" name="theme-color" content="#f6f8f7" />
+    <script is:inline>
+      (() => {
+        const key = "theme";
+        let savedTheme;
+
+        try {
+          savedTheme = localStorage.getItem(key);
+        } catch {
+          // Storage can be unavailable in hardened or private browser contexts.
+        }
+
+        const theme =
+          savedTheme === "light" || savedTheme === "dark"
+            ? savedTheme
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+
+        document.documentElement.dataset.theme = theme;
+        document
+          .querySelector("#theme-color")
+          ?.setAttribute("content", theme === "dark" ? "#111714" : "#f6f8f7");
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalURL} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link
@@ -81,6 +111,7 @@ const serializedStructuredData = structuredData
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     {socialImageURL && <meta property="og:image" content={socialImageURL} />}
+    {socialImageURL && <meta property="og:image:alt" content={documentTitle} />}
     {
       publishedAt && (
         <meta
@@ -106,6 +137,11 @@ const serializedStructuredData = structuredData
     <meta name="twitter:title" content={documentTitle} />
     <meta name="twitter:description" content={description} />
     {socialImageURL && <meta name="twitter:image" content={socialImageURL} />}
+    {
+      socialImageURL && (
+        <meta name="twitter:image:alt" content={documentTitle} />
+      )
+    }
 
     <title>{documentTitle}</title>
     {
@@ -119,8 +155,9 @@ const serializedStructuredData = structuredData
     }
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <Header />
-    <main class="container">
+    <main id="main-content" class="container" tabindex="-1">
       <slot />
     </main>
     <Footer />

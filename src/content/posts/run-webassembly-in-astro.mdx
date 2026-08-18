@@ -1,0 +1,178 @@
+---
+title: Load and run WebAssembly in Astro
+publishedAt: 2026-08-18
+description: Import a small Wasm module through Astro's Vite pipeline and call it from a browser script.
+draft: false
+tags:
+  - astro
+  - webassembly
+---
+
+import WasmAdder from "@/components/WasmAdder.astro";
+
+Astro uses Vite for browser assets, and current Vite versions can import a
+precompiled `.wasm` file as a module. The awkward part is deciding where the
+module should run. Code in an Astro frontmatter block runs while rendering the
+page. Code in a component's `<script>` runs in the browser.
+
+Here is a tiny Wasm-backed adder running on this page:
+
+<WasmAdder />
+
+## Start with a Wasm module
+
+The demo module exports one function that adds two 32-bit integers. Its WebAssembly
+text format looks like this:
+
+```text
+(module
+  (func (export "add") (param i32 i32) (result i32)
+    local.get 0
+    local.get 1
+    i32.add))
+```
+
+Compile it with `wat2wasm`, which is included in the
+[WABT toolkit](https://github.com/WebAssembly/wabt):
+
+```sh
+wat2wasm src/wasm/add.wat -o src/wasm/add.wasm
+```
+
+A Rust, C, or Zig build can produce the same `.wasm` asset. Astro only needs the
+compiled binary.
+
+## Add the TypeScript declaration
+
+TypeScript cannot inspect a Wasm binary for its exports. Enable arbitrary file
+extensions in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "allowArbitraryExtensions": true
+  }
+}
+```
+
+For `add.wasm`, create `add.d.wasm.ts` beside it:
+
+```ts
+export function add(left: number, right: number): number;
+```
+
+The unusual filename is intentional. TypeScript uses it as the declaration for
+`add.wasm` when arbitrary extensions are enabled.
+
+## Load the binary in a browser script
+
+Import the binary with Vite's `?url` query and put the resolved URL on the
+rendered element:
+
+```astro
+---
+import wasmURL from "../wasm/add.wasm?url";
+---
+
+<form data-wasm-adder data-wasm-url={wasmURL}>
+  <input name="left" type="number" value="20" />
+  <input name="right" type="number" value="22" />
+  <button>Add</button>
+  <output>42</output>
+</form>
+
+<script is:inline>
+  (async () => {
+    const form = document.querySelector("[data-wasm-adder]");
+    const response = await fetch(form.dataset.wasmUrl);
+    const { instance } = await WebAssembly.instantiateStreaming(response);
+    const add = instance.exports.add;
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      form.querySelector("output").value = add(
+        Number(data.get("left")),
+        Number(data.get("right")),
+      );
+    });
+  })();
+</script>
+```
+
+Vite may inline a small module as a data URL. Larger binaries are emitted as
+fingerprinted assets. `WebAssembly.instantiateStreaming()` avoids a separate
+compile step, provided the server returns the correct MIME type.
+
+This is a native browser script, so the Astro component does not need a
+`client:*` directive.
+
+## Use direct ESM exports
+
+Vite 8 can also instantiate a module and expose its functions as named exports
+inside a processed client script:
+
+```astro
+<script>
+  import { add } from "../wasm/add.wasm";
+  console.log(add(20, 22));
+</script>
+```
+
+The declaration file from the previous section gives TypeScript the signature
+for `add()`.
+
+## Initialize it manually
+
+Use Vite's `?init` query when the module needs an import object or you want to
+control when instantiation happens:
+
+```ts
+import init from "../wasm/add.wasm?init";
+
+const instance = await init({
+  env: {
+    log(value: number) {
+      console.log(value);
+    },
+  },
+});
+
+const { add } = instance.exports as {
+  add(left: number, right: number): number;
+};
+```
+
+For a basic module with no imports, the direct named export is shorter.
+
+## Run it while rendering instead
+
+Importing Wasm in an Astro frontmatter block runs it during the static build or
+on the server:
+
+```astro
+---
+import { add } from "../wasm/add.wasm";
+const answer = add(20, 22);
+---
+
+<p>{answer}</p>
+```
+
+That produces static HTML. There is no Wasm module in the visitor's browser
+unless another client script imports it.
+
+## Serve the correct MIME type
+
+A same-origin module does not need CORS headers, but the server should return
+`application/wasm`. Nginx's standard `mime.types` file normally includes it. If
+yours does not, add this mapping:
+
+```nginx
+types {
+  application/wasm wasm;
+}
+```
+
+WebAssembly threads and shared memory need cross-origin isolation headers. This
+small module does not use either feature, so those headers are unnecessary.

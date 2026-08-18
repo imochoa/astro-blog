@@ -2,5 +2,13 @@
   "astro": {
     "name": "Astro",
     "description": "Posts about building this site with Astro."
+  },
+  "hoppscotch": {
+    "name": "Hoppscotch",
+    "description": "API requests, testing, and embeddable request examples."
+  },
+  "webassembly": {
+    "name": "WebAssembly",
+    "description": "Running WebAssembly modules in web projects."
   }
 }

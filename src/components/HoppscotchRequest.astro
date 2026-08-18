@@ -1,0 +1,44 @@
+---
+interface Props {
+  requestId: string;
+  title?: string;
+}
+
+const { requestId, title = "Interactive Hoppscotch request" } = Astro.props;
+const requestURL = `https://hopp.sh/e/${encodeURIComponent(requestId)}`;
+---
+
+<figure class="hoppscotch-request" data-pagefind-ignore>
+  <iframe
+    src={requestURL}
+    {title}
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allow="clipboard-write"></iframe>
+  <figcaption>
+    <a href={requestURL} target="_blank" rel="noreferrer">
+      Open this request in Hoppscotch
+    </a>
+  </figcaption>
+</figure>
+
+<style>
+  .hoppscotch-request {
+    margin-inline: 0;
+  }
+
+  iframe {
+    width: 100%;
+    height: min(42rem, 75vh);
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  figcaption {
+    margin-top: var(--space-xs);
+    font-size: 0.85rem;
+    text-align: right;
+  }
+</style>
