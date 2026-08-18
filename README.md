@@ -15,6 +15,11 @@ The container is built from [`.devcontainer/Dockerfile`](.devcontainer/Dockerfil
 no devcontainer _features_, everything is a normal container instruction. It ships
 Node 24, pnpm (via Corepack), `just`, and `pre-commit`.
 
+From a local VS Code window, run the **Dev Container: Create or start** task to
+invoke `just up`. Once attached to the container, the other VS Code tasks wrap
+the corresponding `just` recipes. The **Blog: Debug in Chrome** launch profile
+starts the Astro development server through `just dev` before opening the site.
+
 ## Common tasks
 
 Run these **inside the container** (`just` with no args lists everything):
