@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dev Container: Create or start",
+      "type": "shell",
+      "command": "just",
+      "args": ["up"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Blog: Start development server",
+      "type": "shell",
+      "command": "just",
+      "args": ["dev"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Blog: Build",
+      "type": "shell",
+      "command": "just",
+      "args": ["build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Blog: Check internal links",
+      "type": "shell",
+      "command": "just",
+      "args": ["check-links"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Blog: Run CI",
+      "type": "shell",
+      "command": "just",
+      "args": ["ci"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
