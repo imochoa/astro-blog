@@ -27,6 +27,7 @@
     "vscode": {
       "extensions": [
         "astro-build.astro-vscode",
+        "svelte.svelte-vscode",
         "unifiedjs.vscode-mdx",
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint"
@@ -39,6 +40,7 @@
           "source.fixAll.eslint": "explicit"
         },
         "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[svelte]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
         "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
         "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
         "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },

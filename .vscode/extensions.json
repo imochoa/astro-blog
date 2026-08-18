@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-vscode-remote.remote-containers",
     "astro-build.astro-vscode",
+    "svelte.svelte-vscode",
     "unifiedjs.vscode-mdx",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint"

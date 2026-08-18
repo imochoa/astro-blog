@@ -21,19 +21,19 @@ repos:
         name: prettier (check)
         entry: pnpm exec prettier --check
         language: system
-        files: \.(astro|ts|tsx|js|jsx|mjs|cjs|json|md|css|ya?ml)$
+        files: \.(astro|svelte|ts|tsx|js|jsx|mjs|cjs|json|md|css|ya?ml)$
         pass_filenames: true
 
       - id: eslint
         name: eslint
         entry: pnpm exec eslint
         language: system
-        files: \.(astro|ts|tsx|js|jsx|mjs|cjs)$
+        files: \.(astro|svelte|ts|tsx|js|jsx|mjs|cjs)$
         pass_filenames: true
 
       - id: astro-check
         name: astro check
         entry: pnpm run check
         language: system
-        files: \.(astro|ts|tsx)$
+        files: \.(astro|svelte|ts|tsx)$
         pass_filenames: false
