@@ -1,0 +1,64 @@
+---
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/blog/", label: "Blog" },
+  { href: "/tags/", label: "Tags" },
+];
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? pathname === href : pathname.startsWith(href);
+---
+
+<header class="site-header">
+  <nav class="container" aria-label="Primary navigation">
+    <a class="site-name" href="/">astro-blog</a>
+    <ul role="list">
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a href={href} aria-current={isActive(href) ? "page" : undefined}>
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  nav {
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .site-name {
+    color: var(--color-text);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  ul {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  ul a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  ul a:hover,
+  ul a[aria-current="page"] {
+    color: var(--color-accent);
+  }
+</style>

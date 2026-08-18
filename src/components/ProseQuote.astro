@@ -1,0 +1,17 @@
+<blockquote class="prose-quote">
+  <slot />
+</blockquote>
+
+<style>
+  .prose-quote {
+    margin-inline: 0;
+    padding: var(--space-md) var(--space-lg);
+    border-left: 0.3rem solid var(--color-accent);
+    background: var(--color-accent-soft);
+    font-style: italic;
+  }
+
+  .prose-quote :global(p) {
+    margin: 0;
+  }
+</style>

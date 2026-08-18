@@ -1,0 +1,60 @@
+---
+import { getCollection } from "astro:content";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+
+const posts = await getCollection(
+  "posts",
+  ({ data }) => import.meta.env.DEV || !data.draft,
+);
+const tags = await getCollection("tags");
+const tagsById = new Map(tags.map((tag) => [tag.id, tag.data.name]));
+
+posts.sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+
+<BasicLayout title="Blog" description="Posts from astro-blog.">
+  <header class="page-header">
+    <p class="eyebrow">Writing</p>
+    <h1>Blog</h1>
+    <p>Notes and ideas, newest first.</p>
+  </header>
+
+  {
+    posts.length > 0 ? (
+      <ol class="post-list" role="list">
+        {posts.map((post) => (
+          <li class="post-card">
+            <article>
+              <time datetime={post.data.publishedAt.toISOString()}>
+                {post.data.publishedAt.toLocaleDateString("en", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+              <h2>
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h2>
+              <p>{post.data.description}</p>
+              {post.data.tags.length > 0 && (
+                <ul class="tag-list" role="list" aria-label="Tags">
+                  {post.data.tags.map((tag) => (
+                    <li>
+                      <a class="tag" href={`/tags/${tag.id}/`}>
+                        {tagsById.get(tag.id) ?? tag.id}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </article>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p>No posts yet.</p>
+    )
+  }
+</BasicLayout>

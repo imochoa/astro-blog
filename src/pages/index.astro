@@ -1,23 +1,12 @@
 ---
-const title = "astro-blog";
+import BasicLayout from "@/layouts/BasicLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-  </head>
-  <body>
-    <main>
-      <h1>{title}</h1>
-      <p>
-        Astro is running inside the devcontainer. Edit <code
-          >src/pages/index.astro</code
-        > to get started.
-      </p>
-    </main>
-  </body>
-</html>
+<BasicLayout>
+  <section class="page-header">
+    <p class="eyebrow">Welcome</p>
+    <h1>astro-blog</h1>
+    <p>A small collection of notes and ideas, built with Astro and MDX.</p>
+    <p><a class="button" href="/blog/">Read the blog</a></p>
+  </section>
+</BasicLayout>

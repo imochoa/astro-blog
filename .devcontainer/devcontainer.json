@@ -27,11 +27,14 @@
     "vscode": {
       "extensions": [
         "astro-build.astro-vscode",
+        "unifiedjs.vscode-mdx",
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint"
       ],
       "settings": {
         "editor.formatOnSave": true,
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit"
         },

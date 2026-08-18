@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+
+const [tags, posts] = await Promise.all([
+  getCollection("tags"),
+  getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft),
+]);
+
+const postCount = (tagId: string) =>
+  posts.filter((post) => post.data.tags.some((tag) => tag.id === tagId)).length;
+
+tags.sort((a, b) => a.data.name.localeCompare(b.data.name));
+---
+
+<BasicLayout title="Tags" description="Browse posts by tag.">
+  <header class="page-header">
+    <p class="eyebrow">Topics</p>
+    <h1>Tags</h1>
+    <p>Browse posts by topic.</p>
+  </header>
+
+  <ul class="tag-index" role="list">
+    {
+      tags.map((tag) => (
+        <li>
+          <h2>
+            <a href={`/tags/${tag.id}/`}>{tag.data.name}</a>
+          </h2>
+          {tag.data.description && <p>{tag.data.description}</p>}
+          <small>
+            {postCount(tag.id)} {postCount(tag.id) === 1 ? "post" : "posts"}
+          </small>
+        </li>
+      ))
+    }
+  </ul>
+</BasicLayout>

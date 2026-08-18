@@ -1,0 +1,226 @@
+---
+title: Sätteri and MDX feature examples
+description: A kitchen-sink draft for checking the Markdown and MDX features enabled by this blog.
+publishedAt: 2026-08-18
+draft: true
+tags:
+  - astro
+---
+
+import { Image } from "astro:assets";
+import Callout from "@/components/Callout.astro";
+import ProseQuote from "@/components/ProseQuote.astro";
+import featureDiagram from "@posts/assets/satteri-mdx-features.svg";
+
+export const featureCount = 9;
+export const components = { blockquote: ProseQuote };
+
+export const mdxFeatures = ["imports", "exports", "expressions", "components"];
+
+This draft exercises the Markdown features enabled in `astro.config.mjs` and the
+MDX features used by the blog. Its title is available through frontmatter as
+**{frontmatter.title}**.
+
+## Local images with `astro:assets`
+
+The SVG lives beside the post collection and is imported through the `@posts`
+alias. Astro's `<Image />` component reads its dimensions and emits the built
+asset with an optimized URL.
+
+<figure>
+  <Image
+    src={featureDiagram}
+    alt="Markdown content flowing through Sätteri into an Astro page"
+  />
+  <figcaption>A local SVG rendered with Astro's Image component.</figcaption>
+</figure>
+
+## Standard Markdown
+
+Text can be _emphasized_, **strong**, or marked as `inline code`. Links can be
+[written explicitly](https://astro.build), and a backslash escapes \*Markdown
+punctuation\*.
+
+> This blockquote is mapped to an imported Astro component through the exported
+> `components` object.
+
+- Unordered list item
+- Another item with a nested list
+  1. First nested item
+  2. Second nested item
+
+1. Ordered item
+2. Another ordered item
+
+---
+
+## GitHub-flavored Markdown
+
+GFM is enabled by default and provides autolinks such as https://astro.build,
+~~strikethrough~~, tables, task lists, and footnotes.
+
+| Feature |  Example   | Enabled |
+| :------ | :--------: | ------: |
+| Tables  | alignment  |     yes |
+| Tasks   | checkboxes |     yes |
+| Notes   | footnotes  |     yes |
+
+- [x] Create the content collection
+- [x] Enable MDX
+- [ ] Publish this draft
+
+A footnote reference can appear more than once.[^satteri] Here it is
+again.[^satteri]
+
+[^satteri]: Sätteri provides the Markdown parser used by this project.
+
+## Syntax highlighting
+
+Fenced code blocks are highlighted by Astro's configured highlighter.
+
+```ts title="example.ts"
+const greeting: string = "Hello from a highlighted code block";
+console.log(greeting);
+```
+
+The `title` value is available as fence metadata, but displaying a filename
+frame would require a custom code component.
+
+### Meta-based highlighting
+
+A brace range in the fence metadata highlights selected lines. A `/word/`
+pattern highlights matching words.
+
+```ts {2,4-5} /count/
+const start = 1;
+const count = start + 1;
+const label = "not highlighted";
+console.log(count);
+console.log({ count });
+```
+
+### Comment notation
+
+Notation comments are removed from the rendered code after applying their
+styles. They can highlight lines or individual words.
+
+```ts
+// [!code highlight:2]
+const host = "localhost";
+const port = 4321;
+// [!code word:server:1]
+const server = `http://${host}:${port}`;
+console.log(server);
+```
+
+### Diffs
+
+Use `++` and `--` notation to mark additions and removals.
+
+```ts
+const mode = "foreground"; // [!code --]
+const mode = "background"; // [!code ++]
+```
+
+### Focus and diagnostics
+
+Focused blocks dim the surrounding lines. Error, warning, and info notation can
+mark diagnostics without changing the example source.
+
+```ts
+const input = "42";
+const value = Number.parseInt(input, 10); // [!code focus]
+console.log(value);
+```
+
+```ts
+const count: number = "four"; // [!code error]
+const fallback = 0; // [!code warning]
+console.log(fallback); // [!code info]
+```
+
+These transformers add presentation classes; they do not format source code or
+provide folding and copy buttons. Those require a dedicated component.
+
+## Smart punctuation
+
+Straight quotes become “smart quotes”, three dots become an ellipsis..., two
+hyphens become an en dash -- and three become an em dash ---.
+
+## Math
+
+Inline math uses single dollar delimiters: $E = mc^2$.
+
+$$
+e^{i\pi} + 1 = 0
+$$
+
+Sätteri parses math into semantic math nodes. A separate math renderer would be
+needed for typeset output such as KaTeX.
+
+### Heading attributes
+
+Sätteri's Markdown syntax for a custom ID and class is shown below. In MDX,
+curly braces are JavaScript expressions, so JSX attributes are the unambiguous
+form for a rendered heading.
+
+```md
+### Markdown heading {#custom-heading .feature-heading}
+```
+
+<h3 id="custom-heading" class="feature-heading">
+  MDX heading with attributes
+</h3>
+
+## Directives
+
+The project includes a small Sätteri plugin that maps container directives to
+`<aside>`, leaf directives to `<div>`, and text directives to `<span>`.
+
+:::note[Container directive]{#directive-example .highlight data-kind="note"}
+A container directive can hold **Markdown content** and attributes.
+:::
+
+::badge[Leaf directive]{title="A block-level leaf directive"}
+
+A text directive fits inside a sentence, like this
+:abbr[Sätteri]{title="A fast Markdown processor"} example.
+
+## Superscript, subscript, and wikilinks
+
+Superscript renders 2^10^ as a raised value. Subscript renders H~2~O with the
+single-tilde syntax; double tildes remain available for GFM strikethrough.
+
+Wikilinks support both `[[Target]]` and a custom label, as in this link to
+[[/|the home page]].
+
+## MDX imports, exports, and expressions
+
+This file imports Astro components and a local asset. It also exports
+`featureCount`, which has the value **{featureCount}**, and evaluates regular
+JavaScript expressions in the document.
+
+<ul class="mdx-feature-list">
+  {mdxFeatures.map((feature) => (
+    <li>{feature.toUpperCase()}</li>
+  ))}
+</ul>
+
+<Callout title="Imported Astro component">
+  MDX content can be passed into an imported component. This list contains
+  <strong>{mdxFeatures.length} MDX features</strong>.
+</Callout>
+
+<details>
+  <summary>JSX-style elements</summary>
+  <p>
+    MDX also accepts HTML-like elements and expression-valued attributes. This
+    section was written with <code>&lt;details&gt;</code> and
+    <code>&lt;summary&gt;</code>.
+  </p>
+</details>
+
+{/* MDX comments are JavaScript comments inside an expression. */}
+
+The examples above cover the Sätteri parser features enabled by this project and
+the core MDX authoring features used in content collection entries.

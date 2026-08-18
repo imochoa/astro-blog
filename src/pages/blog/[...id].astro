@@ -1,0 +1,69 @@
+---
+import {
+  getCollection,
+  getEntry,
+  render,
+  type CollectionEntry,
+} from "astro:content";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    "posts",
+    ({ data }) => import.meta.env.DEV || !data.draft,
+  );
+
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const rendered = await render(post);
+const { Content } = rendered;
+const mdxComponents = "components" in rendered ? rendered.components : {};
+const tags = await Promise.all(post.data.tags.map((tag) => getEntry(tag)));
+---
+
+<BasicLayout title={post.data.title} description={post.data.description}>
+  <article class="post">
+    <header class="page-header">
+      <time datetime={post.data.publishedAt.toISOString()}>
+        {
+          post.data.publishedAt.toLocaleDateString("en", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        }
+      </time>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+      {
+        tags.length > 0 && (
+          <ul class="tag-list" role="list" aria-label="Tags">
+            {tags.map(
+              (tag) =>
+                tag && (
+                  <li>
+                    <a class="tag" href={`/tags/${tag.id}/`}>
+                      {tag.data.name}
+                    </a>
+                  </li>
+                ),
+            )}
+          </ul>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <Content components={mdxComponents} />
+    </div>
+  </article>
+</BasicLayout>
