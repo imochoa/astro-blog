@@ -60,6 +60,10 @@ against that file during `astro check`. Post-specific assets can live under
 The blog index uses Astro's built-in pagination, with the page size configured
 in `src/lib/posts.ts`.
 
+Write math with `$...$` or `$$...$$`; it is rendered to local KaTeX HTML and
+MathML during the build. The Sätteri compatibility bridge is explained in
+[`docs/markdown-math.md`](docs/markdown-math.md).
+
 ## Discovery and metadata
 
 Production builds generate `/sitemap-index.xml`, `/robots.txt`, and `/rss.xml`.

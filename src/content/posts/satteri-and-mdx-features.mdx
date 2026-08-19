@@ -211,14 +211,65 @@ JavaScript expressions in the document.
   <strong>{mdxFeatures.length} MDX features</strong>.
 </Callout>
 
+### Standard HTML elements in MDX
+
+MDX accepts standard HTML elements using JSX syntax. Lowercase names such as
+`details` render as HTML; uppercase names refer to imported or locally defined
+components. Attributes can contain JavaScript expressions, as shown by the
+`progress` and `meter` values below.
+
 <details>
-  <summary>JSX-style elements</summary>
+  <summary>Disclosure with details and summary</summary>
   <p>
-    MDX also accepts HTML-like elements and expression-valued attributes. This
-    section was written with <code>&lt;details&gt;</code> and
-    <code>&lt;summary&gt;</code>.
+    The browser supplies the expand and collapse behavior, including keyboard
+    support, without a client script.
   </p>
 </details>
+
+<figure>
+  <pre>
+    <code>pnpm run build</code>
+  </pre>
+  <figcaption>
+    A <code>figure</code> groups content with a <code>figcaption</code>.
+  </figcaption>
+</figure>
+
+<dl>
+  <dt>MDX</dt>
+  <dd>Markdown with JSX expressions, elements, imports, and exports.</dd>
+  <dt>Sätteri</dt>
+  <dd>The Markdown processor configured for this site.</dd>
+</dl>
+
+A few useful inline elements are <mark>mark for relevant text</mark>,
+
+<abbr title="WebAssembly">Wasm</abbr> for abbreviations,
+<time dateTime="2026-08-18">August 18, 2026</time> for machine-readable dates,
+and <kbd>Command</kbd> + <kbd>K</kbd> for keyboard input.
+
+<label htmlFor="build-progress">Example build progress</label>
+<progress id="build-progress" value={0.65} max={1}>
+  65%
+</progress>
+
+<label htmlFor="test-score">Example test score</label>
+<meter id="test-score" min={0} max={100} low={50} high={80} value={92}>
+  92 out of 100
+</meter>
+
+Other useful elements include `aside` for tangential content, `address` for
+contact information, `ruby` and `rt` for pronunciation annotations, and
+`dialog` for a dialog box. A dialog needs a small client script when it should
+open in response to a button.
+
+See the [MDX explanation of JSX](https://mdxjs.com/docs/what-is-mdx/#jsx) and
+MDN's [HTML element reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements)
+for the full list. MDN also documents the behavior and accessibility details of
+[`details`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details),
+[`figure`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/figure),
+[`progress`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress),
+and [`meter`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter).
 
 {/* MDX comments are JavaScript comments inside an expression. */}
 

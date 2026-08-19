@@ -208,13 +208,10 @@ time {
 }
 
 .post-card {
-  padding-bottom: var(--space-lg);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.post-card article {
   display: grid;
   gap: var(--space-xs);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .post-card h2 a {
@@ -361,6 +358,46 @@ time {
 .prose summary {
   cursor: pointer;
   font-weight: 700;
+}
+
+.prose dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--space-xs) var(--space-md);
+}
+
+.prose dt {
+  font-weight: 700;
+}
+
+.prose dd {
+  margin: 0;
+}
+
+.prose mark {
+  color: inherit;
+  background: var(--color-accent-soft);
+}
+
+.prose kbd {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: 0.25rem;
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.prose label {
+  display: block;
+  font-weight: 600;
+}
+
+.prose :is(progress, meter) {
+  width: min(100%, 24rem);
+  display: block;
+  accent-color: var(--color-accent);
 }
 
 .prose pre {

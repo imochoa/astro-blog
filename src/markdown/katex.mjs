@@ -16,6 +16,24 @@ const renderMath = (source, displayMode) => {
   return rendered;
 };
 
+/**
+ * Preserve display math before Sätteri's highlighter turns it into an
+ * indistinguishable plaintext code block. The built-in paragraph node is
+ * required by Sätteri's structural encoder. See docs/markdown-math.md.
+ */
+export const displayMathPlugin = {
+  name: "preserve-display-math",
+  math: (node) => ({
+    type: /** @type {"paragraph"} */ ("paragraph"),
+    data: {
+      hName: "div",
+      hProperties: { dataMathDisplay: "" },
+    },
+    children: [{ type: /** @type {"text"} */ ("text"), value: node.value }],
+  }),
+};
+
+/** Render preserved display nodes and Sätteri's surviving inline math nodes. */
 export const katexPlugin = {
   name: "render-katex",
   element: [
@@ -27,10 +45,9 @@ export const katexPlugin = {
       },
     },
     {
-      filter: ["pre"],
+      filter: ["div"],
       visit(node, context) {
-        const language = node.properties?.dataLanguage;
-        if (language !== "math") return;
+        if (!("dataMathDisplay" in (node.properties ?? {}))) return;
         return renderMath(context.textContent(node), true);
       },
     },

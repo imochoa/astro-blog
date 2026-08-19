@@ -16,7 +16,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { directivePlugin } from "./src/markdown/directives.mjs";
-import { katexPlugin } from "./src/markdown/katex.mjs";
+import { displayMathPlugin, katexPlugin } from "./src/markdown/katex.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -53,7 +53,10 @@ export default defineConfig({
       ],
     },
     processor: satteri({
-      mdastPlugins: [directivePlugin],
+      // Keep the display-math preservation pass before the KaTeX HAST pass.
+      // Sätteri otherwise highlights display math as indistinguishable plaintext.
+      // See docs/markdown-math.md before changing this order.
+      mdastPlugins: [directivePlugin, displayMathPlugin],
       hastPlugins: [katexPlugin],
       features: {
         gfm: true,

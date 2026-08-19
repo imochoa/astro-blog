@@ -17,6 +17,7 @@ This repository contains a statically built Astro 7 blog with MDX content collec
 - Unprocessed public assets: `public/`
 - Astro configuration: `astro.config.mjs`
 - Nginx-behind-Traefik deployment guidance: `docs/nginx-traefik.md`
+- Sätteri/KaTeX bridge design and troubleshooting: `docs/markdown-math.md`
 - Generated output: `dist/` and `.astro/`
 - Generated search index: `dist/pagefind/`
 
@@ -66,6 +67,7 @@ If operating from the host rather than an interactive container, use `just ci-co
 - Dispose browser resources, observers, and animation frames when interactive components are destroyed.
 - Use collection entry IDs for blog and tag route parameters; add a separate slug only when the public URL must differ from the entry ID.
 - Use Astro's `paginate()` API for blog archive pagination. Keep page one at `/blog/` and later pages under `/blog/page/<number>/`.
+- Reuse `PostList.astro` and `PostCard.astro` for post summaries, `FormattedDate.astro` for displayed dates, and `PostNavigation.astro` for chronological article links instead of duplicating their markup.
 - Keep post frontmatter compatible with the `posts` schema. Define every referenced tag in `src/content/tags.json`. Drafts are visible in development and excluded from production routes, RSS, sitemap, and search.
 - Use `socialImage` for a post-specific public image; otherwise the shared 1200×630 image under `public/social/` is used.
 - Keep site-wide foundations in `src/styles/global.css` and colocate component-specific styles in scoped Astro `<style>` blocks.
@@ -77,14 +79,14 @@ If operating from the host rather than an interactive container, use `just ci-co
 - Keep component frontmatter focused on data loading and setup, with rendered markup below it.
 - Preserve accessible, semantic HTML and include useful alt text for content images.
 - Use the configured Sätteri Markdown processor. GFM, frontmatter, math, heading attributes, directives, superscript, subscript, wikilinks, and smart punctuation are enabled. The project directive plugin renders directive nodes as semantic HTML.
-- Write inline math as `$...$` and display math as `$$...$$`. `src/markdown/katex.mjs` renders both through Sätteri during the build, and `BasicLayout.astro` imports the local KaTeX stylesheet. Do not add a client-side auto-render script or CDN stylesheet.
+- Write inline math as `$...$` and display math as `$$...$$`. `src/markdown/katex.mjs` renders both through Sätteri during the build, and `BasicLayout.astro` imports the local KaTeX stylesheet. Display math needs the two-stage MDAST/HAST workaround documented in `docs/markdown-math.md`; preserve its plugin order and built-in replacement node type. Do not add a client-side auto-render script or CDN stylesheet.
 - WebAssembly used in browser examples belongs under `src/wasm/`. Keep a matching `{name}.d.wasm.ts` declaration and leave `allowArbitraryExtensions` enabled.
 - Let Prettier control formatting; do not manually fight its output.
 - Follow the existing ESLint configuration for JavaScript, TypeScript, and Astro files.
 
 ## Deployment
 
-Production is static output served by Nginx behind Traefik. Traefik owns public HTTPS, redirects, certificates, and global TLS headers; Nginx listens only on the internal container network. Follow `docs/nginx-traefik.md` for clean routes, cache policy, the custom 404 page, CSP, and the WebAssembly MIME type. The CSP must continue to allow `https://hopp.sh` in `frame-src` while the Hoppscotch widget is published.
+Production is static output served by Nginx behind Traefik. Traefik owns public HTTPS, redirects, certificates, and global TLS headers; Nginx listens only on the internal container network. Follow `docs/nginx-traefik.md` for clean routes, cache policy, the custom 404 page, CSP, and the WebAssembly MIME type. The CSP must continue to allow `https://hopp.sh` and `https://marimo.app` in `frame-src` while their embeds are published; keep `'self'` there for local notebook exports.
 
 ## Validation
 
