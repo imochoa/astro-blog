@@ -1,6 +1,8 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import PostList from "@/components/PostList.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getPosts } from "@/lib/posts";
 
 export async function getStaticPaths() {
   const tags = await getCollection("tags");
@@ -16,15 +18,8 @@ interface Props {
 }
 
 const { tag } = Astro.props;
-const posts = await getCollection(
-  "posts",
-  ({ data }) =>
-    (import.meta.env.DEV || !data.draft) &&
-    data.tags.some((postTag) => postTag.id === tag.id),
-);
-
-posts.sort(
-  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+const posts = (await getPosts()).filter((post) =>
+  post.data.tags.some((postTag) => postTag.id === tag.id),
 );
 ---
 
@@ -38,29 +33,5 @@ posts.sort(
     {tag.data.description && <p>{tag.data.description}</p>}
   </header>
 
-  {
-    posts.length > 0 ? (
-      <ol class="post-list" role="list">
-        {posts.map((post) => (
-          <li class="post-card">
-            <article>
-              <time datetime={post.data.publishedAt.toISOString()}>
-                {post.data.publishedAt.toLocaleDateString("en", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-              <h2>
-                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-              </h2>
-              <p>{post.data.description}</p>
-            </article>
-          </li>
-        ))}
-      </ol>
-    ) : (
-      <p>No posts with this tag yet.</p>
-    )
-  }
+  <PostList posts={posts} emptyMessage="No posts with this tag yet." />
 </BasicLayout>

@@ -7,6 +7,10 @@
     "name": "Hoppscotch",
     "description": "API requests, testing, and embeddable request examples."
   },
+  "marimo": {
+    "name": "marimo",
+    "description": "Reactive Python notebooks and browser-based notebook examples."
+  },
   "webassembly": {
     "name": "WebAssembly",
     "description": "Running WebAssembly modules in web projects."

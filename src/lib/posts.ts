@@ -10,7 +10,9 @@ export async function getPosts(
     ({ data }) => includeDrafts || !data.draft,
   );
 
-  return posts.sort(
-    (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
-  );
+  return posts.sort((a, b) => {
+    const dateDifference =
+      b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf();
+    return dateDifference || a.id.localeCompare(b.id);
+  });
 }

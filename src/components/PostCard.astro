@@ -1,0 +1,38 @@
+---
+import { getEntry, type CollectionEntry } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+  showTags?: boolean;
+}
+
+const { post, showTags = true } = Astro.props;
+const tags = showTags
+  ? await Promise.all(post.data.tags.map((tag) => getEntry(tag)))
+  : [];
+---
+
+<article class="post-card">
+  <FormattedDate date={post.data.publishedAt} />
+  <h2>
+    <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+  </h2>
+  <p>{post.data.description}</p>
+  {
+    tags.length > 0 && (
+      <ul class="tag-list" role="list" aria-label="Tags">
+        {tags.map(
+          (tag) =>
+            tag && (
+              <li>
+                <a class="tag" href={`/tags/${tag.id}/`}>
+                  {tag.data.name}
+                </a>
+              </li>
+            ),
+        )}
+      </ul>
+    )
+  }
+</article>

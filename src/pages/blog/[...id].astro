@@ -1,18 +1,13 @@
 ---
-import {
-  getCollection,
-  getEntry,
-  render,
-  type CollectionEntry,
-} from "astro:content";
-import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getEntry, render, type CollectionEntry } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import PostNavigation from "@/components/PostNavigation.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getPosts } from "@/lib/posts";
 
 export async function getStaticPaths() {
-  const posts = await getCollection(
-    "posts",
-    ({ data }) => import.meta.env.DEV || !data.draft,
-  );
+  const posts = await getPosts();
 
   return posts.map((post) => ({
     params: { id: post.id },
@@ -33,6 +28,12 @@ const tocHeadings = rendered.headings.filter(
 );
 const tags = await Promise.all(post.data.tags.map((tag) => getEntry(tag)));
 const tagNames = tags.flatMap((tag) => (tag ? [tag.data.name] : []));
+const posts = await getPosts();
+const postIndex = posts.findIndex(({ id }) => id === post.id);
+const previous = posts[postIndex + 1];
+const next = postIndex > 0 ? posts[postIndex - 1] : undefined;
+const previousPage = previous ? `/blog/${previous.id}/` : undefined;
+const nextPage = next ? `/blog/${next.id}/` : undefined;
 ---
 
 <BasicLayout
@@ -43,32 +44,18 @@ const tagNames = tags.flatMap((tag) => (tag ? [tag.data.name] : []));
   publishedAt={post.data.publishedAt}
   updatedAt={post.data.updatedAt}
   tags={tagNames}
+  {previousPage}
+  {nextPage}
 >
   <article class="post" data-pagefind-body>
     <header class="page-header">
       <p class="post-dates">
-        Published
-        <time datetime={post.data.publishedAt.toISOString()}>
-          {
-            post.data.publishedAt.toLocaleDateString("en", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
-          }
-        </time>
+        <FormattedDate date={post.data.publishedAt} label="Published" />
         {
           post.data.updatedAt && (
             <>
               <span aria-hidden="true"> · </span>
-              Updated
-              <time datetime={post.data.updatedAt.toISOString()}>
-                {post.data.updatedAt.toLocaleDateString("en", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
+              <FormattedDate date={post.data.updatedAt} label="Updated" />
             </>
           )
         }
@@ -106,4 +93,6 @@ const tagNames = tags.flatMap((tag) => (tag ? [tag.data.name] : []));
       </div>
     </div>
   </article>
+
+  <PostNavigation {previous} {next} />
 </BasicLayout>

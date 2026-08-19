@@ -52,7 +52,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Permissions-Policy "camera=(), geolocation=(), microphone=()" always;
-    add_header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; frame-src https://hopp.sh; img-src 'self' data: https://hopp.sh; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; upgrade-insecure-requests" always;
+    add_header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; frame-src 'self' https://hopp.sh https://marimo.app; img-src 'self' data: https://hopp.sh; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; upgrade-insecure-requests" always;
 
     # Enable compression here only when the Traefik router does not already use
     # its compression middleware. Responses should be compressed at one layer.
@@ -111,8 +111,10 @@ server {
 }
 ```
 
-The policy allows `https://hopp.sh` in `frame-src` for the request widget. The
-inline script and style allowances are currently required by the early theme
+The policy allows `https://hopp.sh` in `frame-src` for the request widget and
+`https://marimo.app` for the hosted marimo notebook. It also permits same-origin
+frames so self-hosted marimo WebAssembly exports can be used later. The inline
+script and style allowances are currently required by the early theme
 initializer, structured data, syntax highlighting, and component styles. If
 those are moved to external assets later, tighten the policy rather than adding
 more sources.
