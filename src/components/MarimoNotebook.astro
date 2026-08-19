@@ -1,0 +1,49 @@
+---
+interface Props {
+  src: string;
+  title?: string;
+  height?: string;
+}
+
+const {
+  src,
+  title = "Interactive marimo notebook",
+  height = "min(48rem, 80vh)",
+} = Astro.props;
+---
+
+<figure class="marimo-notebook" data-pagefind-ignore>
+  <iframe
+    {src}
+    {title}
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    sandbox="allow-scripts allow-same-origin allow-downloads allow-popups allow-forms"
+    allowfullscreen></iframe>
+  <figcaption>
+    <a href={src} target="_blank" rel="noreferrer">
+      Open the notebook in a new tab
+    </a>
+  </figcaption>
+</figure>
+
+<style define:vars={{ height }}>
+  .marimo-notebook {
+    margin-inline: 0;
+  }
+
+  iframe {
+    width: 100%;
+    height: var(--height);
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  figcaption {
+    margin-top: var(--space-xs);
+    font-size: 0.85rem;
+    text-align: right;
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+title: Embed a marimo notebook in Astro
+publishedAt: 2026-08-19
+description: Run a marimo notebook inside an Astro post and decide between a WebAssembly iframe and marimo Islands.
+draft: false
+tags:
+  - astro
+  - marimo
+  - webassembly
+---
+
+import MarimoNotebook from "@/components/MarimoNotebook.astro";
+
+A marimo notebook can run entirely in the browser. That makes it a good fit for
+this static site: the server only has to serve files, while the reader's browser
+runs Python through WebAssembly.
+
+marimo documents two self-hostable ways to put a notebook on another page. A
+[WebAssembly export](https://docs.marimo.io/guides/exporting/webassembly_html/)
+runs the full notebook in an iframe. [marimo
+Islands](https://docs.marimo.io/guides/exporting/webassembly_html/#embed-marimo-outputs-in-html-using-islands)
+put selected cells and outputs directly into the surrounding document.
+
+For a complete notebook in a blog post, I would use the WebAssembly iframe. It
+has a clear boundary around its runtime and styles, and Astro does not need to
+understand marimo's generated cell payload. Islands make more sense when the
+cells need to be woven between paragraphs. They are still marked as a preview
+and their documentation calls the integration an advanced topic.
+
+## Live WebAssembly notebook
+
+This is marimo's cellular automaton example. It is hosted by
+[marimo.app](https://marimo.app/) and loaded in read mode only when the iframe
+approaches the viewport.
+
+<MarimoNotebook
+  src="https://marimo.app/github/marimo-team/gallery-examples/blob/main/notebooks/math/cellular-automaton-art.py/wasm?embed=true&mode=read"
+  title="Interactive cellular automaton marimo notebook"
+/>
+
+The iframe is an application of its own. It does not need `client:load` or
+another Astro hydration directive.
+
+## Wrap the iframe in an Astro component
+
+The component only handles the frame, sandbox, and responsive sizing:
+
+```astro
+---
+interface Props {
+  src: string;
+  title: string;
+}
+
+const { src, title } = Astro.props;
+---
+
+<iframe
+  {src}
+  {title}
+  loading="lazy"
+  referrerpolicy="strict-origin-when-cross-origin"
+  sandbox="allow-scripts allow-same-origin allow-downloads allow-popups allow-forms"
+  allowfullscreen></iframe>
+```
+
+`allow-scripts` is required for marimo. The other sandbox permissions enable
+persistent browser storage, downloads, links that open in a new tab, and form
+controls. Only use `allow-same-origin` for a notebook you trust, especially when
+it is hosted on the same origin as the parent page. The [marimo embedding
+guide](https://docs.marimo.io/guides/publishing/embedding/#iframe-sandbox-configuration)
+explains the sandbox tradeoffs.
+
+## Hosted or self-hosted
+
+The example uses marimo.app because there are no generated notebook assets to
+keep in this repository. The URL points to a public notebook on GitHub, and
+`embed=true&mode=read` trims the interface for an embedded, read-only view.
+
+For a notebook that must stay on the same host, export it instead:
+
+```sh
+marimo check notebook.py --select MW
+marimo export html-wasm notebook.py -o output_dir --mode run --execute
+```
+
+Copy the whole output directory to the static web root, not just its HTML file.
+The export expects its adjacent assets and must be served over HTTP. The iframe
+component can then use a local URL such as `/notebooks/example/`.
+
+WebAssembly is not a transparent replacement for desktop Python. Native system
+calls and packages without compatible wheels will not work. `marimo check`
+catches common problems before export; marimo's [WebAssembly limitations and
+package notes](https://docs.marimo.io/guides/wasm/#limitations) cover the rest.
+
+## Why not Islands here?
+
+| WebAssembly iframe                                | marimo Islands                                                                |
+| ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Embeds the whole notebook                         | Embeds selected cells and outputs                                             |
+| Keeps marimo CSS and runtime inside a frame       | Shares the article DOM with marimo custom elements                            |
+| Can use marimo.app or a static `html-wasm` export | Requires generated island markup, a JSON payload, runtime JavaScript, and CSS |
+| Better fit for a reusable notebook viewer         | Better fit for an article built around individual reactive cells              |
+
+The iframe is heavier, but lazy loading keeps it off the initial page load. It
+also leaves the Astro build pleasantly boring. I would revisit Islands if a post
+needed one slider or chart inline with its prose rather than a full notebook.
+
+A production Content Security Policy must permit the frame host. For the hosted
+example, add `https://marimo.app` to `frame-src`. Include `'self'` there too if
+notebook exports are served from the blog's own origin.
