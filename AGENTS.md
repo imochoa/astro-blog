@@ -6,7 +6,10 @@ This repository contains a statically built Astro 7 blog with MDX content collec
 
 - Astro source: `src/`
 - File-based routes: `src/pages/`
-- Shared components: `src/components/`
+- Site-wide components: `src/components/`
+- Blog and post components: `src/components/blog/`
+- Home-page sections: `src/components/home/`
+- Reusable UI primitives: `src/components/ui/`
 - Shared layouts: `src/layouts/`
 - Shared data helpers: `src/lib/`
 - Browser WebAssembly modules and declarations: `src/wasm/`
@@ -67,7 +70,7 @@ If operating from the host rather than an interactive container, use `just ci-co
 - Dispose browser resources, observers, and animation frames when interactive components are destroyed.
 - Use collection entry IDs for blog and tag route parameters; add a separate slug only when the public URL must differ from the entry ID.
 - Use Astro's `paginate()` API for blog archive pagination. Keep page one at `/blog/` and later pages under `/blog/page/<number>/`.
-- Reuse `PostList.astro` and `PostCard.astro` for post summaries, `FormattedDate.astro` for displayed dates, and `PostNavigation.astro` for chronological article links instead of duplicating their markup.
+- Reuse `components/blog/PostList.astro` and `components/blog/PostCard.astro` for post summaries, `components/ui/FormattedDate.astro` for displayed dates, and `components/blog/PostNavigation.astro` for chronological article links instead of duplicating their markup.
 - Keep post frontmatter compatible with the `posts` schema. Define every referenced tag in `src/content/tags.json`. Drafts are visible in development and excluded from production routes, RSS, sitemap, and search.
 - Use `socialImage` for a post-specific public image; otherwise the shared 1200×630 image under `public/social/` is used.
 - Keep site-wide foundations in `src/styles/global.css` and colocate component-specific styles in scoped Astro `<style>` blocks.

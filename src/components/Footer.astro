@@ -1,13 +1,22 @@
 ---
+// Static "year" when site was rendered
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="container">
-    <small>&copy; {year} astro-blog</small>
+    <small>&copy; <span id="copyrightYear">{year}</span> imochoa</small>
     <a href="/rss.xml">RSS</a>
   </div>
 </footer>
+
+<script>
+  // dynamic "year"
+  const copyrightYear = document.getElementById("copyrightYear");
+  if (copyrightYear) {
+    copyrightYear.textContent = new Date().getFullYear().toString();
+  }
+</script>
 
 <style>
   .site-footer {

@@ -2,13 +2,13 @@
 title: Load and run WebAssembly in Astro
 publishedAt: 2026-08-18
 description: Import a small Wasm module through Astro's Vite pipeline and call it from a browser script.
-draft: false
+draft: true
 tags:
   - astro
   - webassembly
 ---
 
-import WasmAdder from "@/components/WasmAdder.astro";
+import WasmAdder from "@/components/blog/WasmAdder.astro";
 
 Astro uses Vite for browser assets, and current Vite versions can import a
 precompiled `.wasm` file as a module. The awkward part is deciding where the
@@ -71,7 +71,7 @@ rendered element:
 
 ```astro
 ---
-import wasmURL from "../wasm/add.wasm?url";
+import wasmURL from "@/wasm/add.wasm?url";
 ---
 
 <form data-wasm-adder data-wasm-url={wasmURL}>
@@ -114,7 +114,7 @@ inside a processed client script:
 
 ```astro
 <script>
-  import { add } from "../wasm/add.wasm";
+  import { add } from "@/wasm/add.wasm";
   console.log(add(20, 22));
 </script>
 ```
@@ -128,7 +128,7 @@ Use Vite's `?init` query when the module needs an import object or you want to
 control when instantiation happens:
 
 ```ts
-import init from "../wasm/add.wasm?init";
+import init from "@/wasm/add.wasm?init";
 
 const instance = await init({
   env: {
@@ -152,7 +152,7 @@ on the server:
 
 ```astro
 ---
-import { add } from "../wasm/add.wasm";
+import { add } from "@/wasm/add.wasm";
 const answer = add(20, 22);
 ---
 

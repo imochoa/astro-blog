@@ -7,7 +7,7 @@ tags:
   - astro
 ---
 
-import ThreeScene from "@/components/ThreeScene.svelte";
+import ThreeScene from "@/components/blog/ThreeScene.svelte";
 
 Astro can render framework components imported directly into MDX. This example
 uses Svelte for the component lifecycle and Three.js for a small WebGL scene.
@@ -19,7 +19,7 @@ JavaScript is loaded and the scene is initialized only when it approaches the
 viewport.
 
 ```mdx
-import ThreeScene from "@/components/ThreeScene.svelte";
+import ThreeScene from "@/components/blog/ThreeScene.svelte";
 
 <ThreeScene client:visible />
 ```

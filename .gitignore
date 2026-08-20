@@ -9,6 +9,9 @@ dist/
 .astro/
 .output/
 
+# local course reference checkout
+astro-course-files/
+
 # environment
 .env
 .env.*
