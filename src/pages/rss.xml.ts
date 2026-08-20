@@ -1,5 +1,6 @@
 import rss from "@astrojs/rss";
 import type { APIRoute } from "astro";
+import { SITE_TITLE } from "@/consts";
 import { getPosts } from "@/lib/posts";
 
 export const GET: APIRoute = async ({ site }) => {
@@ -10,7 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
   const posts = await getPosts(false);
 
   return rss({
-    title: "astro-blog",
+    title: SITE_TITLE,
     description: "A small collection of notes and ideas.",
     site,
     items: posts.map((post) => ({

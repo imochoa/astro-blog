@@ -2,6 +2,7 @@
 import BasicLayout from "@/layouts/BasicLayout.astro";
 import Pagination from "@/components/blog/Pagination.astro";
 import PostList from "@/components/blog/PostList.astro";
+import { SITE_TITLE } from "@/consts";
 import { getPosts, POSTS_PER_PAGE } from "@/lib/posts";
 
 const posts = await getPosts();
@@ -11,7 +12,7 @@ const pagePosts = posts.slice(0, POSTS_PER_PAGE);
 
 <BasicLayout
   title="Blog"
-  description="Posts from astro-blog."
+  description={`Posts from ${SITE_TITLE}.`}
   nextPage={totalPages > 1 ? "/blog/page/2/" : undefined}
 >
   <header class="page-header">

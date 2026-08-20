@@ -1,5 +1,7 @@
 ---
 import PagefindConfig from "astro-pagefind/components/PagefindConfig.astro";
+import Favicon from "@/assets/favicon.svg";
+import { SITE_TITLE } from "@/consts";
 
 const links = [
   { href: "/", label: "Home" },
@@ -14,7 +16,10 @@ const isActive = (href: string) =>
 
 <header class="site-header">
   <nav class="container" aria-label="Primary navigation">
-    <a class="site-name" href="/">astro-blog</a>
+    <a class="site-name" href="/">
+      <Favicon class="site-logo" aria-hidden="true" focusable="false" />
+      <span>{SITE_TITLE}</span>
+    </a>
     <ul role="list">
       {
         links.map(({ href, label }) => (
@@ -120,9 +125,18 @@ const isActive = (href: string) =>
   }
 
   .site-name {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
     color: var(--color-text);
     font-weight: 700;
     text-decoration: none;
+  }
+
+  .site-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: none;
   }
 
   ul {

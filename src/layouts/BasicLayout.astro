@@ -1,6 +1,8 @@
 ---
+import favicon from "@/assets/favicon.svg";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import { SITE_TITLE } from "@/consts";
 import "katex/dist/katex.min.css";
 import "@/styles/global.css";
 
@@ -17,7 +19,6 @@ interface Props {
   noindex?: boolean;
 }
 
-const siteName = "astro-blog";
 const {
   title,
   description = "A small collection of notes and ideas.",
@@ -31,8 +32,8 @@ const {
   noindex = false,
 } = Astro.props;
 const documentTitle = title
-  ? `${title} | ${siteName}`
-  : `${siteName} | Notes and ideas`;
+  ? `${title} | ${SITE_TITLE}`
+  : `${SITE_TITLE} | Notes and ideas`;
 const siteURL = Astro.site ?? new URL(Astro.url.origin);
 const canonicalURL = new URL(Astro.url.pathname, siteURL);
 const socialImageURL = socialImage
@@ -88,7 +89,7 @@ const serializedStructuredData = structuredData
           ?.setAttribute("content", theme === "dark" ? "#111714" : "#f6f8f7");
       })();
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href={favicon.src} sizes="any" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalURL} />
@@ -96,7 +97,7 @@ const serializedStructuredData = structuredData
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={siteName}
+      title={SITE_TITLE}
       href="/rss.xml"
     />
     {previousPage && <link rel="prev" href={previousPage} />}
@@ -105,7 +106,7 @@ const serializedStructuredData = structuredData
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
 
-    <meta property="og:site_name" content={siteName} />
+    <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:type" content={pageType} />
     <meta property="og:title" content={documentTitle} />
     <meta property="og:description" content={description} />
