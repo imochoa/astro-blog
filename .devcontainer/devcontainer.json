@@ -34,13 +34,13 @@
       ],
       "settings": {
         "editor.formatOnSave": true,
-        "typescript.tsdk": "node_modules/typescript/lib",
-        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "js/ts.tsdk.path": "node_modules/typescript/lib",
+        "js/ts.tsdk.promptToUseWorkspaceVersion": true,
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit"
         },
         "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
-        "[svelte]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[svelte]": { "editor.defaultFormatter": "svelte.svelte-vscode" },
         "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
         "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
         "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
