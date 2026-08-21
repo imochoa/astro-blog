@@ -6,7 +6,13 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
-    ignores: ["dist/", ".astro/", "node_modules/", ".pnpm-store/"],
+    ignores: [
+      "dist/",
+      ".astro/",
+      "node_modules/",
+      ".pnpm-store/",
+      "public/embeds/lvgl/",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
