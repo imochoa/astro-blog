@@ -1,1 +1,1 @@
-export const SITE_TITLE = "astro-blog";
+export const SITE_TITLE = "IMO'sIMO";
