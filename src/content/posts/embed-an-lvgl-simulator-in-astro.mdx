@@ -1,0 +1,147 @@
+---
+title: Embed an LVGL simulator in an Astro post
+publishedAt: 2026-08-21
+description: Compile an LVGL and SDL simulator to WebAssembly, publish its standalone output with Astro, and run it in a local iframe.
+draft: false
+tags:
+  - astro
+  - lvgl
+  - webassembly
+---
+
+import LvglSimulator from "@/components/blog/LvglSimulator.astro";
+
+I have been using an SDL simulator while working on LVGL screens. It catches
+layout mistakes without a firmware flash, which is especially handy when the
+actual target is a slow e-paper panel.
+
+The simulator already builds with Emscripten, so putting it in this post only
+requires its HTML, JavaScript, and WebAssembly output. This is the counter
+example from my [LVGL development environment](https://github.com/imochoa/exp-monorepo/tree/main/iot/lvgl-devenv):
+
+<LvglSimulator
+  src="/embeds/lvgl/counter/index.html"
+  title="LVGL counter running in a WebAssembly simulator"
+  caption="LVGL 8.4 and SDL2 running entirely in the browser"
+/>
+
+The number is updated by an ordinary LVGL timer. There is no JavaScript counter
+hidden around the iframe:
+
+```c
+static void timer_cb(lv_timer_t *t)
+{
+    (void)t;
+    seconds++;
+    snprintf(buf, sizeof(buf), "%u s", seconds);
+    lv_label_set_text(counter_label, buf);
+}
+
+void app_create_ui(void)
+{
+    lv_obj_t *title = lv_label_create(lv_scr_act());
+    lv_label_set_text(title, "Counter");
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 5);
+
+    counter_label = lv_label_create(lv_scr_act());
+    lv_label_set_text(counter_label, "0 s");
+    lv_obj_align(counter_label, LV_ALIGN_CENTER, 0, 0);
+
+    lv_timer_create(timer_cb, 1000, NULL);
+}
+```
+
+## Build a small WebAssembly release
+
+The development preset keeps debug information, which is useful locally but
+needlessly large for a web page. I made a separate `MinSizeRel` build inside the
+Emscripten container:
+
+```sh
+emcmake cmake -S . -B build/release -DCMAKE_BUILD_TYPE=MinSizeRel
+cmake --build build/release --target counter -j4
+```
+
+Emscripten writes `counter.html`, `counter.js`, and `counter.wasm` under
+`build/release/apps/counter/`. The optimized Wasm file is about 800 KiB. The
+debug build from the normal simulator preset is closer to 5 MiB.
+
+I copy each complete export under `public/embeds/lvgl/`, with one directory per
+simulator:
+
+```sh
+mkdir -p public/embeds/lvgl/counter
+cp build/release/apps/counter/counter.js public/embeds/lvgl/counter/
+cp build/release/apps/counter/counter.wasm public/embeds/lvgl/counter/
+cp build/release/apps/counter/counter.html \
+  public/embeds/lvgl/counter/index.html
+```
+
+The LVGL, SDL, and Emscripten license notices live in the same directory.
+
+`public/` is deliberate here. The Emscripten export is already a standalone web
+application, and its HTML expects the JavaScript and Wasm files to retain their
+relative names. Astro copies the directory without trying to bundle it. Adding
+another simulator means copying another output directory, not writing another
+Astro route with hardcoded imports.
+
+## Keep the generated page in an iframe
+
+The Emscripten shell owns a canvas, a global `Module` object, and its own page
+styles. A reusable Astro component keeps that application separate from the
+blog:
+
+```astro
+---
+interface Props {
+  src: string;
+  title: string;
+  caption?: string;
+}
+
+const { src, title, caption } = Astro.props;
+---
+
+<figure data-pagefind-ignore>
+  <iframe
+    src={src}
+    title={title}
+    loading="lazy"
+    sandbox="allow-scripts allow-same-origin"></iframe>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+```
+
+Readers who do not scroll to the example do not download the JavaScript or Wasm
+bundle. The iframe also has a useful title for screen readers and is excluded
+from the Pagefind index.
+
+## Serve Wasm with the right headers
+
+The web server must send `.wasm` files as `application/wasm`. For Nginx, the
+standard MIME table normally has this mapping already:
+
+```nginx
+types {
+    application/wasm wasm;
+}
+```
+
+A Content Security Policy also needs to permit same-origin frames and Wasm
+compilation. The relevant directives for this site are:
+
+```text
+frame-src 'self';
+frame-ancestors 'self';
+script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval';
+```
+
+`frame-src` lets the post load the simulator, while `frame-ancestors` lets the
+simulator page be embedded by another page on the same origin.
+`wasm-unsafe-eval` is narrower than `unsafe-eval`: it permits WebAssembly
+compilation without allowing JavaScript string evaluation.
+
+This browser build exercises the same LVGL layout, timer, RGB565 framebuffer,
+and partial draw buffer as the other simulator targets. It does not reproduce
+e-paper refresh flashing, ghosting, power use, or the panel controller. Those
+parts still need hardware.

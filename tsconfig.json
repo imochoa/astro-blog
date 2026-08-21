@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  "exclude": ["dist", "public/embeds/lvgl"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "baseUrl": ".",

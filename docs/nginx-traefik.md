@@ -52,7 +52,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Permissions-Policy "camera=(), geolocation=(), microphone=()" always;
-    add_header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; frame-src 'self' https://hopp.sh https://marimo.app; img-src 'self' data: https://hopp.sh; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; upgrade-insecure-requests" always;
+    add_header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'self'; frame-src 'self' https://hopp.sh https://marimo.app; img-src 'self' data: https://hopp.sh; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; upgrade-insecure-requests" always;
 
     # Enable compression here only when the Traefik router does not already use
     # its compression middleware. Responses should be compressed at one layer.
@@ -91,7 +91,7 @@ server {
         expires 1d;
     }
 
-    location ~* \.(?:avif|gif|ico|jpe?g|png|svg|webp|woff2?)$ {
+    location ~* \.(?:avif|gif|ico|jpe?g|png|svg|wasm|webp|woff2?)$ {
         try_files $uri =404;
         expires 7d;
         access_log off;
@@ -113,11 +113,14 @@ server {
 
 The policy allows `https://hopp.sh` in `frame-src` for the request widget and
 `https://marimo.app` for the hosted marimo notebook. It also permits same-origin
-frames so self-hosted marimo WebAssembly exports can be used later. The inline
-script and style allowances are currently required by the early theme
-initializer, structured data, syntax highlighting, and component styles. If
-those are moved to external assets later, tighten the policy rather than adding
-more sources.
+frames for the local LVGL simulator and future self-hosted marimo exports.
+`frame-ancestors 'self'` lets those local documents appear inside the blog but
+still prevents other origins from framing them. The inline script and style allowances are currently required by the early theme
+initializer, structured data, syntax highlighting, component styles, and the
+Emscripten shell used by the simulator. `wasm-unsafe-eval` permits WebAssembly
+compilation without allowing JavaScript string evaluation. If the inline code
+is moved to external assets later, tighten the policy rather than adding more
+sources.
 
 ## WebAssembly MIME type
 

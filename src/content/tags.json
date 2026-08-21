@@ -43,6 +43,10 @@
     "name": "Hoppscotch",
     "description": "API requests, testing, and embeddable request examples."
   },
+  "lvgl": {
+    "name": "LVGL",
+    "description": "Embedded user interfaces, display simulators, and browser previews."
+  },
   "marimo": {
     "name": "marimo",
     "description": "Reactive Python notebooks and browser-based notebook examples."
