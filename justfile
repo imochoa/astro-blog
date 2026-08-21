@@ -73,13 +73,16 @@ pre-commit:
 ci: install-ci format-check lint check pre-commit check-links
 
 # Bring the devcontainer up (podman via --docker-path)
+[group("host")]
 up:
     devcontainer up --workspace-folder . --docker-path podman
 
 # Canonical CI entrypoint from the host: boot the devcontainer, run `just ci` in it
+[group("host")]
 ci-container: up
     devcontainer exec --workspace-folder . --docker-path podman just ci
 
 # Remove build artifacts and installed dependencies
+[group("host")]
 clean:
-    rm -rf dist .astro node_modules
+    rm -rf dist .astro node_modules .pnpm-store
