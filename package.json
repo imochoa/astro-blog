@@ -8,8 +8,12 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "generate:assets": "node scripts/generate-assets.mjs",
+    "predev": "pnpm run generate:assets",
     "dev": "astro dev --background",
+    "prestart": "pnpm run generate:assets",
     "start": "astro dev --background",
+    "prebuild": "pnpm run generate:assets",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
@@ -25,9 +29,11 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "^9.0.1",
+    "asciinema-player": "^3.17.0",
     "astro": "^7.2.2",
     "hast-util-from-html": "^2.0.3",
     "katex": "^0.18.4",
+    "nix-eval": "^0.0.2",
     "svelte": "^5.56.9",
     "three": "^0.185.1"
   },
@@ -44,6 +50,7 @@
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-svelte": "^4.1.1",
+    "sharp": "^0.35.3",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.67.0"
   }

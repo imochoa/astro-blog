@@ -8,11 +8,13 @@ tags:
 ---
 
 import ThreeScene from "@/components/blog/ThreeScene.svelte";
+import sceneTextureUrl from "@posts/assets/three-scene-texture.svg?url";
 
 Astro can render framework components imported directly into MDX. This example
 uses Svelte for the component lifecycle and Three.js for a small WebGL scene.
+The pattern on the icosahedron is loaded from a separate SVG texture.
 
-<ThreeScene client:visible />
+<ThreeScene textureUrl={sceneTextureUrl} client:visible />
 
 The `client:visible` directive keeps this component as an Astro island. Its
 JavaScript is loaded and the scene is initialized only when it approaches the
@@ -20,10 +22,19 @@ viewport.
 
 ```mdx
 import ThreeScene from "@/components/blog/ThreeScene.svelte";
+import sceneTextureUrl from "@posts/assets/three-scene-texture.svg?url";
 
-<ThreeScene client:visible />
+<ThreeScene textureUrl={sceneTextureUrl} client:visible />
 ```
 
+The `?url` suffix gives `THREE.TextureLoader` a browser-ready URL. Vite may inline
+a small file as a data URL. Larger files are copied into the build with a
+fingerprinted filename.
+
+Keep post-specific textures under `src/content/posts/assets/`. Put assets shared
+by several pages under `src/assets/`. Use `public/` when a file needs a fixed URL,
+or when a multi-file model relies on relative paths to its buffers and textures.
+
 The component creates its renderer in Svelte's `onMount`, observes its container
-for responsive resizing, respects `prefers-reduced-motion`, and disposes its
-Three.js resources when the component is destroyed.
+for responsive resizing, respects `prefers-reduced-motion`, and disposes the
+texture along with its other Three.js resources when the component is destroyed.

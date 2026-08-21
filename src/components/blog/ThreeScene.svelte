@@ -2,6 +2,11 @@
   import { onMount } from "svelte";
   import * as THREE from "three";
 
+  interface Props {
+    textureUrl: string;
+  }
+
+  let { textureUrl }: Props = $props();
   let container: HTMLDivElement;
   let canvas: HTMLCanvasElement;
   let errorMessage = "";
@@ -34,9 +39,28 @@
     const group = new THREE.Group();
     scene.add(group);
 
+    let destroyed = false;
+    const texture = new THREE.TextureLoader().load(
+      textureUrl,
+      (loadedTexture) => {
+        if (destroyed) loadedTexture.dispose();
+      },
+      undefined,
+      () => {
+        if (!destroyed) {
+          errorMessage = "The scene texture could not be loaded.";
+        }
+      },
+    );
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 2);
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
     const geometry = new THREE.IcosahedronGeometry(1.15, 2);
     const material = new THREE.MeshStandardMaterial({
-      color: 0x68b8a3,
+      map: texture,
       metalness: 0.25,
       roughness: 0.35,
       flatShading: true,
@@ -128,11 +152,13 @@
     animationFrame = window.requestAnimationFrame(animate);
 
     return () => {
+      destroyed = true;
       window.cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
       motionPreference.removeEventListener("change", updateMotionPreference);
       canvas.removeEventListener("webglcontextlost", handleContextLost);
       geometry.dispose();
+      texture.dispose();
       material.dispose();
       wireMaterial.dispose();
       starGeometry.dispose();
@@ -145,7 +171,7 @@
 <div
   class="scene"
   role="img"
-  aria-label="A rotating green icosahedron floating in a field of stars"
+  aria-label="A rotating patterned icosahedron floating in a field of stars"
   bind:this={container}
 >
   <canvas bind:this={canvas} aria-hidden="true"></canvas>

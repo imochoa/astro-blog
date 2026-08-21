@@ -1,4 +1,40 @@
 {
+  "asciinema": {
+    "name": "asciinema",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "math": {
+    "name": "Math",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "talon": {
+    "name": "TalonVoice",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "Software": {
+    "name": "TalonVoice",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "rust": {
+    "name": "Rust",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "books": {
+    "name": "Books",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "reviews": {
+    "name": "Reviews",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "diy": {
+    "name": "DIY",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
+  "keyboards": {
+    "name": "Keyboards",
+    "description": "Terminal session recording, playback, and web embeds."
+  },
   "astro": {
     "name": "Astro",
     "description": "Posts about building this site with Astro."
@@ -10,6 +46,14 @@
   "marimo": {
     "name": "marimo",
     "description": "Reactive Python notebooks and browser-based notebook examples."
+  },
+  "nix": {
+    "name": "Nix",
+    "description": "Nix language, package management, and reproducible environments."
+  },
+  "plantuml": {
+    "name": "PlantUML",
+    "description": "Text-based diagrams rendered during the static build."
   },
   "webassembly": {
     "name": "WebAssembly",

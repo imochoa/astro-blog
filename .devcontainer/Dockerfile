@@ -11,15 +11,27 @@ FROM node:24-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# OS tooling: python for pre-commit (via pipx), curl for the just installer.
+# OS tooling: Python for pre-commit, Java and Graphviz for local PlantUML
+# rendering, and curl for the just installer and pinned PlantUML JAR.
+ARG PLANTUML_VERSION=1.2026.6
+ARG PLANTUML_SHA256=89948f14c93756c7a3fb7b69078ff37e8489fd79dd430c582b931e2f65358690
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
+        default-jre-headless \
         git \
+        graphviz \
         pipx \
         python3 \
+    && mkdir -p /opt/plantuml \
+    && curl --proto '=https' --tlsv1.2 -fsSL \
+        "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml.jar" \
+        -o /opt/plantuml/plantuml.jar \
+    && echo "${PLANTUML_SHA256}  /opt/plantuml/plantuml.jar" | sha256sum -c - \
     && rm -rf /var/lib/apt/lists/*
+
+ENV PLANTUML_JAR=/opt/plantuml/plantuml.jar
 
 # just — task runner. Installed from the official release script, system-wide.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh \

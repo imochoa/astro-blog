@@ -1,0 +1,163 @@
+---
+title: Embed asciinema recordings in Astro
+publishedAt: 2026-08-21
+description: Play local .cast files with controls and sharp terminal text instead of exporting terminal demos as GIFs or screenshots.
+draft: false
+tags:
+  - asciinema
+  - astro
+---
+
+import AsciinemaPlayer from "@/components/blog/AsciinemaPlayer.svelte";
+import demoCastUrl from "@posts/assets/asciinema-player-demo.cast?url";
+
+A GIF is a poor container for a terminal session. The text gets blurry when the
+image is scaled, playback controls are missing, and a long pause becomes a long
+run of repeated pixels. An asciinema `.cast` file stores terminal output and its
+timing instead.
+
+The official [asciinema player](https://docs.asciinema.org/manual/player/quick-start/)
+can play that recording directly in a page:
+
+<AsciinemaPlayer
+  src={demoCastUrl}
+  title="Nix command recorded with asciinema"
+  caption="A local asciicast played in the browser"
+  downloadName="asciinema-player-demo.cast"
+  cols={72}
+  rows={12}
+  poster="npt:0:03"
+  client:visible
+/>
+
+The player is not an SVG asset. It renders terminal text in the browser and uses
+SVG or a small canvas layer for terminal graphics. The result still scales much
+better than a pre-rendered JPEG, PNG, or GIF. It has pause, seek, and fullscreen
+controls, along with configurable playback speed.
+
+## Install the player
+
+Add the official package:
+
+```sh
+pnpm add asciinema-player
+```
+
+The package provides its browser API, TypeScript declarations, and stylesheet.
+The recording itself can stay next to the post that uses it:
+
+```text
+src/content/posts/assets/example.cast
+```
+
+Importing the cast with Vite's `?url` suffix gives the component a browser-ready
+URL. Vite may inline a small recording as a data URL; larger casts are emitted
+as fingerprinted assets:
+
+```mdx
+import AsciinemaPlayer from "@/components/blog/AsciinemaPlayer.svelte";
+import recordingUrl from "@posts/assets/example.cast?url";
+
+<AsciinemaPlayer
+  src={recordingUrl}
+  title="Description of the recorded terminal session"
+  cols={100}
+  rows={28}
+  client:visible
+/>
+```
+
+Supplying the original column and row counts prevents the player from briefly
+laying itself out as an 80-by-24 terminal while it reads the cast header.
+
+## Wrap it in a Svelte component
+
+The player needs a browser DOM node, so an Astro component cannot initialize it
+while the site is being built. A small Svelte component owns the player and
+cleans it up when Astro removes the island:
+
+```svelte
+<script lang="ts">
+  import { onMount } from "svelte";
+  import type { Player } from "asciinema-player";
+  import "asciinema-player/dist/bundle/asciinema-player.css";
+
+  interface Props {
+    src: string;
+  }
+
+  let { src }: Props = $props();
+  let container: HTMLDivElement;
+
+  onMount(() => {
+    let disposed = false;
+    let player: Player | undefined;
+
+    void import("asciinema-player").then(({ create }) => {
+      if (disposed) return;
+
+      player = create(src, container, {
+        controls: true,
+        fit: "width",
+        idleTimeLimit: 2,
+        preload: false,
+      });
+    });
+
+    return () => {
+      disposed = true;
+      player?.dispose();
+    };
+  });
+</script>
+
+<div bind:this={container}></div>
+```
+
+The dynamic import keeps the browser-only package out of server rendering.
+`client:visible` delays the component until it approaches the viewport. The cast
+is fetched when the reader starts playback because `preload` is false.
+
+Calling `dispose()` matters during development and client-side navigation. It
+stops playback, releases resources, and removes the player DOM.
+
+## Choose playback defaults
+
+The reusable component on this site accepts the common player options:
+
+```mdx
+<AsciinemaPlayer
+  src={recordingUrl}
+  speed={1.25}
+  idleTimeLimit={2}
+  theme="auto/dracula"
+  poster="npt:0:03"
+  loop={false}
+  client:visible
+/>
+```
+
+`idleTimeLimit` is usually more pleasant than speeding up the entire recording.
+It shortens pauses without making commands flash past. A poster in NPT format
+shows the terminal at a chosen timestamp, but it also causes the cast to be
+preloaded.
+
+I leave autoplay and looping disabled. Playback starts with an explicit click,
+so the reader has a pause button from the beginning. The controls also make a
+long recording easier to inspect than an animated image.
+
+## Recordings are data, not a shell
+
+The browser does not execute commands from a cast. It parses terminal output and
+replays the recorded control sequences. That makes a local cast suitable for a
+static site and does not require a Nix container, shell, or backend service.
+
+A cast can still contain sensitive output. Check it before publishing, just as
+you would check a pasted terminal transcript. Environment variables, tokens,
+hostnames, and commands typed by mistake remain in the recording until they are
+removed or the session is recorded again.
+
+The component marks the player with `data-pagefind-ignore`, keeping terminal
+control text out of the search index. It also provides a download link to the
+original cast. No additional `frame-src` Content Security Policy rule is needed
+because the player and recording are served from the blog's own origin.

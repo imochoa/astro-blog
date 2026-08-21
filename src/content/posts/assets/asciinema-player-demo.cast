@@ -1,0 +1,8 @@
+{"version":2,"width":72,"height":12,"idle_time_limit":2,"env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0.1,"o","\u001b[2J\u001b[H\u001b[1;32m❯\u001b[0m nix eval --expr 'map (x: x * x) [ 1 2 3 4 ]'\r\n"]
+[0.8,"o","[ 1 4 9 16 ]\r\n"]
+[1.6,"o","\u001b[1;32m❯\u001b[0m printf 'A cast stores text and timing, not video.\\n'\r\n"]
+[2.2,"o","A cast stores text and timing, not video.\r\n"]
+[3.1,"o","\u001b[1;32m❯\u001b[0m printf '\\e[1;36mCrisp at any size.\\e[0m\\n'\r\n"]
+[3.7,"o","\u001b[1;36mCrisp at any size.\u001b[0m\r\n"]
+[5.0,"o","\u001b[1;32m❯\u001b[0m "]

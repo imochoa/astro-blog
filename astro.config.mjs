@@ -17,6 +17,7 @@ import {
 } from "@shikijs/transformers";
 import { directivePlugin } from "./src/markdown/directives.mjs";
 import { displayMathPlugin, katexPlugin } from "./src/markdown/katex.mjs";
+import { plantUMLPlugin } from "./src/markdown/plantuml.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -34,6 +35,9 @@ export default defineConfig({
     // Draft routes are not part of production's static route scan. Pre-bundle
     // Three.js so its client-only island is still ready on first dev request.
     optimizeDeps: { include: ["three"] },
+    // This local archive is not site source and contains thousands of files.
+    // Watching it can push Astro past its 30-second background startup limit.
+    server: { watch: { ignored: ["**/organizethis/**"] } },
   },
   markdown: {
     shikiConfig: {
@@ -56,7 +60,7 @@ export default defineConfig({
       // Keep the display-math preservation pass before the KaTeX HAST pass.
       // Sätteri otherwise highlights display math as indistinguishable plaintext.
       // See docs/markdown-math.md before changing this order.
-      mdastPlugins: [directivePlugin, displayMathPlugin],
+      mdastPlugins: [directivePlugin, displayMathPlugin, plantUMLPlugin],
       hastPlugins: [katexPlugin],
       features: {
         gfm: true,
