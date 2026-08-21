@@ -39,6 +39,10 @@
     "name": "Astro",
     "description": "Posts about building this site with Astro."
   },
+  "life": {
+    "name": "Life",
+    "description": "Posts about general lifestyle topics."
+  },
   "hoppscotch": {
     "name": "Hoppscotch",
     "description": "API requests, testing, and embeddable request examples."
