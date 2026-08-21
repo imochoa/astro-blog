@@ -18,43 +18,57 @@ update:
 install-ci:
     pnpm install --frozen-lockfile
 
+[group("package.json")]
+list-npm:
+    npm run
+
+# Get list with...
+# jq ".scripts | keys" < package.json
+[arg("cmd", pattern="start|build|check|check:links|dev|format|format:check|generate:assets|lint|lint:fix|prebuild|predev|prestart|preview", help="What pnpm package.json command to run")]
+pnpm cmd:
+    pnpm run {{ cmd }}
+
 # Start the Astro dev server on http://localhost:4321
-dev:
-    pnpm run dev
+[group("package.json")]
+dev: (pnpm "dev")
+
+[group("package.json")]
+prebuild: (pnpm "prebuild")
 
 # Production build
-build:
-    pnpm run build
+[group("package.json")]
+build: (pnpm "build")
 
 # Preview the production build
-preview:
-    pnpm run preview
+[group("package.json")]
+preview: (pnpm "preview")
 
 # Build the site, then validate its internal links and heading fragments
-check-links: build
-    pnpm run check:links
+[group("package.json")]
+check-links: build && (pnpm "check:links")
 
 # Diagnostics / type check (astro check)
-check:
-    pnpm run check
+[group("package.json")]
+check: (pnpm "check")
 
 # Format all files with Prettier
-format:
-    pnpm run format
+[group("package.json")]
+format: (pnpm "format")
 
 # Verify formatting without writing changes
-format-check:
-    pnpm run format:check
+[group("package.json")]
+format-check: (pnpm "format:check")
 
 # Lint with ESLint
-lint:
-    pnpm run lint
+[group("package.json")]
+lint: (pnpm "lint")
 
 # Auto-fix lint issues
-lint-fix:
-    pnpm run lint:fix
+[group("package.json")]
+lint-fix: (pnpm "lint:fix")
 
 # Format and auto-fix lint issues
+[group("package.json")]
 fix: format lint-fix
 
 # Use the versioned hook wrapper. On the host it enters the devcontainer;
