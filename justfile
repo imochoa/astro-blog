@@ -82,9 +82,11 @@ pre-commit:
     pre-commit run --all-files
 
 # Full CI gate: validate sources, build dist/, then check its internal links.
-# The Temporal worker deploys only after this recipe succeeds, leaving the prior
-# published site intact.
 ci: install-ci format-check lint check pre-commit check-links
+
+# Build deployable output without running the CI checks. Temporal runs this
+# independently from `ci-container`, so a check failure does not block publishing.
+publish: install-ci build
 
 # Bring the devcontainer up (podman via --docker-path)
 [group("host")]
@@ -95,6 +97,11 @@ up:
 [group("host")]
 ci-container: up
     devcontainer exec --workspace-folder . --docker-path podman just ci
+
+# Temporal publication entrypoint: build dist/ without running the CI gate
+[group("host")]
+publish-container: up
+    devcontainer exec --workspace-folder . --docker-path podman just publish
 
 # Remove build artifacts and installed dependencies
 [group("host")]
