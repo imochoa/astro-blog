@@ -15,9 +15,12 @@ const tags = showTags
 
 <article class="post-card">
   <FormattedDate date={post.data.publishedAt} />
-  <h2>
-    <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-  </h2>
+  <div class="post-card-title">
+    <h2>
+      <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+    </h2>
+    {post.data.draft && <span class="draft-marker">Draft</span>}
+  </div>
   <p>{post.data.description}</p>
   {
     tags.length > 0 && (
@@ -36,3 +39,24 @@ const tags = showTags
     )
   }
 </article>
+
+<style>
+  .post-card-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-xs);
+  }
+
+  .draft-marker {
+    padding: 0.1rem var(--space-xs);
+    border: 1px solid var(--color-accent);
+    border-radius: 999px;
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+</style>
