@@ -1,11 +1,45 @@
 ---
 // Static "year" when site was rendered
 const year = new Date().getFullYear();
+const buildCommit = import.meta.env.SITE_BUILD_COMMIT;
+const buildDate = import.meta.env.SITE_BUILD_DATE;
+const buildDirty = import.meta.env.SITE_BUILD_DIRTY;
+const shortCommit =
+  buildCommit === "unknown" ? buildCommit : buildCommit.slice(0, 12);
+const commitURL = /^[0-9a-f]{7,40}$/i.test(buildCommit)
+  ? `https://github.com/imochoa/astro-blog/commit/${buildCommit}`
+  : undefined;
+const formattedBuildDate = `${new Intl.DateTimeFormat("en", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "UTC",
+}).format(new Date(buildDate))} UTC`;
 ---
 
 <footer class="site-footer">
   <div class="container">
-    <small>&copy; <span id="copyrightYear">{year}</span> imochoa</small>
+    <div class="footer-details">
+      <small>&copy; <span id="copyrightYear">{year}</span> imochoa</small>
+      <small class="build-metadata">
+        Build
+        {
+          commitURL ? (
+            <a href={commitURL} title={buildCommit}>
+              <code>{shortCommit}</code>
+            </a>
+          ) : (
+            <code>{shortCommit}</code>
+          )
+        }
+        {
+          buildDirty && (
+            <span title="Built with uncommitted changes">dirty</span>
+          )
+        }
+        <span aria-hidden="true">&middot;</span>
+        <time datetime={buildDate}>{formattedBuildDate}</time>
+      </small>
+    </div>
     <a href="/rss.xml">RSS</a>
   </div>
 </footer>
@@ -28,9 +62,29 @@ const year = new Date().getFullYear();
 
   .container {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
+  }
+
+  .footer-details {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .build-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .build-metadata time {
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
   }
 
   a {

@@ -57,6 +57,9 @@ const structuredData =
 const serializedStructuredData = structuredData
   ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
   : undefined;
+const buildCommit = import.meta.env.SITE_BUILD_COMMIT;
+const buildDate = import.meta.env.SITE_BUILD_DATE;
+const buildDirty = import.meta.env.SITE_BUILD_DIRTY;
 ---
 
 <!doctype html>
@@ -103,6 +106,9 @@ const serializedStructuredData = structuredData
     {previousPage && <link rel="prev" href={previousPage} />}
     {nextPage && <link rel="next" href={nextPage} />}
     <meta name="generator" content={Astro.generator} />
+    <meta name="build-commit" content={buildCommit} />
+    <meta name="build-date" content={buildDate} />
+    <meta name="build-dirty" content={String(buildDirty)} />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
 
