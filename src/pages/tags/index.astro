@@ -1,16 +1,23 @@
 ---
 import { getCollection } from "astro:content";
 import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getPosts } from "@/lib/posts";
 
 const [tags, posts] = await Promise.all([
   getCollection("tags"),
-  getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft),
+  getPosts(false),
 ]);
 
-const postCount = (tagId: string) =>
-  posts.filter((post) => post.data.tags.some((tag) => tag.id === tagId)).length;
+const postCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    postCounts.set(tag.id, (postCounts.get(tag.id) ?? 0) + 1);
+  }
+}
 
-tags.sort((a, b) => a.data.name.localeCompare(b.data.name));
+const usedTags = tags
+  .filter((tag) => postCounts.has(tag.id))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
 ---
 
 <BasicLayout title="Tags" description="Browse posts by tag.">
@@ -22,17 +29,21 @@ tags.sort((a, b) => a.data.name.localeCompare(b.data.name));
 
   <ul class="tag-index" role="list">
     {
-      tags.map((tag) => (
-        <li>
-          <h2>
-            <a href={`/tags/${tag.id}/`}>{tag.data.name}</a>
-          </h2>
-          {tag.data.description && <p>{tag.data.description}</p>}
-          <small>
-            {postCount(tag.id)} {postCount(tag.id) === 1 ? "post" : "posts"}
-          </small>
-        </li>
-      ))
+      usedTags.map((tag) => {
+        const postCount = postCounts.get(tag.id) ?? 0;
+
+        return (
+          <li>
+            <h2>
+              <a href={`/tags/${tag.id}/`}>{tag.data.name}</a>
+            </h2>
+            {tag.data.description && <p>{tag.data.description}</p>}
+            <small>
+              {postCount} {postCount === 1 ? "post" : "posts"}
+            </small>
+          </li>
+        );
+      })
     }
   </ul>
 </BasicLayout>
