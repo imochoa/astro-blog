@@ -1,5 +1,17 @@
 .git
-.pnpm-store
 node_modules
+.pnpm-store
 dist
 .astro
+.output
+
+# Local reference material is not needed to build the devcontainer image.
+astro-course-files
+organizethis
+
+# Do not send local secrets, logs, or OS metadata to the build context.
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store

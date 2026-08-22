@@ -35,9 +35,19 @@ export default defineConfig({
     // Draft routes are not part of production's static route scan. Pre-bundle
     // Three.js so its client-only island is still ready on first dev request.
     optimizeDeps: { include: ["three"] },
-    // This local archive is not site source and contains thousands of files.
-    // Watching it can push Astro past its 30-second background startup limit.
-    server: { watch: { ignored: ["**/organizethis/**"] } },
+    // These generated/local directories are not site source and can contain
+    // thousands of files. Scanning them over the devcontainer bind mount makes
+    // watcher startup unnecessarily slow.
+    server: {
+      watch: {
+        ignored: [
+          "**/.output/**",
+          "**/.pnpm-store/**",
+          "**/astro-course-files/**",
+          "**/organizethis/**",
+        ],
+      },
+    },
   },
   markdown: {
     shikiConfig: {

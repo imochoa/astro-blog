@@ -9,8 +9,9 @@ dist/
 .astro/
 .output/
 
-# local course reference checkout
+# local reference checkouts and archives
 astro-course-files/
+organizethis/
 
 # environment
 .env
