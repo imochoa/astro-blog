@@ -1,7 +1,9 @@
 ---
 title: Render PlantUML diagrams in Astro
 publishedAt: 2026-08-21
-description: Turn fenced PlantUML blocks into isolated SVG images during an Astro build without sending diagram source to a public server.
+description:
+  Turn fenced PlantUML blocks into isolated SVG images during an Astro build
+  without sending diagram source to a public server.
 draft: true
 tags:
   - astro
@@ -31,10 +33,11 @@ Astro --> Author: Static HTML
 @enduml
 ```
 
-There is a community [`astro-plantuml`](https://www.npmjs.com/package/astro-plantuml)
-integration in Astro's integration directory, but it sends diagrams to a
-PlantUML server and embeds PNG responses. This site uses a custom Sätteri
-Markdown processor as well, so I used a small Sätteri plugin and the official
+There is a community
+[`astro-plantuml`](https://www.npmjs.com/package/astro-plantuml) integration in
+Astro's integration directory, but it sends diagrams to a PlantUML server and
+embeds PNG responses. This site uses a custom Sätteri Markdown processor as
+well, so I used a small Sätteri plugin and the official
 [PlantUML](https://github.com/plantuml/plantuml) JAR instead.
 
 ## Author a diagram in Markdown
@@ -64,9 +67,9 @@ such as mind maps and Gantt charts, keep their own `@start...` markers.
 
 ## Pin the official renderer
 
-PlantUML needs Java, and several diagram layouts use Graphviz. Both are installed
-in the devcontainer. The container also downloads a specific PlantUML release
-and verifies its SHA-256 digest:
+PlantUML needs Java, and several diagram layouts use Graphviz. Both are
+installed in the devcontainer. The container also downloads a specific PlantUML
+release and verifies its SHA-256 digest:
 
 ```dockerfile
 ARG PLANTUML_VERSION=1.2026.6
@@ -112,9 +115,9 @@ child.stdin.end(source, "utf8");
 ```
 
 Using the post's directory as the working directory allows a diagram to include
-a nearby PlantUML file with a relative path. The plugin rejects failed processes,
-non-SVG output, and SVGs larger than 10 MiB. A malformed diagram therefore stops
-the build instead of quietly publishing an error image.
+a nearby PlantUML file with a relative path. The plugin rejects failed
+processes, non-SVG output, and SVGs larger than 10 MiB. A malformed diagram
+therefore stops the build instead of quietly publishing an error image.
 
 The complete implementation is in `src/markdown/plantuml.mjs`. It is registered
 next to the other Sätteri MDAST plugins in `astro.config.mjs`:
@@ -144,8 +147,8 @@ the plugin base64-encodes each SVG into an image URL:
 </figure>
 ```
 
-The browser still renders vector geometry at the final display size, but the
-SVG has its own document boundary. The generated diagram source is also excluded
+The browser still renders vector geometry at the final display size, but the SVG
+has its own document boundary. The generated diagram source is also excluded
 from Pagefind, which keeps labels from appearing as disconnected search text.
 
 PlantUML's default diagrams use a light background, so the wrapper remains white

@@ -1,7 +1,9 @@
 ---
 title: Run Nix in the browser with Tvix and WebAssembly
 publishedAt: 2026-08-21
-description: Take apart Tour of Nix's old asm.js evaluator, then build a smaller Nix expression playground with Tvix and a Web Worker.
+description:
+  Take apart Tour of Nix's old asm.js evaluator, then build a smaller Nix
+  expression playground with Tvix and a Web Worker.
 draft: true
 tags:
   - nix
@@ -21,21 +23,20 @@ Nix, so I used Tvix for the live example below.
 <NixPlayground client:visible />
 
 The evaluator is downloaded after the first click. It runs locally and the page
-does not send the expression anywhere. This is a language playground rather
-than a Nix shell: it cannot build a derivation, fetch nixpkgs, or install a
-package.
+does not send the expression anywhere. This is a language playground rather than
+a Nix shell: it cannot build a derivation, fetch nixpkgs, or install a package.
 
 ## How Tour of Nix runs Nix
 
 Tour of Nix bundles `nix-instantiate` from Nix 1.9. Its authors modified the C++
 program to remove dependencies that did not work in a browser, then compiled it
-with Emscripten 1.29.10. Their [build
-notes](https://lastlog.de/blog/tour_of_nix.html) show the command and the changes
-they had to make.
+with Emscripten 1.29.10. Their
+[build notes](https://lastlog.de/blog/tour_of_nix.html) show the command and the
+changes they had to make.
 
 That version of Emscripten produced asm.js: a restricted, optimizable subset of
-JavaScript. WebAssembly was not yet available. The files currently served by
-the tour make the cost visible:
+JavaScript. WebAssembly was not yet available. The files currently served by the
+tour make the cost visible:
 
 | File                     | Uncompressed size | Purpose                                       |
 | ------------------------ | ----------------- | --------------------------------------------- |
@@ -70,9 +71,10 @@ was lost. Rebuilding or updating it means reconstructing the old port first.
 ## Use Tvix for a current evaluator
 
 [Tvix](https://tvix.dev/) includes a Nix-compatible evaluator written in Rust.
-Its [Tvixbolt playground](https://bolt.tvix.dev/) already compiles that evaluator
-to WebAssembly. The [`nix-eval`](https://github.com/dvcorreia/nix-eval) package
-wraps the same evaluator for use from JavaScript:
+Its [Tvixbolt playground](https://bolt.tvix.dev/) already compiles that
+evaluator to WebAssembly. The
+[`nix-eval`](https://github.com/dvcorreia/nix-eval) package wraps the same
+evaluator for use from JavaScript:
 
 ```sh
 pnpm add nix-eval
@@ -148,8 +150,8 @@ not exist before then.
 ## What this playground cannot do
 
 The package creates Tvix's pure evaluator. Language features such as functions,
-lists, attribute sets, and pure built-ins work. Operations that need a Nix store,
-filesystem access, network fetches, or process execution do not.
+lists, attribute sets, and pure built-ins work. Operations that need a Nix
+store, filesystem access, network fetches, or process execution do not.
 
 A browser can evaluate `map (x: x * 2) [ 1 2 3 ]`. It cannot turn a flake into a
 development shell. Doing that would require a backend with a real Nix store and

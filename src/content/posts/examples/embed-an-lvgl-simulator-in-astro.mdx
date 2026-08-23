@@ -1,7 +1,9 @@
 ---
 title: Embed an LVGL simulator in an Astro post
 publishedAt: 2026-08-21
-description: Compile an LVGL and SDL simulator to WebAssembly, publish its standalone output with Astro, and run it in a local iframe.
+description:
+  Compile an LVGL and SDL simulator to WebAssembly, publish its standalone
+  output with Astro, and run it in a local iframe.
 draft: true
 tags:
   - astro
@@ -17,7 +19,8 @@ actual target is a slow e-paper panel.
 
 The simulator already builds with Emscripten, so putting it in this post only
 requires its HTML, JavaScript, and WebAssembly output. This is the counter
-example from my [LVGL development environment](https://github.com/imochoa/exp-monorepo/tree/main/iot/lvgl-devenv):
+example from my
+[LVGL development environment](https://github.com/imochoa/exp-monorepo/tree/main/iot/lvgl-devenv):
 
 <LvglSimulator
   src="/embeds/lvgl/counter/index.html"

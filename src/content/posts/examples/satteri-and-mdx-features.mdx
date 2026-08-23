@@ -1,6 +1,8 @@
 ---
 title: Sätteri and MDX feature examples
-description: A kitchen-sink draft for checking the Markdown and MDX features enabled by this blog.
+description:
+  A kitchen-sink draft for checking the Markdown and MDX features enabled by
+  this blog.
 publishedAt: 2026-08-18
 draft: true
 tags:
@@ -91,8 +93,9 @@ frame would require a custom code component.
 ### Local source files with `?raw`
 
 A fence cannot load its contents from another file. Vite's `?raw` import query
-loads a local file as a string instead. Pass that string to Astro's built-in
-`Code` component to render it with syntax highlighting.
+loads a local file as a string instead. Pass that string to the blog's
+`SourceCode` wrapper to render it with syntax highlighting. The wrapper applies
+the site's light and dark Shiki themes to Astro's built-in `Code` component.
 
 ```mdx
 import { Code } from "astro:components";
@@ -207,14 +210,13 @@ form for a rendered heading.
 The project includes a small Sätteri plugin that maps container directives to
 `<aside>`, leaf directives to `<div>`, and text directives to `<span>`.
 
-:::note[Container directive]{#directive-example .highlight data-kind="note"}
-A container directive can hold **Markdown content** and attributes.
-:::
+:::note[Container directive]{#directive-example .highlight data-kind="note"} A
+container directive can hold **Markdown content** and attributes. :::
 
 ::badge[Leaf directive]{title="A block-level leaf directive"}
 
-A text directive fits inside a sentence, like this
-:abbr[Sätteri]{title="A fast Markdown processor"} example.
+A text directive fits inside a sentence, like this :abbr[Sätteri]{title="A fast
+Markdown processor"} example.
 
 ## Superscript, subscript, and wikilinks
 
@@ -289,17 +291,19 @@ and <kbd>Command</kbd> + <kbd>K</kbd> for keyboard input.
 </meter>
 
 Other useful elements include `aside` for tangential content, `address` for
-contact information, `ruby` and `rt` for pronunciation annotations, and
-`dialog` for a dialog box. A dialog needs a small client script when it should
-open in response to a button.
+contact information, `ruby` and `rt` for pronunciation annotations, and `dialog`
+for a dialog box. A dialog needs a small client script when it should open in
+response to a button.
 
 See the [MDX explanation of JSX](https://mdxjs.com/docs/what-is-mdx/#jsx) and
-MDN's [HTML element reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements)
+MDN's
+[HTML element reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements)
 for the full list. MDN also documents the behavior and accessibility details of
 [`details`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details),
 [`figure`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/figure),
 [`progress`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress),
-and [`meter`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter).
+and
+[`meter`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter).
 
 {/* MDX comments are JavaScript comments inside an expression. */}
 

@@ -1,7 +1,9 @@
 ---
 title: Add Rapier physics to a Three.js scene
 publishedAt: 2026-08-23
-description: Use Rapier's WebAssembly physics engine behind a Three.js scene in an Astro and Svelte island.
+description:
+  Use Rapier's WebAssembly physics engine behind a Three.js scene in an Astro
+  and Svelte island.
 draft: true
 tags:
   - astro
@@ -149,13 +151,13 @@ function animate(time: number) {
 
 The elapsed time is capped at 100 milliseconds. Without that cap, returning to a
 backgrounded tab could make the loop run hundreds of catch-up steps before it
-renders anything. The full component also skips simulation while the document
-is hidden.
+renders anything. The full component also skips simulation while the document is
+hidden.
 
 There is no interpolation between physics states in this small demo. At 60 Hz
 the motion looks fine. A game with a low simulation rate or a camera close to
-fast objects would benefit from interpolating the rendered transform between
-the previous and current body states.
+fast objects would benefit from interpolating the rendered transform between the
+previous and current body states.
 
 ## Put it in an MDX post
 

@@ -1,0 +1,14 @@
+---
+import type { ComponentProps } from "astro/types";
+import { Code } from "astro:components";
+
+type Props = ComponentProps<typeof Code>;
+
+const {
+  themes = { light: "github-light", dark: "github-dark" },
+  defaultColor = false,
+  ...props
+} = Astro.props;
+---
+
+<Code {...props} {themes} {defaultColor} />

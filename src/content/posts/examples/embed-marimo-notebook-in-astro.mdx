@@ -1,7 +1,9 @@
 ---
 title: Embed a marimo notebook in Astro
 publishedAt: 2026-08-19
-description: Run a marimo notebook inside an Astro post and decide between a WebAssembly iframe and marimo Islands.
+description:
+  Run a marimo notebook inside an Astro post and decide between a WebAssembly
+  iframe and marimo Islands.
 draft: true
 tags:
   - astro
@@ -17,8 +19,8 @@ runs Python through WebAssembly.
 
 marimo documents two self-hostable ways to put a notebook on another page. A
 [WebAssembly export](https://docs.marimo.io/guides/exporting/webassembly_html/)
-runs the full notebook in an iframe. [marimo
-Islands](https://docs.marimo.io/guides/exporting/webassembly_html/#embed-marimo-outputs-in-html-using-islands)
+runs the full notebook in an iframe.
+[marimo Islands](https://docs.marimo.io/guides/exporting/webassembly_html/#embed-marimo-outputs-in-html-using-islands)
 put selected cells and outputs directly into the surrounding document.
 
 For a complete notebook in a blog post, I would use the WebAssembly iframe. It
@@ -67,8 +69,8 @@ const { src, title } = Astro.props;
 `allow-scripts` is required for marimo. The other sandbox permissions enable
 persistent browser storage, downloads, links that open in a new tab, and form
 controls. Only use `allow-same-origin` for a notebook you trust, especially when
-it is hosted on the same origin as the parent page. The [marimo embedding
-guide](https://docs.marimo.io/guides/publishing/embedding/#iframe-sandbox-configuration)
+it is hosted on the same origin as the parent page. The
+[marimo embedding guide](https://docs.marimo.io/guides/publishing/embedding/#iframe-sandbox-configuration)
 explains the sandbox tradeoffs.
 
 ## Hosted or self-hosted
@@ -90,8 +92,9 @@ component can then use a local URL such as `/notebooks/example/`.
 
 WebAssembly is not a transparent replacement for desktop Python. Native system
 calls and packages without compatible wheels will not work. `marimo check`
-catches common problems before export; marimo's [WebAssembly limitations and
-package notes](https://docs.marimo.io/guides/wasm/#limitations) cover the rest.
+catches common problems before export; marimo's
+[WebAssembly limitations and package notes](https://docs.marimo.io/guides/wasm/#limitations)
+cover the rest.
 
 ## Why not Islands here?
 
