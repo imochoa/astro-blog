@@ -15,8 +15,8 @@
     "name": "Nomenclature",
     "description": "I used to be a stickler for definitions"
   },
-  "Software": {
-    "name": "TalonVoice",
+  "software": {
+    "name": "Software",
     "description": "Terminal session recording, playback, and web embeds."
   },
   "rust": {
@@ -41,11 +41,11 @@
   },
   "astro": {
     "name": "Astro",
-    "description": "Posts about building this site with Astro."
+    "description": "Building static sites with Astro."
   },
   "life": {
     "name": "Life",
-    "description": "Posts about general lifestyle topics."
+    "description": "General lifestyle topics"
   },
   "hoppscotch": {
     "name": "Hoppscotch",
@@ -67,13 +67,17 @@
     "name": "PlantUML",
     "description": "Text-based diagrams rendered during the static build."
   },
-  "webassembly": {
-    "name": "WebAssembly",
-    "description": "Running WebAssembly modules in web projects."
+  "wasm": {
+    "name": "WASM",
+    "description": "WebAssembly (WASM) "
   },
   "threejs": {
     "name": "Three.js",
     "description": "Interactive 3D scenes rendered in the browser with Three.js."
+  },
+  "neovim": {
+    "name": "Neovim",
+    "description": "A pretty cool terminal editor."
   },
   "physics": {
     "name": "Physics",

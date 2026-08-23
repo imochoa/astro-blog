@@ -1,0 +1,196 @@
+---
+title: Welcome
+description: The first post on this small Astro blog.
+publishedAt: 2026-08-18
+draft: true
+tags:
+  - astro
+---
+
+# Pseudoinverse
+
+$$Ax=b$$ $$x=A^{-1}b$$
+
+$$Ax=b$$
+
+$$A^{T}Ax=A^{T}b$$ $$x=(A^{T}A)^{-1}A^{T}b$$
+
+# PCA?
+
+PCA Reqs
+
+1. Linearity
+2. Mean and std. dev are enough (Gauss)
+3. Low noise variance
+4. Principal Components are Orthogonal
+
+## What is this?
+
+$$X = USV^T$$ $$XX^{-1} = (USV^T)(USV^T)^{-1} = I $$
+$$XX^{T} =
+(USV^T)(USV^T)^{T} = USV^TS^TU^T $$
+
+## Change of basis matrices
+
+Ax = x' (xyz)->(uvw)
+
+# Projection
+
+```
+Projection matrix
+
+\[ u u^{ \intercal } = P  \]
+
+\[ I - u u^{\intercal} = P_{\perp}  \]
+```
+
+# Permutations & Combinations
+
+# zero is zero
+
+<!-- https://katex.org/docs/supported.html !-->
+<!-- https://katex.org/docs/autorender.html -->
+
+We've all been there, you're in the middle of an exam solivng a system of
+equations, lots of terms are disappearing and when the smoke clears you're left
+with a ground-breaking discovery...
+
+$$
+0=0
+$$
+
+Wait, what? 🤔
+
+## What does 0=0 mean?
+
+Long story short, it just means that you wrote something which was self-evident,
+although maybe not to you at that time 👀
+
+For instance if you a system of equations like:
+
+{{<rawhtml>}}
+
+$$
+\begin{rcases}
+x+y&=5 \\
+2x+2y&=10
+\end{rcases}
+$$
+
+{{</rawhtml>}}
+
+You might try to isolate $y$ in the first equation:
+
+$$y=5-x$$
+
+and introduce it in the second:
+
+{{<rawhtml>}}
+
+$$
+\begin{align*}
+2x + 2(5-x)&=10 \\
+2x -2x +10 &=10 \\
+10&=10 \\
+0&=10-10 \\
+0&=0
+\end{align*}
+$$
+
+{{</rawhtml>}}
+
+The issue here is that both equations are actually the same equation with
+different scaling, so the subsitution backfires because it does not add any new
+information.
+
+In other words, because the equations are _linearly dependent_.
+
+# GARMIN
+
+# Problem
+
+For context, you might want to check out my last post about [making a Garmin
+music playlist]( {{< relref "post/2022-05-07-garmin-playlists.md" >}}).
+
+Playlists should save your progress, but if you just uploaded a really long
+`.mp3` — like a 2h podcast — you can listen to it the first time... but the next
+time you'll be disappointed to see that it lost your progress.
+
+On my phone that would be annoying, but on the Garmin watch it's evern more
+annoying because fast-forwarding takes **forever**.
+
+# Solution
+
+Does that mean that you have to split each podcast audio into smaller chunks and
+turn them into a playlist to save your progress?
+
+Well, that's what I used to do, but it turns out it's overkill. Your progress is
+saved if you place your audio file under `Podcasts`:
+
+```
+[...]/Primary/Podcasts/yourPodcast.mp3
+```
+
+Furthermore, if the `.mp3` came with metadata, that will be displayed instead of
+the, usually-weird, filename.
+
+I guess it would be possible to add nested directories under `[...]/Podcasts/`
+to organize them, but I haven't looked into that. In practice, I don't think it
+will make a big difference if you have the metadata — it's not like my watch has
+too much memory to spare anyway
+
+```
+
+
+Arguably the most famous irrational number in the world is $\pi$, which has a value of $3.14159 26535 89793 23846 26433 83279 50288 41971 69399 37510 58209 74944 59230 78164 06286 20899 86280 34825 34211 7067$ give or take. Let's take a moment to remember the main geometric equations for circles:
+
+ TODO IMG
+
+
+\[ c = 2 \pi r \]
+
+\[ A = \pi r^{2}\]
+
+Instead of just believing them, let's try to see why this is the case. The first thing to address is the matter of that mysterious number $\pi$ ---  what is it? Well let's take a look at what we know about circles:
+\begin{itemize}
+	\item It's no wonder that people have studied them so much because they're everywhere: bubbles, planets, stars \ldots
+	\item They have $\inf$  symmetry axes: any line that crosses the center is a valid symmetry axis.
+\end{itemize}
+
+As a consequence of this symmetry any point on the circumference is the same as any other point, there are no references or ``landmarks'' besides the center itself. In fact, growing up we had a joke-slash hypothesis about our pet ferret who loved to ``deposit his presents'' in the corners of the living room: what would happen if you left him in a circular room? Would he go to the center? Would he choose an arbitrary point on the circumference somewhere, setting a landmark and breaking the symmetry? We never tested it, sadly, so the world may never know.
+
+Ferrets aside, circles have another interesting property: if you get a string of length $L$ and curl it into a circle, you'll see that no matter what $L$ you take, the diameter $D$ of the circle is always proportional to $L$ by a constant factor, or put mathematically $L \propto D$. But let's go back to using the radius because it's a bit  nicer.
+
+You can actually do this experiment yourself at home with a shoelace. If you're good enough at drawing circles and get a long enough shoelace, you should see that that factor you're after, is $\pi$.  And \textbf{that's it}, it's just a constant you can measure with a shoelace.
+
+If your shoelace isn't too long, let's say it's $l_{short}$ , you could settle for half a circle:
+
+  TODO IMG
+
+\[ L = 2\pi r \implies \frac{L}{2} = \frac{2\pi r}{2} \]
+
+Thanks to the symmetry that we mentioned before, you can split this circle into any size ``slice'' you want and the rule will still hold:
+
+  TODO IMG
+
+\[ \frac{L}{8} = \frac{2\pi }{8} r \]
+
+\[ \frac{L}{3} = \frac{2\pi }{3} r \]
+
+We have to scale $/pi$ so that the relationship still holds, in this case between a circular arc and the radius of the circle it is built from. The same way $L/x$ represents how much of the circumference is present, $2\pi/x$ gives a measure of how ``complete'' the circle is. We are essentially measuring angles in something called \textit{radians} \texttt{[rad]}: how ``complete'' a circle is on a scale from $0$ to $2\pi$. As the name `radian' implies, an angle in radians times the radius gives you the length of its arc \textbf{by construction}.
+
+Both $L$ and $D$ are lengths, so they are measured in meters \texttt{[mm]}\footnote{Or in some imperial unit if multiplying by powers of 10 is too boring for you}. But what about our newly christened angle? Well the dimensions or `units` on both sides of an equation always have to match, so the only solution is that angles are measured in \texttt{[-]} --- that's right, \textbf{nothing}. This might be a bit shocking but remember that we started at a constant that you measured using a shoestring.
+
+One way to think about it is that units are always associated to quantifiable physical properties like weight \texttt{[kg]} or time \texttt{[s]} and angles measure \textit{the relative orientation between 2 reference points}, there's no underlying physical property which makes it quite a special unit.\footnote{It's probably the second weirdest \href{https://en.wikipedia.org/wiki/International_System_of_Units}{SI} unit besides the\textit{mole} \texttt{[mol]}}.
+
+So if angles are measured in  \texttt{[rad]}, what are these ``degrees'' 1-10 and why is everyone talking about them? I didn't care to look it up, but someone just though that 0-2$/pi$ was too low, so they scaled it up to 0-360$\circ$ instead. As if that weren't enough, each degree is split into $60$ minutes and each minute is split into $60$ seconds.
+
+Why was this done? It certainly wasn't done for mathematical reasons. If I had to bet, I'd say that it was scaled to make it easier to read from gauges, because 0.123432 doesn't quite have the same ring as 234. TODO DO THE MATH
+
+This conversion is good-spirited, but it is also the bane of everyone learning about angles in school, since as we all know: calculators are not yet smart enough to stop you from writing $sin(90)$ when you actually meant to write $sin(\pi/2)$
+
+
+
+
+This is the birth of a unit of measuring angles called \textbf{radians}
+```

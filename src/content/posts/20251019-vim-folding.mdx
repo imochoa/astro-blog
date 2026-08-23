@@ -1,0 +1,106 @@
+---
+title: Welcome
+description: The first post on this small Astro blog.
+publishedAt: 2026-08-18
+draft: true
+tags:
+  - astro
+---
+
+## The Problem
+
+It's easy to get lost while moving around in a long file. Sometimes the IDE is
+able to digest it and offer folding and navigation features, but not always...
+This is usually the case when dealing with long configuration files (e.g.
+`tmux.conf` or `.bahsrc`).
+
+## The Solution
+
+One nice way I have found to help is by using vim folding markers in comments to
+add that missing structure.
+
+It is not intrusive and portable, so I think it's a pretty elegant solution!
+
+Here is how it works
+
+### [1/2] Set the folding method to marker
+
+I usually just add this
+[modeline](https://neovim.io/doc/user/usr_21.html#_modelines)[^1] at the end of
+the file. This uses the default `{{{` marker, but you can override that if you
+prefer something else
+
+```bash
+# Inside of a comment, replace '#' as required
+# vim: fdm=marker:fen:fdl=0:
+```
+
+:::caution I'm aware that enabling modelines is a potential security risk. I am
+not sure this is still relevant in more-recent (neo)vim installations, but if
+you want to be extra safe you can set the settings "the old fashioned way":
+[folding method to "marker"](https://vim.fandom.com/wiki/Folding#Folding_by_marker)
+:::
+
+### [2/2] Place your markers
+
+| _Implied_ level | Style |
+| --------------: | :---- |
+
+I use only "level 1" markers `{{{1` so that they stay visible at the highest
+folding level, but you can fold them if you prefer by using higher levels (e.g.
+`{{{2`)
+
+```
+# {{{1 This is a "Heading 1"
+...
+#   {{{1 This is a "Heading 2"
+...
+#     {{{1 This is a "Heading 3"
+...
+```
+
+> The spacing before the markers is just there help visualize the levels. You do
+> need the `#` to put it in a comment though
+
+## Here's an example in a small file
+
+### Before folding
+
+```lua title="autocmds.lua BEFORE folding"
+-- {{{1 Disable autoformat for some filetypes
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = { "python", "toml" },
+  callback = function()
+    vim.b.autoformat = false
+  end,
+})
+
+-- {{{1 Add new filetype patterns
+
+-- |  {{{1 nix
+vim.filetype.add({
+  filename = { ["flake.lock"] = "json" },
+})
+
+-- |  {{{1 poetry
+vim.filetype.add({
+  filename = { ["poetry.lock"] = "toml" },
+})
+
+-- |  {{{1 docker
+vim.filetype.add({
+  pattern = { ["[Dd]ockerfile.*"] = "dockerfile" },
+})
+
+-- vim: fdm=marker:fen:fdl=0:
+```
+
+### After folding
+
+```lua title="autocmds.lua AFTER folding"
+-- {{{1 Disable autoformat for some filetypes
+-- {{{1 Add new filetype patterns
+-- |  {{{1 nix
+-- |  {{{1 poetry
+-- |  {{{1 docker
+```

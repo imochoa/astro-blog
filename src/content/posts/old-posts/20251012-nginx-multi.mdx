@@ -1,0 +1,124 @@
+---
+title: Welcome
+description: The first post on this small Astro blog.
+publishedAt: 2026-08-18
+draft: true
+tags:
+  - astro
+---
+
+## The typical use-case
+
+The [docker.io/nginx](https://hub.docker.com/_/nginx) image is great for hosting
+static files. It's as simple as:
+
+```yaml title="docker-compose.yaml"
+services:
+  nginx-site1:
+    image: nginx
+    volumes:
+      - ./mounts/html1:/usr/share/nginx/html:ro
+  nginx-site2:
+    image: nginx
+    volumes:
+      - ./mounts/html2:/usr/share/nginx/html:ro
+```
+
+This works, but for my kind of traffic there's no point in having 4 nginx
+containers running when 1 would be more than enough.
+
+## Putting it all in a single container
+
+With a little bit of nginx configuration, we can host multiple sites on one
+container and route trafik to them using the subdomains (i.e. Layer 7 routing).
+The docker compose file barely changes:
+
+```yaml title="docker-compose.yaml"
+services:
+  nginx-multi:
+    image: docker.io/nginx:stable-alpine
+    volumes:
+      - ./mounts/extra-servers.conf:/etc/nginx/conf.d/extra-servers.conf:ro
+      # Content to host
+      - ./mounts/html-A:/usr/share/nginx/html/A:ro
+      - ./mounts/html-B:/usr/share/nginx/html/B:ro
+      # ...
+```
+
+```conf title="extra-servers.conf"
+
+# A.imochoa.com (and C.imochoa.com)
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name A.imochoa.com C.imochoa.com
+
+    root /usr/share/nginx/html/A;
+    index index.html index.htm index.php;
+
+}
+
+# B.imochoa.com
+server {
+    listen 80;
+    listen  [::]:80;
+    server_name B.imochoa.com;
+
+    root /usr/share/nginx/html/blog;
+    index index.html index.htm index.php;
+}
+```
+
+### ...is this actually better?
+
+If you do not expect a lot of traffic you can just save resources and handle
+everything in a small container :)
+
+However... you still need to forward requests to it. With traefik as a reverse
+proxy, that looks something like this:
+
+```yaml title="docker-compose.yaml"
+services:
+  nginx-multi:
+    image: docker.io/nginx:stable-alpine
+    volumes:
+      - ./mounts/extra-servers.conf:/etc/nginx/conf.d/extra-servers.conf:ro
+      # Content to host
+      - ./mounts/html-A:/usr/share/nginx/html/A:ro
+      - ./mounts/html-B:/usr/share/nginx/html/B:ro
+      # ...
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nginx-multi.rule=( Host(`A.imochoa.com`) ||
+        Host(`B.imochoa.com`) || Host(`C.imochoa.com`) )
+      - traefik.http.routers.nginx-multi.entrypoints=https-external
+      - traefik.http.routers.nginx-multi.tls.certresolver=myresolver
+      - traefik.http.routers.nginx-multi.tls=true
+```
+
+The downside is you have to split the routing between traefik and the nginx
+config file in the container, which feels a bit muddy.
+
+You can recover some of the muddyness by splitting the routes into different
+traefik routers so that you can treat them differently (e.g. defining different
+traefik routers for each one)
+
+```yaml
+labels:
+  - traefik.enable=true
+  # Blog
+  - traefik.http.routers.nginx-blog.rule=( Host(`www.imochoa.com`) ||
+    Host(`blog.imochoa.com`) )
+  - traefik.http.routers.nginx-blog.entrypoints=https-external
+  - traefik.http.routers.nginx-blog.tls.certresolver=myresolver
+  - traefik.http.routers.nginx-blog.tls=true
+  # Talon
+  - traefik.http.routers.nginx-talon.rule=( Host(`talon.imochoa.com`) )
+  - traefik.http.routers.nginx-talon.entrypoints=https-external
+  - traefik.http.routers.nginx-talon.tls.certresolver=myresolver
+  - traefik.http.routers.nginx-talon.tls=true
+```
+
+Ultimately you still depend on the nginx container to handle the hostnames,
+acting as a sort of _reverse-proxy behind the reverse-proxy_, so I would
+recommed a setup like this outside of a homelab.
