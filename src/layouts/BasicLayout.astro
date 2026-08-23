@@ -2,7 +2,7 @@
 import favicon from "@/assets/favicon.svg";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import { SITE_TITLE } from "@/consts";
+import { SITE } from "@/site-data";
 import "katex/dist/katex.min.css";
 import "@/styles/global.css";
 
@@ -21,9 +21,9 @@ interface Props {
 
 const {
   title,
-  description = "A small collection of notes and ideas.",
+  description = SITE.description,
   pageType = "website",
-  socialImage = "/social/default-og.png",
+  socialImage = SITE.defaultSocialImage,
   publishedAt,
   updatedAt,
   tags = [],
@@ -32,8 +32,8 @@ const {
   noindex = false,
 } = Astro.props;
 const documentTitle = title
-  ? `${title} | ${SITE_TITLE}`
-  : `${SITE_TITLE} | Notes and ideas`;
+  ? `${title} | ${SITE.title}`
+  : `${SITE.title} | ${SITE.tagline}`;
 const siteURL = Astro.site ?? new URL(Astro.url.origin);
 const canonicalURL = new URL(Astro.url.pathname, siteURL);
 const socialImageURL = socialImage
@@ -100,7 +100,7 @@ const buildDirty = import.meta.env.SITE_BUILD_DIRTY;
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={SITE_TITLE}
+      title={SITE.title}
       href="/rss.xml"
     />
     {previousPage && <link rel="prev" href={previousPage} />}
@@ -112,7 +112,7 @@ const buildDirty = import.meta.env.SITE_BUILD_DIRTY;
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
 
-    <meta property="og:site_name" content={SITE_TITLE} />
+    <meta property="og:site_name" content={SITE.title} />
     <meta property="og:type" content={pageType} />
     <meta property="og:title" content={documentTitle} />
     <meta property="og:description" content={description} />

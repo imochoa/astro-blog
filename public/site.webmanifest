@@ -1,7 +1,7 @@
 {
-  "name": "astro-blog",
-  "short_name": "astro-blog",
-  "description": "A small collection of notes and ideas.",
+  "name": "IMO'sIMO",
+  "short_name": "IMO'sIMO",
+  "description": "A small collection of side-quests, lost sticky notes and other random musings.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

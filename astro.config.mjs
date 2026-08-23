@@ -20,6 +20,7 @@ import {
 import { directivePlugin } from "./src/markdown/directives.mjs";
 import { displayMathPlugin, katexPlugin } from "./src/markdown/katex.mjs";
 import { plantUMLPlugin } from "./src/markdown/plantuml.mjs";
+import { SITE } from "./src/site-data.ts";
 
 /** @param {string[]} args */
 function runGit(args) {
@@ -38,7 +39,7 @@ const buildDirty = env.SITE_BUILD_DIRTY
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://blog.imochoa.com",
+  site: SITE.url,
   integrations: [
     mdx(),
     svelte(),

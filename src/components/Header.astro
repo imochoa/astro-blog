@@ -1,7 +1,7 @@
 ---
 import PagefindConfig from "astro-pagefind/components/PagefindConfig.astro";
 import Favicon from "@/assets/favicon.svg";
-import { SITE_TITLE } from "@/consts";
+import { SITE } from "@/site-data";
 
 const links = [
   { href: "/", label: "Home" },
@@ -19,7 +19,7 @@ const isActive = (href: string) =>
   <nav class="container" aria-label="Primary navigation">
     <a class="site-name" href="/">
       <Favicon class="site-logo" aria-hidden="true" focusable="false" />
-      <span>{SITE_TITLE}</span>
+      <span>{SITE.title}</span>
     </a>
     <ul role="list">
       {
