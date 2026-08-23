@@ -1,16 +1,147 @@
 ---
+import AsciiScene from "@/components/home/AsciiScene.astro";
+import PostList from "@/components/blog/PostList.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getPosts } from "@/lib/posts";
 import { SITE } from "@/site-data";
+
+const recentPosts = (await getPosts()).slice(0, 3);
 ---
 
 <BasicLayout>
-  <section class="page-header">
-    <p class="eyebrow">Welcome</p>
-    <h1>{SITE.title}</h1>
-    <p>{SITE.description}</p>
+  <section class="home-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Personal field notes · since 2026</p>
+      <h1>Side-quests,<br /><em>documented.</em></h1>
+      <p class="intro">{SITE.description}</p>
+      <p class="name-note">
+        <span aria-hidden="true">↳</span> The name is short for “IMOchoa's In My Opinion.”
+        Yes, it is recursive-ish.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="/blog/">Read the notes <span>→</span></a>
+        <a class="text-link" href="/contact/">Say hello</a>
+      </div>
+    </div>
+    <AsciiScene />
+  </section>
 
-    <p>The name comes from "IMOchoa's In My Opinion"</p>
-
-    <!-- <p><a class="button" href="/blog/">Read the blog</a></p> -->
+  <section class="recent-posts" aria-labelledby="recent-heading">
+    <header>
+      <div>
+        <p class="eyebrow">Fresh from the notebook</p>
+        <h2 id="recent-heading">Recent writing</h2>
+      </div>
+      <a href="/blog/">All posts <span aria-hidden="true">→</span></a>
+    </header>
+    <PostList posts={recentPosts} />
   </section>
 </BasicLayout>
+
+<style>
+  .home-hero {
+    min-height: min(44rem, calc(100vh - 8rem));
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 0.9fr);
+    align-items: center;
+    gap: clamp(2rem, 7vw, 6rem);
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .hero-copy {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-lg);
+  }
+
+  h1 {
+    max-width: 10ch;
+    font-size: clamp(3.5rem, 8vw, 6.8rem);
+    letter-spacing: -0.055em;
+    line-height: 0.88;
+  }
+
+  h1 em {
+    color: var(--color-accent);
+    font-weight: 400;
+  }
+
+  .intro {
+    max-width: 40ch;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    line-height: 1.55;
+  }
+
+  .name-note {
+    max-width: 53ch;
+    display: flex;
+    gap: var(--space-xs);
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .name-note span {
+    color: var(--color-accent);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  .button span {
+    margin-left: var(--space-sm);
+  }
+
+  .text-link {
+    color: var(--color-text);
+    font-weight: 700;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .recent-posts {
+    display: grid;
+    gap: var(--space-xl);
+    padding-block: var(--space-2xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .recent-posts > header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .recent-posts > header > div {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .recent-posts > header > a {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 48rem) {
+    .home-hero {
+      min-height: auto;
+      grid-template-columns: 1fr;
+      padding-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(3.4rem, 17vw, 5.5rem);
+    }
+
+    .recent-posts > header {
+      align-items: start;
+    }
+  }
+</style>

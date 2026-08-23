@@ -1,17 +1,90 @@
 ---
+import ContactCard from "@/components/contact/ContactCard.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { SITE } from "@/site-data";
 ---
 
-<BasicLayout>
-  <section class="page-header">
-    <p class="eyebrow">Contact</p>
-    <h1>{SITE.title}</h1>
-    <p>Feel free to reach out via the usual suspects:</p>
-    <ol>
-      <li><a href="mailto:blog@imochoa.com">Send an Email</a></li>
-      <li><a href="https://www.linkedin.com/in/imochoa/">LinkedIn</a></li>
-    </ol>
-    <!-- <p><a class="button" href="/blog/">Read the blog</a></p> -->
+<BasicLayout title="Contact" description="Ways to get in touch with IMOchoa.">
+  <section class="contact-page">
+    <header class="page-header">
+      <p class="eyebrow">Open channel</p>
+      <h1>Let's talk.</h1>
+      <p>
+        Questions, corrections, interesting side-quests—send them my way. Email
+        is usually the best place to start.
+      </p>
+    </header>
+
+    <div class="contact-grid">
+      <ContactCard
+        href="mailto:blog@imochoa.com"
+        label="Email"
+        detail="blog@imochoa.com"
+        icon="email"
+      />
+      <ContactCard
+        href="https://github.com/imochoa"
+        label="GitHub"
+        detail="@imochoa"
+        icon="github"
+      />
+      <ContactCard
+        href="https://www.linkedin.com/in/imochoa/"
+        label="LinkedIn"
+        detail="in/imochoa"
+        icon="linkedin"
+      />
+    </div>
+
+    <p class="response-note">
+      <span aria-hidden="true">*</span> No response-time SLA. This is still a human-scale
+      website.
+    </p>
   </section>
 </BasicLayout>
+
+<style>
+  .contact-page {
+    width: min(100%, 58rem);
+    margin-inline: auto;
+  }
+
+  .page-header {
+    max-width: 46rem;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header p:last-child {
+    font-size: 1.15rem;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+  }
+
+  .contact-grid > :global(:first-child) {
+    grid-column: 1 / -1;
+  }
+
+  .response-note {
+    margin-top: var(--space-xl);
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .response-note span {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 38rem) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-grid > :global(:first-child) {
+      grid-column: auto;
+    }
+  }
+</style>
