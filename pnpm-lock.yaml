@@ -23,6 +23,9 @@ importers:
       '@astrojs/svelte':
         specifier: ^9.0.1
         version: 9.0.1(@types/node@24.13.3)(astro@7.2.2(@astrojs/markdown-remark@7.2.2(supports-color@7.2.0))(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(yaml@2.9.0))(esbuild@0.28.2)(svelte@5.56.9(@typescript-eslint/types@8.67.0))(typescript@6.0.3)(yaml@2.9.0)
+      '@dimforge/rapier3d-compat':
+        specifier: ^0.20.0
+        version: 0.20.0
       asciinema-player:
         specifier: ^3.17.0
         version: 3.17.0
@@ -372,6 +375,9 @@ packages:
 
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
+
+  '@dimforge/rapier3d-compat@0.20.0':
+    resolution: {integrity: sha512-X4W9pJBdGRX5CO3c/gUNjBFEFG2fn4nYxp9k8STdBDaLa0/w5XTW2ArpayS+9jGFojTi3uFSOWAElCd4rkpekA==}
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -3402,6 +3408,8 @@ snapshots:
       sisteransi: 1.0.5
 
   '@dimforge/rapier3d-compat@0.12.0': {}
+
+  '@dimforge/rapier3d-compat@0.20.0': {}
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:

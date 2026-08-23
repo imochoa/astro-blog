@@ -1,0 +1,178 @@
+---
+title: Add Rapier physics to a Three.js scene
+publishedAt: 2026-08-23
+description: Use Rapier's WebAssembly physics engine behind a Three.js scene in an Astro and Svelte island.
+draft: true
+tags:
+  - astro
+  - threejs
+  - physics
+  - webassembly
+---
+
+import RapierPhysicsDemo from "@/components/blog/RapierPhysicsDemo.svelte";
+
+My first Three.js example only rotates an object. That is enough to check that a
+renderer, camera, and texture are wired up, but it does not give the objects
+anything to do. For this one I wanted falling objects that bounce, spin, and
+knock each other over without writing collision detection myself.
+
+Rapier does that work. It is a Rust physics engine with WebAssembly bindings for
+the browser. Three.js still owns everything visible on the page.
+
+<RapierPhysicsDemo client:visible />
+
+The buttons are hooked into the same physics world. "Drop a shape" creates a new
+rigid body and collider, while "Reset" removes the existing bodies and starts a
+fresh pile. The demo pauses automatically when the browser requests reduced
+motion. It can still be started with the Play button.
+
+## Two versions of each object
+
+Three.js and Rapier know nothing about each other. Every moving shape therefore
+has two representations:
+
+- a Three.js `Mesh`, which contains the geometry and material to draw;
+- a Rapier `RigidBody` and `Collider`, which contain its physical state and
+  collision shape.
+
+The association in the component is just a small object:
+
+```ts
+type PhysicsObject = {
+  body: RAPIER.RigidBody;
+  mesh: THREE.Mesh;
+};
+```
+
+Rapier does not need the detailed sphere and cube geometry sent to the GPU. A
+ball collider and a cuboid collider are cheaper and match these meshes well. For
+an irregular model I would still start with a few primitive colliders rather
+than turning every triangle into collision geometry.
+
+## Load Rapier in the browser
+
+Install Three.js and the compatibility build of Rapier:
+
+```sh
+pnpm add three @dimforge/rapier3d-compat
+```
+
+The `-compat` package embeds Rapier's Wasm binary in its JavaScript. This makes
+the bundle larger than the regular package, but avoids special Wasm asset setup
+in bundlers that cannot load the standalone file. Initialization is asynchronous
+and must finish before creating a world:
+
+```ts
+import RAPIER from "@dimforge/rapier3d-compat";
+import * as THREE from "three";
+
+await RAPIER.init();
+
+const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+world.timestep = 1 / 60;
+```
+
+I do this inside Svelte's `onMount`, after creating the WebGL renderer. Both
+WebGL and WebAssembly are browser concerns, so neither should run while Astro is
+building the static page.
+
+## Create a body, collider, and mesh
+
+A dynamic rigid body stores position, rotation, velocity, and mass properties.
+The collider gives that body its shape, friction, and bounciness:
+
+```ts
+const body = world.createRigidBody(
+  RAPIER.RigidBodyDesc.dynamic()
+    .setTranslation(x, 7.5, z)
+    .setLinearDamping(0.08)
+    .setAngularDamping(0.1),
+);
+
+world.createCollider(
+  RAPIER.ColliderDesc.ball(0.34)
+    .setDensity(1)
+    .setFriction(0.65)
+    .setRestitution(0.55),
+  body,
+);
+
+const mesh = new THREE.Mesh(
+  new THREE.SphereGeometry(0.34),
+  new THREE.MeshStandardMaterial({ color: 0xff6b6b }),
+);
+scene.add(mesh);
+```
+
+The floor and four walls only need colliders. Their rigid bodies are fixed, so I
+create the colliders without a dynamic parent. The walls are invisible; the edge
+of the rendered platform is enough of a visual cue, and the colliders stop a
+ball from disappearing sideways.
+
+## Step physics at a fixed rate
+
+A common first attempt is to set Rapier's timestep to the time since the last
+rendered frame. That couples the simulation to monitor refresh rate and to any
+slow frame. A fixed step is more predictable.
+
+The animation loop collects elapsed time and advances Rapier in 1/60 second
+chunks:
+
+```ts
+const fixedTimeStep = 1 / 60;
+let previousTime = performance.now();
+let accumulator = 0;
+
+function animate(time: number) {
+  const elapsed = Math.min((time - previousTime) / 1000, 0.1);
+  previousTime = time;
+  accumulator += elapsed;
+
+  while (accumulator >= fixedTimeStep) {
+    world.step();
+    accumulator -= fixedTimeStep;
+  }
+
+  for (const object of objects) {
+    const position = object.body.translation();
+    const rotation = object.body.rotation();
+
+    object.mesh.position.set(position.x, position.y, position.z);
+    object.mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+```
+
+The elapsed time is capped at 100 milliseconds. Without that cap, returning to a
+backgrounded tab could make the loop run hundreds of catch-up steps before it
+renders anything. The full component also skips simulation while the document
+is hidden.
+
+There is no interpolation between physics states in this small demo. At 60 Hz
+the motion looks fine. A game with a low simulation rate or a camera close to
+fast objects would benefit from interpolating the rendered transform between
+the previous and current body states.
+
+## Put it in an MDX post
+
+The component is imported directly into MDX and hydrated as an Astro island:
+
+```mdx
+import RapierPhysicsDemo from "@/components/blog/RapierPhysicsDemo.svelte";
+
+<RapierPhysicsDemo client:visible />
+```
+
+`client:visible` waits until the demo approaches the viewport before downloading
+and initializing its client code. That matters here because Three.js plus a Wasm
+physics engine is a lot more JavaScript than the rest of the article.
+
+The component's teardown cancels its animation frame, disconnects its
+`ResizeObserver`, disposes all Three.js geometries and materials, frees the
+Rapier world, and disposes the WebGL renderer. Most visitors will never unmount
+an island in a static post, but doing the cleanup keeps the component safe to
+reuse on pages with client-side navigation.

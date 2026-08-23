@@ -11,6 +11,10 @@
     "name": "TalonVoice",
     "description": "Terminal session recording, playback, and web embeds."
   },
+  "nomenclature": {
+    "name": "Nomenclature",
+    "description": "I used to be a stickler for definitions"
+  },
   "Software": {
     "name": "TalonVoice",
     "description": "Terminal session recording, playback, and web embeds."
@@ -66,5 +70,13 @@
   "webassembly": {
     "name": "WebAssembly",
     "description": "Running WebAssembly modules in web projects."
+  },
+  "threejs": {
+    "name": "Three.js",
+    "description": "Interactive 3D scenes rendered in the browser with Three.js."
+  },
+  "physics": {
+    "name": "Physics",
+    "description": "Physics simulations and the code behind them."
   }
 }
