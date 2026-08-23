@@ -63,14 +63,16 @@ repository. The basic process is to:
 
 1. Try to install it from your package manager (if you can)
 
-{{< highlight shell "linenos=table" >}} sudo apt update sudo apt install
-python3-avahi {{</ highlight >}}
+```sh
+sudo apt update
+sudo apt install python3-avahi
+```
 
 If that works, great. If not, you'll have to find and install the
 `python3-avahi.deb` for your distribution manually from
 [~yavdr/.../experimental-main](https://launchpad.net/~yavdr/+archive/ubuntu/experimental-main/+packages).
 For Ubuntu 20.04, that would be
-[this one](https://launchpad.net/~yavdr/+archive/ubuntu/experimental-main/+files/python3-avahi_0.0.1-1yavdr6~focal_all.deb`))
+[this one](https://launchpad.net/~yavdr/+archive/ubuntu/experimental-main/+files/python3-avahi_0.0.1-1yavdr6~focal_all.deb).
 
 After downloading, you can just install it with
 `sudo apt install python3-avahi.deb`
@@ -92,13 +94,19 @@ After downloading, you can just install it with
 You'll have to create a file `/etc/avahi/aliases.d/default` to store your
 desired aliases
 
-{{< highlight "linenos=table" >}} me.local pi.local you.local oog.local
-{{</ highlight >}}
+```text
+me.local
+pi.local
+you.local
+oog.local
+```
 
 Whenever that file changes, you'll have to restart the service
 
-{{< highlight shell "linenos=table" >}} sudo systemctl restart avahi-alias sudo
-/etc/init.d/avahi-daemon restart {{</ highlight >}}
+```sh
+sudo systemctl restart avahi-alias
+sudo /etc/init.d/avahi-daemon restart
+```
 
 # Setting up the reverse proxy
 
