@@ -4,7 +4,6 @@
   "exclude": ["dist", "public/embeds/lvgl"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@/ui/*": ["src/components/ui/*"],
