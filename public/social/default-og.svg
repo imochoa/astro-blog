@@ -1,8 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <clipPath id="logo-clip">
+      <rect x="128" y="136" width="112" height="112" rx="25" />
+    </clipPath>
+  </defs>
   <rect width="1200" height="630" fill="#111714" />
   <rect x="72" y="72" width="1056" height="486" rx="32" fill="#19211e" stroke="#33413c" stroke-width="4" />
-  <rect x="128" y="136" width="112" height="112" rx="25" fill="#83c7b4" />
-  <path fill="#10201b" fill-rule="evenodd" d="m184 154 36 76h-18l-7-17h-23l-7 17h-18l37-76Zm0 28-7 17h14l-7-17Z" />
-  <text x="128" y="350" fill="#e7eeeb" font-family="system-ui, sans-serif" font-size="76" font-weight="700">astro-blog</text>
-  <text x="128" y="422" fill="#a7b3af" font-family="system-ui, sans-serif" font-size="34">Notes and ideas about building for the web.</text>
+  <rect x="128" y="136" width="112" height="112" rx="25" fill="#f8f6f0" />
+  <image x="128" y="136" width="112" height="112" preserveAspectRatio="xMidYMid slice" clip-path="url(#logo-clip)" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNjAwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4KICA8ZGVmcz4KICAgIDxjbGlwUGF0aCBpZD0ibUNsaXAiPgogICAgICA8cmVjdCB4PSItODAiIHk9Ii00NSIgd2lkdGg9IjgwIiBoZWlnaHQ9IjkwIiAvPgogICAgPC9jbGlwUGF0aD4KICA8L2RlZnM+CgogIDwhLS0gU29mdCBjcmVhbXkgb2ZmLXdoaXRlIGJhY2tncm91bmQgbWF0Y2hpbmcgdGhlIG9yaWdpbmFsIC0tPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNGOEY2RjAiIC8+CgogIDwhLS0gQ29udGludW91cyBnZW9tZXRyaWMgUyBjdXJ2ZSAtLT4KICA8cGF0aCBkPSJNIDU2MCAxNjAKICAgICAgICAgICBBIDcwIDcwIDAgMCAwIDQ5MCA5MAogICAgICAgICAgIEwgMzQ1IDkwCiAgICAgICAgICAgQSAxMDUgMTA1IDAgMCAwIDI0MCAxOTUKICAgICAgICAgICBBIDEwNSAxMDUgMCAwIDAgMzQ1IDMwMAogICAgICAgICAgIEwgNDU1IDMwMAogICAgICAgICAgIEEgMTA1IDEwNSAwIDAgMSA1NjAgNDA1CiAgICAgICAgICAgQSAxMDUgMTA1IDAgMCAxIDQ1NSA1MTAKICAgICAgICAgICBMIDMxMCA1MTAKICAgICAgICAgICBBIDcwIDcwIDAgMCAxIDI0MCA0NDAiCiAgICAgICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMEIxQjMyIiBzdHJva2Utd2lkdGg9IjE4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIC8+CgogIDwhLS0gVG9wIElNTyAtLT4KICA8IS0tIFVzaW5nIHB1cmUgZ2VvbWV0cmljIHZlY3RvciBkcmF3aW5nIGluc3RlYWQgb2YgZm9udHMgdG8gZ3VhcmFudGVlIGlkZW50aWNhbCBmbGF3bGVzcyByZW5kZXJpbmcgLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDAwLCAxOTUpIiBzdHJva2U9IiMwQjFCMzIiIHN0cm9rZS13aWR0aD0iMjIiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBmaWxsPSJub25lIj4KICAgICA8IS0tIEkgLS0+CiAgICAgPGxpbmUgeDE9Ii0xMDEiIHkxPSItNDUiIHgyPSItMTAxIiB5Mj0iNDUiIC8+CiAgICAgPCEtLSBNIChDbGlwcGVkIHRvIHByZXZlbnQgbWl0ZXIgc3Bpa2VzIGFuZCBndWFyYW50ZWUgcGVyZmVjdCBmbGF0IHRvcHMpIC0tPgogICAgIDxnIGNsaXAtcGF0aD0idXJsKCNtQ2xpcCkiPgogICAgICAgICA8cGF0aCBkPSJNIC01OCA0NSBMIC01OCAtNDUgTCAtMzQgMTUgTCAtMTAgLTQ1IEwgLTEwIDQ1IiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIC8+CiAgICAgPC9nPgogICAgIDwhLS0gTyAtLT4KICAgICA8Y2lyY2xlIGN4PSI2NyIgY3k9IjAiIHI9IjM0IiAvPgogIDwvZz4KCiAgPCEtLSBCb3R0b20gSU1PIC0tPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQwMCwgNDA1KSIgc3Ryb2tlPSIjMEIxQjMyIiBzdHJva2Utd2lkdGg9IjIyIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgZmlsbD0ibm9uZSI+CiAgICAgPGxpbmUgeDE9Ii0xMDEiIHkxPSItNDUiIHgyPSItMTAxIiB5Mj0iNDUiIC8+CiAgICAgPGcgY2xpcC1wYXRoPSJ1cmwoI21DbGlwKSI+CiAgICAgICAgIDxwYXRoIGQ9Ik0gLTU4IDQ1IEwgLTU4IC00NSBMIC0zNCAxNSBMIC0xMCAtNDUgTCAtMTAgNDUiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgLz4KICAgICA8L2c+CiAgICAgPGNpcmNsZSBjeD0iNjciIGN5PSIwIiByPSIzNCIgLz4KICA8L2c+Cjwvc3ZnPgo=" />
+  <text x="128" y="350" fill="#e7eeeb" font-family="system-ui, sans-serif" font-size="76" font-weight="700">IMO&apos;sIMO</text>
+  <text x="128" y="422" fill="#a7b3af" font-family="system-ui, sans-serif" font-size="34">A small collection of side-quests, lost sticky notes</text>
+  <text x="128" y="468" fill="#a7b3af" font-family="system-ui, sans-serif" font-size="34">and other random musings.</text>
 </svg>
