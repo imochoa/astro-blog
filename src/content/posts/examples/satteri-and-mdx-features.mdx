@@ -8,7 +8,9 @@ tags:
 ---
 
 import { Image } from "astro:assets";
+import { Code } from "astro:components";
 import Callout from "@/ui/Callout.astro";
+import calloutSource from "@/ui/Callout.astro?raw";
 import ProseQuote from "@/ui/ProseQuote.astro";
 import featureDiagram from "@posts/assets/satteri-mdx-features.svg";
 
@@ -85,6 +87,34 @@ console.log(greeting);
 
 The `title` value is available as fence metadata, but displaying a filename
 frame would require a custom code component.
+
+### Local source files with `?raw`
+
+A fence cannot load its contents from another file. Vite's `?raw` import query
+loads a local file as a string instead. Pass that string to Astro's built-in
+`Code` component to render it with syntax highlighting.
+
+```mdx
+import { Code } from "astro:components";
+import calloutSource from "@/ui/Callout.astro?raw";
+
+<Code
+  code={calloutSource}
+  lang="astro"
+  themes={{ light: "github-light", dark: "github-dark" }}
+  defaultColor={false}
+/>
+```
+
+The block below is rendered from the current contents of `Callout.astro`, so the
+post does not need a copied version of the component source.
+
+<Code
+  code={calloutSource}
+  lang="astro"
+  themes={{ light: "github-light", dark: "github-dark" }}
+  defaultColor={false}
+/>
 
 ### Meta-based highlighting
 
