@@ -10,10 +10,10 @@ tags:
 ---
 
 import { Image } from "astro:assets";
-import { Code } from "astro:components";
 import Callout from "@/ui/Callout.astro";
 import calloutSource from "@/ui/Callout.astro?raw";
 import ProseQuote from "@/ui/ProseQuote.astro";
+import SourceCode from "@/ui/SourceCode.astro";
 import featureDiagram from "@posts/assets/satteri-mdx-features.svg";
 
 export const featureCount = 9;
@@ -98,26 +98,16 @@ loads a local file as a string instead. Pass that string to the blog's
 the site's light and dark Shiki themes to Astro's built-in `Code` component.
 
 ```mdx
-import { Code } from "astro:components";
+import SourceCode from "@/ui/SourceCode.astro";
 import calloutSource from "@/ui/Callout.astro?raw";
 
-<Code
-  code={calloutSource}
-  lang="astro"
-  themes={{ light: "github-light", dark: "github-dark" }}
-  defaultColor={false}
-/>
+<SourceCode code={calloutSource} lang="astro" />
 ```
 
 The block below is rendered from the current contents of `Callout.astro`, so the
 post does not need a copied version of the component source.
 
-<Code
-  code={calloutSource}
-  lang="astro"
-  themes={{ light: "github-light", dark: "github-dark" }}
-  defaultColor={false}
-/>
+<SourceCode code={calloutSource} lang="astro" />
 
 ### Meta-based highlighting
 
