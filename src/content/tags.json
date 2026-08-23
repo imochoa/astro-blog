@@ -67,7 +67,7 @@
     "name": "PlantUML",
     "description": "Text-based diagrams rendered during the static build."
   },
-  "wasm": {
+  "webassembly": {
     "name": "WASM",
     "description": "WebAssembly (WASM) "
   },
