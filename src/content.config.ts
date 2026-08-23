@@ -13,7 +13,7 @@ const tags = defineCollection({
 const posts = defineCollection({
   loader: glob({
     base: "./src/content/posts",
-    pattern: ["**/*.{md,mdx}", "!old-stuff/**"],
+    pattern: ["**/*.{md,mdx}", "!**/AGENTS.md"],
   }),
   schema: z.object({
     title: z.string(),
