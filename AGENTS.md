@@ -50,7 +50,7 @@ Run `just` to list all recipes. The main recipes are:
 
 ```sh
 just install       # install dependencies
-just dev           # start Astro's development server in the background
+just dev           # start Astro's development server in the foreground
 just build         # create the production build
 just check         # run Astro diagnostics and type checking
 just check-links   # build and validate internal links and fragments

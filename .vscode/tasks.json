@@ -17,7 +17,21 @@
       "type": "shell",
       "command": "just",
       "args": ["dev"],
-      "problemMatcher": [],
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "astro",
+        "pattern": {
+          "regexp": "^(ASTRO_DIAGNOSTIC):(\\d+):(.*)$",
+          "file": 1,
+          "line": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\$ astro dev",
+          "endsPattern": "ready in [0-9]+ ms"
+        }
+      },
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"

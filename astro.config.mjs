@@ -58,7 +58,12 @@ export default defineConfig({
     },
     // Draft routes are not part of production's static route scan. Pre-bundle
     // Three.js so its client-only island is still ready on first dev request.
-    optimizeDeps: { include: ["three"] },
+    // Rapier's compat package is already one ESM file with embedded Wasm, and
+    // Vite's optimizer fails to emit it reliably. Serve only that package as-is.
+    optimizeDeps: {
+      include: ["three"],
+      exclude: ["@dimforge/rapier3d-compat"],
+    },
     // These generated/local directories are not site source and can contain
     // thousands of files. Scanning them over the devcontainer bind mount makes
     // watcher startup unnecessarily slow.

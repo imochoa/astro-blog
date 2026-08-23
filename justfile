@@ -24,7 +24,7 @@ list-npm:
 
 # Get list with...
 # jq ".scripts | keys" < package.json
-[arg("cmd", pattern="start|build|check|check:links|dev|format|format:check|generate:assets|lint|lint:fix|prebuild|predev|prestart|preview", help="What pnpm package.json command to run")]
+[arg("cmd", pattern="start|build|check|check:links|dev|format|format:check|generate:assets|lint|lint:fix|prebuild|preview", help="What pnpm package.json command to run")]
 pnpm cmd:
     pnpm run {{ cmd }}
 

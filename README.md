@@ -26,7 +26,7 @@ Run these **inside the container** (`just` with no args lists everything):
 
 | Recipe             | What it does                                               |
 | ------------------ | ---------------------------------------------------------- |
-| `just dev`         | Start Astro in the background on http://localhost:4321     |
+| `just dev`         | Start Astro in the foreground on http://localhost:4321     |
 | `just build`       | Production build                                           |
 | `just check`       | `astro check` (diagnostics / types)                        |
 | `just check-links` | Build and validate internal links and heading fragments    |
