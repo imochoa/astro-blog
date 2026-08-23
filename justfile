@@ -81,8 +81,10 @@ hooks:
 pre-commit:
     pre-commit run --all-files
 
-# Full CI gate: validate sources, build dist/, then check its internal links.
-ci: install-ci format-check lint check pre-commit check-links
+# Full CI gate: pre-commit already runs formatting, lint, and Astro diagnostics.
+# Do not run those commands separately here: on this bind-mounted devcontainer,
+# repeating the TypeScript/Astro startup roughly doubles the gate's run time.
+ci: install-ci pre-commit check-links
 
 # Build deployable output without running the CI checks. Temporal runs this
 # independently from `ci-container`, so a check failure does not block publishing.

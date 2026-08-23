@@ -21,15 +21,19 @@ repos:
         name: prettier (check)
         entry: pnpm exec prettier --check
         language: system
-        files: \.(astro|svelte|ts|tsx|js|jsx|mjs|cjs|json|md|css|ya?ml)$
+        files: \.(astro|svelte|ts|tsx|js|jsx|mjs|cjs|json|mdx?|css|ya?ml)$
+        exclude: ^public/embeds/lvgl/
         pass_filenames: true
+        require_serial: true
 
       - id: eslint
         name: eslint
         entry: pnpm exec eslint
         language: system
         files: \.(astro|svelte|ts|tsx|js|jsx|mjs|cjs)$
+        exclude: ^public/embeds/lvgl/
         pass_filenames: true
+        require_serial: true
 
       - id: astro-check
         name: astro check
