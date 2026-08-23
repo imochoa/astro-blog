@@ -1,0 +1,43 @@
+---
+title: RTFM, Neovim edition
+description: Read The *Friendly* Manual
+
+publishedAt: 2026-08-23
+draft: false
+tags:
+  - neovim
+  - software
+---
+
+import src from "./neovim-manual-pdf.py?raw";
+import SourceCode from "@/ui/SourceCode.astro";
+import CollapsedContent from "@/ui/CollapsedContent.astro";
+
+A well-written manual is worth its weight in gold.
+
+Neovim's, specifically, is quite well written. Or at least, the sections I have
+read have been well written thus far.
+
+These days, I mostly find myself poking around with `:h` to figure out how to
+configure and use new plugins. However, I was tempted to read it "in full" after
+seeing that the great [TJ DeVries](https://www.youtube.com/@teej_dv) made a
+video **reading it**:
+“[I Read the Entire Neovim User Manual](https://www.youtube.com/watch?v=rT-fbLFOCy0).”
+
+So far so good, but I was surprised to see that you cannot just find a PDF
+version. Don't get me wrong, https://neovim.io/doc/ is pretty nice, but I much
+prefer reading (and making annotations) on a PDF.
+
+I thought this would be a quick problem to solve with AI, although it turns out
+that it was a bit more involved than expected!
+
+I decided against uploading the PDF to this blog because it is 14 MB and ~1.5k
+pages-yikes! However, that is because this PDF includes everything and the
+kitchen sink[^Including the Vim manual, for example].
+
+However, instead of leaving you completely hanging, here is the code in case you
+want to run it yourself:
+
+<CollapsedContent summary="python script using uv for deps">
+  <SourceCode code={src} lang="python" />
+</CollapsedContent>
