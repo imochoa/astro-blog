@@ -1,0 +1,163 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  detail: string;
+  icon: "email" | "github" | "linkedin" | "kofi" | "paypal" | "link";
+}
+
+const { href, label, detail, icon } = Astro.props;
+---
+
+<a
+  class="contact-card"
+  href={href}
+  rel={href.startsWith("http") ? "me" : undefined}
+>
+  <span class="icon" aria-hidden="true">
+    {
+      icon === "email" && (
+        <svg viewBox="0 0 24 24">
+          <path d="M3.75 5.75h16.5v12.5H3.75z" />
+          <path d="m4.5 7 7.5 6 7.5-6" />
+        </svg>
+      )
+    }
+    {
+      icon === "github" && (
+        <svg viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 6.83c.85 0 1.71.11 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"
+          />
+        </svg>
+      )
+    }
+    {
+      icon === "linkedin" && (
+        <svg viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M5.2 7.7a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6ZM3.7 9.2h3v10.7h-3V9.2Zm5.2 0h2.9v1.5h.04c.4-.77 1.4-1.8 3.5-1.8 3.1 0 4.9 1.9 4.9 5.8v5.2h-3v-4.8c0-2-.75-3.3-2.55-3.3-1.95 0-2.8 1.32-2.8 3.3v4.8h-3V9.2Z"
+          />
+        </svg>
+      )
+    }
+    {
+      icon === "kofi" && (
+        <svg viewBox="0 0 24 24">
+          <path d="M4 7h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V7Z" />
+          <path d="M17 9h1a2.5 2.5 0 0 1 0 5h-1.8" />
+          <path d="M8 10.5c.8-1.2 2.5-.4 2.5.7 0-1.1 1.7-1.9 2.5-.7.9 1.4-2.5 3.4-2.5 3.4S7.1 11.9 8 10.5Z" />
+        </svg>
+      )
+    }
+    {
+      icon === "paypal" && (
+        <svg viewBox="0 0 24 24">
+          <path d="m6.5 20 2.6-15h5.3a4.1 4.1 0 0 1 0 8.2h-4.1" />
+          <path d="m10 20 1.5-8.5h4a3.2 3.2 0 0 1 0 6.4h-4.4" />
+        </svg>
+      )
+    }
+    {
+      icon === "link" && (
+        <svg viewBox="0 0 24 24">
+          <path d="m10 14 4-4" />
+          <path d="m8.5 16.5-1 1a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0" />
+          <path d="m15.5 7.5 1-1a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0" />
+        </svg>
+      )
+    }
+  </span>
+  <span class="copy">
+    <strong>{label}</strong>
+    <span>{detail}</span>
+  </span>
+  <span class="arrow" aria-hidden="true">↗</span>
+</a>
+
+<style>
+  .contact-card {
+    min-height: 8.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .contact-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-0.2rem);
+  }
+
+  .icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--color-on-accent);
+    background: var(--color-accent);
+  }
+
+  svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+
+  .copy {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  .copy > span {
+    overflow-wrap: anywhere;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .arrow {
+    color: var(--color-muted);
+    font-size: 1.2rem;
+    transition: transform 160ms ease;
+  }
+
+  .contact-card:hover .arrow {
+    color: var(--color-accent);
+    transform: translate(0.15rem, -0.15rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-card,
+    .arrow {
+      transition: none;
+    }
+  }
+</style>

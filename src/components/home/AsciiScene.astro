@@ -1,0 +1,156 @@
+<figure class="ascii-scene" aria-labelledby="ascii-scene-caption">
+  <div class="ascii-stage">
+    <pre data-ascii-art aria-hidden="true"></pre>
+  </div>
+  <figcaption id="ascii-scene-caption">
+    <a
+      href="https://ascii.co.uk/animated-art/3d-magic-animated-ascii-art-by-saidamagic.html"
+      rel="external">“3D Magic” ASCII art</a
+    >
+    by
+    <a href="https://www.instagram.com/saidamagic/" rel="author external"
+      >saidamagic</a
+    >
+  </figcaption>
+</figure>
+
+<script>
+  import packedFrames from "./3d-magic-frames.txt?raw";
+
+  const art = document.querySelector<HTMLPreElement>("[data-ascii-art]");
+
+  if (art) {
+    const packedAnimation = packedFrames.slice(
+      0,
+      packedFrames.lastIndexOf("#"),
+    );
+    const [encodedInitialFrame, ...deltas] = packedAnimation.split("|");
+    const initialFrame = encodedInitialFrame.replaceAll("^", "\n");
+    const characters = initialFrame.split("");
+    const motionPreference = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    const frameDuration = 40;
+    let nextDelta = 0;
+    let animationFrame = 0;
+    let previousTime = 0;
+
+    art.textContent = initialFrame;
+
+    const advance = () => {
+      if (nextDelta === deltas.length) {
+        characters.splice(0, characters.length, ...initialFrame);
+        nextDelta = 0;
+      } else {
+        const changes = deltas[nextDelta].split("~");
+
+        for (let index = 0; index < changes.length; index += 2) {
+          const start = Number.parseInt(changes[index], 36);
+          const replacement = changes[index + 1].replaceAll("^", "\n");
+
+          for (let offset = 0; offset < replacement.length; offset += 1) {
+            characters[start + offset] = replacement[offset];
+          }
+        }
+
+        nextDelta += 1;
+      }
+
+      art.textContent = characters.join("");
+    };
+
+    const animate = (time: number) => {
+      if (time - previousTime >= frameDuration) {
+        advance();
+        previousTime = time;
+      }
+
+      animationFrame = window.requestAnimationFrame(animate);
+    };
+
+    const stop = () => {
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    };
+
+    const start = () => {
+      if (animationFrame === 0 && !motionPreference.matches) {
+        previousTime = performance.now();
+        animationFrame = window.requestAnimationFrame(animate);
+      }
+    };
+
+    const updateMotion = () => {
+      if (motionPreference.matches) {
+        stop();
+      } else {
+        start();
+      }
+    };
+
+    motionPreference.addEventListener("change", updateMotion);
+    window.addEventListener("pagehide", stop);
+    window.addEventListener("pageshow", start);
+    start();
+  }
+</script>
+
+<style>
+  .ascii-scene {
+    position: relative;
+    container-type: inline-size;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    color: var(--color-on-accent);
+    background:
+      linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px),
+      var(--color-ink);
+    background-size: 1.5rem 1.5rem;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .ascii-scene::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 50%, rgb(0 0 0 / 9%) 50%);
+    background-size: 100% 4px;
+    content: "";
+    pointer-events: none;
+  }
+
+  .ascii-stage {
+    aspect-ratio: 1;
+    display: grid;
+    overflow: hidden;
+    place-items: center;
+  }
+
+  pre {
+    width: max-content;
+    margin: 0;
+    color: #d9f5eb;
+    font-family: var(--font-mono);
+    font-size: clamp(0.22rem, 1.4cqi, 0.38rem);
+    line-height: 1;
+    text-shadow: 0 0 1rem rgb(94 224 185 / 35%);
+  }
+
+  figcaption {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-sm) var(--space-md);
+    border-top: 1px solid rgb(255 255 255 / 14%);
+    color: #a9b9b4;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  figcaption a {
+    color: inherit;
+  }
+</style>

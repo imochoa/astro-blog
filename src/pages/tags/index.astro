@@ -24,7 +24,6 @@ const usedTags = tags
   <header class="page-header">
     <p class="eyebrow">Topics</p>
     <h1>Tags</h1>
-    <p>Browse posts by topic.</p>
   </header>
 
   <ul class="tag-index" role="list">
@@ -34,13 +33,13 @@ const usedTags = tags
 
         return (
           <li>
-            <h2>
-              <a href={`/tags/${tag.id}/`}>{tag.data.name}</a>
-            </h2>
-            {tag.data.description && <p>{tag.data.description}</p>}
-            <small>
-              {postCount} {postCount === 1 ? "post" : "posts"}
-            </small>
+            <a class="tag-card" href={`/tags/${tag.id}/`}>
+              <h2>{tag.data.name}</h2>
+              {tag.data.description && <p>{tag.data.description}</p>}
+              <small>
+                {postCount} {postCount === 1 ? "post" : "posts"}
+              </small>
+            </a>
           </li>
         );
       })
