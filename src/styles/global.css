@@ -275,9 +275,11 @@ time {
 
 .post-card h2 a::after {
   position: absolute;
+  z-index: 1;
   inset: 0;
   border-radius: var(--radius-lg);
   content: "";
+  cursor: pointer;
 }
 
 .post-card h2 a:hover {
@@ -302,7 +304,7 @@ time {
 
 .tag {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: inline-block;
   padding: 0.15rem var(--space-sm);
   border: 1px solid transparent;
@@ -327,51 +329,37 @@ time {
 }
 
 .tag-index li {
-  position: relative;
+  min-width: 0;
+}
+
+.tag-card {
+  height: 100%;
   display: grid;
   gap: var(--space-xs);
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+  color: var(--color-text);
   background: var(--color-surface);
+  text-decoration: none;
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
     transform 160ms ease;
 }
 
-.tag-index li:hover {
+.tag-card:hover {
   border-color: var(--color-border-strong);
   box-shadow: var(--shadow-md);
+  text-decoration: none;
   transform: translateY(-0.2rem);
 }
 
-.tag-index h2 a {
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.tag-index h2 a::after {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius);
-  content: "";
-}
-
-.tag-index h2 a:hover {
+.tag-card:hover h2 {
   color: var(--color-accent);
 }
 
-.tag-index h2 a:focus-visible {
-  outline: none;
-}
-
-.tag-index h2 a:focus-visible::after {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-.tag-index small {
+.tag-card small {
   color: var(--color-muted);
 }
 
@@ -713,7 +701,7 @@ time {
 
   .button,
   .post-card,
-  .tag-index li {
+  .tag-card {
     transition: none;
   }
 }
