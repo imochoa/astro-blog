@@ -20,7 +20,12 @@
   const art = document.querySelector<HTMLPreElement>("[data-ascii-art]");
 
   if (art) {
-    const [initialFrame, ...deltas] = packedFrames.split("|");
+    const packedAnimation = packedFrames.slice(
+      0,
+      packedFrames.lastIndexOf("#"),
+    );
+    const [encodedInitialFrame, ...deltas] = packedAnimation.split("|");
+    const initialFrame = encodedInitialFrame.replaceAll("^", "\n");
     const characters = initialFrame.split("");
     const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -41,7 +46,7 @@
 
         for (let index = 0; index < changes.length; index += 2) {
           const start = Number.parseInt(changes[index], 36);
-          const replacement = changes[index + 1];
+          const replacement = changes[index + 1].replaceAll("^", "\n");
 
           for (let offset = 0; offset < replacement.length; offset += 1) {
             characters[start + offset] = replacement[offset];
