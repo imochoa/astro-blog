@@ -12,6 +12,10 @@ const projectRoot = path.resolve(
   "..",
 );
 const faviconSource = path.join(projectRoot, "src/assets/favicon.svg");
+const socialFonts = {
+  regular: path.join(projectRoot, "src/assets/fonts/Inter-Regular.woff2"),
+  bold: path.join(projectRoot, "src/assets/fonts/Inter-Bold.woff2"),
+};
 
 const icons = [
   { size: 180, output: "public/icons/apple-touch-icon.png" },
@@ -68,15 +72,20 @@ function wrapWords(value, maxLineLength) {
   }, []);
 }
 
-function createSocialImageSvg(favicon) {
+function createSocialImageSvg(favicon, includeText = true) {
   const encodedFavicon = favicon.toString("base64");
-  const descriptionLines = wrapWords(SITE.description, 54)
-    .slice(0, 2)
-    .map(
-      (line, index) =>
-        `  <text x="128" y="${422 + index * 46}" fill="#a7b3af" font-family="system-ui, sans-serif" font-size="34">${escapeXml(line)}</text>`,
-    )
-    .join("\n");
+  const descriptionLines = includeText
+    ? wrapWords(SITE.description, 54)
+        .slice(0, 2)
+        .map(
+          (line, index) =>
+            `  <text x="128" y="${422 + index * 46}" fill="#a7b3af" font-family="Inter, sans-serif" font-size="34">${escapeXml(line)}</text>`,
+        )
+        .join("\n")
+    : "";
+  const title = includeText
+    ? `  <text x="128" y="350" fill="#e7eeeb" font-family="Inter, sans-serif" font-size="76" font-weight="700">${escapeXml(SITE.title)}</text>`
+    : "";
 
   return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
@@ -88,10 +97,42 @@ function createSocialImageSvg(favicon) {
   <rect x="72" y="72" width="1056" height="486" rx="32" fill="#19211e" stroke="#33413c" stroke-width="4" />
   <rect x="128" y="136" width="112" height="112" rx="25" fill="#f8f6f0" />
   <image x="128" y="136" width="112" height="112" preserveAspectRatio="xMidYMid slice" clip-path="url(#logo-clip)" href="data:image/svg+xml;base64,${encodedFavicon}" />
-  <text x="128" y="350" fill="#e7eeeb" font-family="system-ui, sans-serif" font-size="76" font-weight="700">${escapeXml(SITE.title)}</text>
+${title}
 ${descriptionLines}
 </svg>
 `);
+}
+
+async function createTextLayer(text, font, fontfile, color) {
+  return sharp({
+    text: {
+      text: `<span foreground="${color}">${escapeXml(text)}</span>`,
+      font,
+      fontfile,
+      dpi: 72,
+      rgba: true,
+    },
+  })
+    .png()
+    .toBuffer();
+}
+
+// Keep text out of librsvg so host font discovery cannot change the PNG.
+async function createSocialImagePng(favicon) {
+  const description = wrapWords(SITE.description, 54).slice(0, 2).join("\n");
+  const [titleLayer, descriptionLayer] = await Promise.all([
+    createTextLayer(SITE.title, "Inter Bold 76", socialFonts.bold, "#e7eeeb"),
+    createTextLayer(description, "Inter 34", socialFonts.regular, "#a7b3af"),
+  ]);
+
+  return sharp(createSocialImageSvg(favicon, false))
+    .resize(1200, 630, { fit: "fill" })
+    .composite([
+      { input: titleLayer, left: 128, top: 289 },
+      { input: descriptionLayer, left: 128, top: 397 },
+    ])
+    .png()
+    .toBuffer();
 }
 
 function createWebManifest() {
@@ -125,7 +166,10 @@ function createWebManifest() {
   );
 }
 
-await assertReadable(faviconSource);
+await Promise.all([
+  assertReadable(faviconSource),
+  ...Object.values(socialFonts).map(assertReadable),
+]);
 const favicon = await readFile(faviconSource);
 const socialImageSvg = createSocialImageSvg(favicon);
 
@@ -147,10 +191,7 @@ await Promise.all([
       socialImageSvg,
     );
 
-    const socialImage = await sharp(socialImageSvg)
-      .resize(1200, 630, { fit: "fill" })
-      .png()
-      .toBuffer();
+    const socialImage = await createSocialImagePng(favicon);
     await writeIfChanged(
       path.join(projectRoot, "public/social/default-og.png"),
       socialImage,
