@@ -7,6 +7,17 @@
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
 
+  // Persist tool caches and interactive shell history across container rebuilds
+  // without masking the node user's entire home directory.
+  "mounts": [
+    "source=astro-blog-node-cache,target=/home/node/.cache,type=volume",
+    "source=astro-blog-command-history,target=/commandhistory,type=volume"
+  ],
+  "containerEnv": {
+    "HISTFILE": "/commandhistory/.bash_history",
+    "PROMPT_COMMAND": "history -a"
+  },
+
   // Run as the image's non-root "node" user.
   "containerUser": "node",
   "remoteUser": "node",

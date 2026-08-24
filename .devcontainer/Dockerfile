@@ -50,6 +50,11 @@ RUN pipx install pre-commit \
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 
+# Named volumes mounted here by devcontainer.json inherit writable ownership on
+# first use. They preserve tool caches and shell history across container rebuilds.
+RUN mkdir -p /home/node/.cache /commandhistory \
+    && chown -R node:node /home/node/.cache /commandhistory
+
 # Everything below runs as the unprivileged "node" user (uid 1000) that ships
 # with the base image. Combined with podman's --userns=keep-id (see
 # devcontainer.json) this makes bind-mounted files owned by the host user.
