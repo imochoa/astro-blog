@@ -1,7 +1,9 @@
 dist
 .astro
 node_modules
+**/node_modules
 .pnpm-store
+**/.pnpm-store
 pnpm-lock.yaml
 justfile
 public/embeds/lvgl
