@@ -70,6 +70,10 @@ export default defineConfig({
     // watcher startup unnecessarily slow.
     server: {
       watch: {
+        // Podman's macOS bind mount does not reliably forward inotify events
+        // into the devcontainer, so poll for source edits instead.
+        usePolling: true,
+        interval: 500,
         ignored: [
           "**/.output/**",
           "**/.pnpm-store/**",
