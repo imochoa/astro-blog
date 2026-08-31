@@ -5,9 +5,9 @@
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@/ui/*": ["src/components/ui/*"],
-      "@posts/*": ["src/content/posts/*"]
+      "@/*": ["./src/*"],
+      "@/ui/*": ["./src/components/ui/*"],
+      "@posts/*": ["./src/content/posts/*"]
     }
     // "jsx": "react-jsx",
     // "jsxImportSource": "react"
