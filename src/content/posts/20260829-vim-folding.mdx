@@ -1,45 +1,30 @@
 ---
-title: Welcome
-description: The first post on this small Astro blog.
-publishedAt: 2026-08-18
-draft: true
+title: Where is my TOC?
+description: How to structure long files
+publishedAt: 2026-08-29
 tags:
-  - astro
+  - neovim
 ---
 
-## The Problem
-
-It's easy to get lost while moving around in a long file. Sometimes the IDE is
-able to digest it and offer folding and navigation features, but not always...
-This is usually the case when dealing with long configuration files (e.g.
-`tmux.conf` or `.bahsrc`).
+## Bringing
+Modern IDEs bring
+It's easy to get lost while moving around in a long file. Sometimes the IDE is able to digest it and offer folding and navigation features, but not always... This is usually the case when dealing with long configuration files (e.g. `tmux.conf` or `.bahsrc`).
 
 ## The Solution
 
-One nice way I have found to help is by using vim folding markers in comments to
-add that missing structure.
+One nice way I have found to help is by using vim folding markers in comments to add that missing structure.
 
-It is not intrusive and portable, so I think it's a pretty elegant solution!
-
-Here is how it works
 
 ### [1/2] Set the folding method to marker
 
-I usually just add this
-[modeline](https://neovim.io/doc/user/usr_21.html#_modelines)[^1] at the end of
-the file. This uses the default `{{{` marker, but you can override that if you
-prefer something else
+I usually just add this [modeline](https://neovim.io/doc/user/usr_21.html#_modelines)[^security] at the end of the file. This uses the default `{{{` marker, but you can override that if you prefer something else
 
 ```bash
 # Inside of a comment, replace '#' as required
 # vim: fdm=marker:fen:fdl=0:
 ```
 
-:::caution I'm aware that enabling modelines is a potential security risk. I am
-not sure this is still relevant in more-recent (neo)vim installations, but if
-you want to be extra safe you can set the settings "the old fashioned way":
-[folding method to "marker"](https://vim.fandom.com/wiki/Folding#Folding_by_marker)
-:::
+[^security]: I'm aware that enabling modelines is a potential security risk. I am not sure this is still relevant in more-recent (neo)vim installations, but if you want to be extra safe you can set the settings via the commands directly
 
 ### [2/2] Place your markers
 
