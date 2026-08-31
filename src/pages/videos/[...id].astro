@@ -1,0 +1,24 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import MediaEntry from "@/components/blog/MediaEntry.astro";
+
+export async function getStaticPaths() {
+  const videos = await getCollection(
+    "videos",
+    ({ data }) => import.meta.env.DEV || !data.draft,
+  );
+
+  return videos.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"videos">;
+}
+
+const { entry } = Astro.props;
+---
+
+<MediaEntry {entry} />

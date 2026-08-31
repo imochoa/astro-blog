@@ -1,25 +1,25 @@
 import rss from "@astrojs/rss";
 import type { APIRoute } from "astro";
 import { SITE } from "@/site-data";
-import { getPosts } from "@/lib/posts";
+import { getEntryDate, getEntryPath, getFeedEntries } from "@/lib/posts";
 
 export const GET: APIRoute = async ({ site }) => {
   if (!site) {
     throw new Error("The Astro site URL is required to generate the RSS feed.");
   }
 
-  const posts = await getPosts(false);
+  const entries = await getFeedEntries(false);
 
   return rss({
     title: SITE.title,
     description: SITE.description,
     site,
-    items: posts.map((post) => ({
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.publishedAt,
-      link: `/blog/${post.id}/`,
-      categories: post.data.tags.map((tag) => tag.id),
+    items: entries.map((entry) => ({
+      title: entry.data.title,
+      description: entry.data.description,
+      pubDate: getEntryDate(entry),
+      link: getEntryPath(entry),
+      categories: entry.data.tags.map((tag) => tag.id),
     })),
   });
 };

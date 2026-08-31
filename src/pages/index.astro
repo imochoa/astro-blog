@@ -2,10 +2,10 @@
 import AsciiScene from "@/components/home/AsciiScene.astro";
 import PostList from "@/components/blog/PostList.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { getPosts } from "@/lib/posts";
+import { getFeedEntries } from "@/lib/posts";
 import { SITE } from "@/site-data";
 
-const recentPosts = (await getPosts()).slice(0, 3);
+const recentEntries = (await getFeedEntries()).slice(0, 3);
 ---
 
 <BasicLayout>
@@ -29,11 +29,11 @@ const recentPosts = (await getPosts()).slice(0, 3);
     <header>
       <div>
         <p class="eyebrow">Fresh from the notebook</p>
-        <h2 id="recent-heading">Recent writing</h2>
+        <h2 id="recent-heading">Recent entries</h2>
       </div>
       <a href="/blog/">All posts <span aria-hidden="true">→</span></a>
     </header>
-    <PostList posts={recentPosts} />
+    <PostList entries={recentEntries} />
   </section>
 </BasicLayout>
 

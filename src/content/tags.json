@@ -23,9 +23,13 @@
     "name": "Rust",
     "description": "Terminal session recording, playback, and web embeds."
   },
-  "books": {
-    "name": "Books",
-    "description": "Terminal session recording, playback, and web embeds."
+  "book": {
+    "name": "Book",
+    "description": "Books I have read and notes about them."
+  },
+  "video": {
+    "name": "Video",
+    "description": "Videos I have watched and notes about them."
   },
   "reviews": {
     "name": "Reviews",

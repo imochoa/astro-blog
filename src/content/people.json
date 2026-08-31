@@ -1,0 +1,10 @@
+{
+  "_template-author": {
+    "name": "Author name",
+    "description": "A short description of the author."
+  },
+  "_template-creator": {
+    "name": "Creator name",
+    "description": "A short description of the creator."
+  }
+}

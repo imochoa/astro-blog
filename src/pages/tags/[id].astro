@@ -2,7 +2,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import PostList from "@/components/blog/PostList.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { getPosts } from "@/lib/posts";
+import { getFeedEntries } from "@/lib/posts";
 
 export async function getStaticPaths() {
   const tags = await getCollection("tags");
@@ -18,14 +18,14 @@ interface Props {
 }
 
 const { tag } = Astro.props;
-const posts = (await getPosts()).filter((post) =>
-  post.data.tags.some((postTag) => postTag.id === tag.id),
+const entries = (await getFeedEntries()).filter((entry) =>
+  entry.data.tags.some((entryTag) => entryTag.id === tag.id),
 );
 ---
 
 <BasicLayout
   title={tag.data.name}
-  description={tag.data.description ?? `Posts tagged ${tag.data.name}.`}
+  description={tag.data.description ?? `Entries tagged ${tag.data.name}.`}
 >
   <header class="page-header">
     <p class="eyebrow">Tag</p>
@@ -33,5 +33,8 @@ const posts = (await getPosts()).filter((post) =>
     {tag.data.description && <p>{tag.data.description}</p>}
   </header>
 
-  <PostList posts={posts} emptyMessage="No posts with this tag yet." />
+  <PostList
+    {entries}
+    emptyMessage="No posts, books, or videos with this tag yet."
+  />
 </BasicLayout>

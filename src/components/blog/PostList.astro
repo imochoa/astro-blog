@@ -1,22 +1,26 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import PostCard from "@/components/blog/PostCard.astro";
+import type { FeedEntry } from "@/lib/posts";
 
 interface Props {
-  posts: CollectionEntry<"posts">[];
+  entries: FeedEntry[];
   emptyMessage?: string;
   showTags?: boolean;
 }
 
-const { posts, emptyMessage = "No posts yet.", showTags = true } = Astro.props;
+const {
+  entries,
+  emptyMessage = "Nothing published yet.",
+  showTags = true,
+} = Astro.props;
 ---
 
 {
-  posts.length > 0 ? (
+  entries.length > 0 ? (
     <ol class="post-list" role="list">
-      {posts.map((post) => (
+      {entries.map((entry) => (
         <li>
-          <PostCard {post} {showTags} />
+          <PostCard {entry} {showTags} />
         </li>
       ))}
     </ol>

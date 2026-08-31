@@ -1,0 +1,87 @@
+---
+import { getEntry, render, type CollectionEntry } from "astro:content";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+import FormattedDate from "@/ui/FormattedDate.astro";
+
+type MediaEntry = CollectionEntry<"books"> | CollectionEntry<"videos">;
+
+interface Props {
+  entry: MediaEntry;
+}
+
+const { entry } = Astro.props;
+const rendered = await render(entry);
+const { Content } = rendered;
+const mdxComponents = "components" in rendered ? rendered.components : {};
+const tags = await Promise.all(entry.data.tags.map((tag) => getEntry(tag)));
+const tagNames = tags.flatMap((tag) => (tag ? [tag.data.name] : []));
+const isBook = entry.collection === "books";
+const people = isBook
+  ? await Promise.all(entry.data.authors.map((author) => getEntry(author)))
+  : await Promise.all(entry.data.creators.map((creator) => getEntry(creator)));
+const peopleNames = people.flatMap((person) =>
+  person ? [person.data.name] : [],
+);
+const date = isBook ? entry.data.readAt : entry.data.watchedAt;
+const dateLabel = isBook ? "Read" : "Watched";
+const typeLabel = isBook ? "Book" : "Video";
+const byline =
+  peopleNames.length > 0
+    ? `by ${new Intl.ListFormat("en", { style: "long", type: "conjunction" }).format(peopleNames)}`
+    : undefined;
+const externalURL = isBook ? entry.data.link : entry.data.url;
+const externalLabel = isBook ? "Book details" : "Watch video";
+---
+
+<BasicLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  pageType="article"
+  publishedAt={date}
+  tags={tagNames}
+>
+  <article class="post" data-pagefind-body>
+    <header class="page-header">
+      <p class="eyebrow">{typeLabel}</p>
+      <FormattedDate {date} label={dateLabel} />
+      <h1 data-pagefind-meta="title">{entry.data.title}</h1>
+      {byline && <p class="byline">{byline}</p>}
+      <p>{entry.data.description}</p>
+      {
+        tags.length > 0 && (
+          <ul class="tag-list" role="list" aria-label="Tags">
+            {tags.map(
+              (tag) =>
+                tag && (
+                  <li>
+                    <a class="tag" href={`/tags/${tag.id}/`}>
+                      {tag.data.name}
+                    </a>
+                  </li>
+                ),
+            )}
+          </ul>
+        )
+      }
+      {
+        externalURL && (
+          <p>
+            <a href={externalURL}>{externalLabel} →</a>
+          </p>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <Content components={mdxComponents} />
+    </div>
+  </article>
+</BasicLayout>
+
+<style>
+  .byline {
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+</style>

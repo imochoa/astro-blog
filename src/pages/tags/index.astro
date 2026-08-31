@@ -1,26 +1,26 @@
 ---
 import { getCollection } from "astro:content";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { getPosts } from "@/lib/posts";
+import { getFeedEntries } from "@/lib/posts";
 
-const [tags, posts] = await Promise.all([
+const [tags, entries] = await Promise.all([
   getCollection("tags"),
-  getPosts(false),
+  getFeedEntries(),
 ]);
 
-const postCounts = new Map<string, number>();
-for (const post of posts) {
-  for (const tag of post.data.tags) {
-    postCounts.set(tag.id, (postCounts.get(tag.id) ?? 0) + 1);
+const entryCounts = new Map<string, number>();
+for (const entry of entries) {
+  for (const tag of entry.data.tags) {
+    entryCounts.set(tag.id, (entryCounts.get(tag.id) ?? 0) + 1);
   }
 }
 
 const usedTags = tags
-  .filter((tag) => postCounts.has(tag.id))
+  .filter((tag) => entryCounts.has(tag.id))
   .sort((a, b) => a.data.name.localeCompare(b.data.name));
 ---
 
-<BasicLayout title="Tags" description="Browse posts by tag.">
+<BasicLayout title="Tags" description="Browse entries by tag.">
   <header class="page-header">
     <p class="eyebrow">Topics</p>
     <h1>Tags</h1>
@@ -29,7 +29,7 @@ const usedTags = tags
   <ul class="tag-index" role="list">
     {
       usedTags.map((tag) => {
-        const postCount = postCounts.get(tag.id) ?? 0;
+        const entryCount = entryCounts.get(tag.id) ?? 0;
 
         return (
           <li>
@@ -37,7 +37,7 @@ const usedTags = tags
               <h2>{tag.data.name}</h2>
               {tag.data.description && <p>{tag.data.description}</p>}
               <small>
-                {postCount} {postCount === 1 ? "post" : "posts"}
+                {entryCount} {entryCount === 1 ? "entry" : "entries"}
               </small>
             </a>
           </li>

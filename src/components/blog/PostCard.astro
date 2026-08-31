@@ -1,27 +1,63 @@
 ---
-import { getEntry, type CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
 import FormattedDate from "@/ui/FormattedDate.astro";
+import { getEntryDate, getEntryPath, type FeedEntry } from "@/lib/posts";
 
 interface Props {
-  post: CollectionEntry<"posts">;
+  entry: FeedEntry;
   showTags?: boolean;
 }
 
-const { post, showTags = true } = Astro.props;
+const { entry, showTags = true } = Astro.props;
 const tags = showTags
-  ? await Promise.all(post.data.tags.map((tag) => getEntry(tag)))
+  ? await Promise.all(entry.data.tags.map((tag) => getEntry(tag)))
   : [];
+const people =
+  entry.collection === "books"
+    ? await Promise.all(entry.data.authors.map((author) => getEntry(author)))
+    : entry.collection === "videos"
+      ? await Promise.all(
+          entry.data.creators.map((creator) => getEntry(creator)),
+        )
+      : [];
+const peopleNames = people.flatMap((person) =>
+  person ? [person.data.name] : [],
+);
+const date = getEntryDate(entry);
+const href = getEntryPath(entry);
+const typeLabel =
+  entry.collection === "books"
+    ? "Book"
+    : entry.collection === "videos"
+      ? "Video"
+      : "Post";
+const typeIcon =
+  entry.collection === "books"
+    ? "📖"
+    : entry.collection === "videos"
+      ? "▶"
+      : "✎";
+const byline =
+  peopleNames.length > 0
+    ? `by ${new Intl.ListFormat("en", { style: "long", type: "conjunction" }).format(peopleNames)}`
+    : undefined;
 ---
 
 <article class="post-card">
-  <FormattedDate date={post.data.publishedAt} />
+  <div class="post-card-meta">
+    <FormattedDate {date} />
+    <span class="type-label">
+      {typeLabel}<span class="type-icon" aria-hidden="true">{typeIcon}</span>
+    </span>
+  </div>
   <div class="post-card-title">
     <h2>
-      <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+      <a {href}>{entry.data.title}</a>
     </h2>
-    {post.data.draft && <span class="draft-marker">Draft</span>}
+    {entry.data.draft && <span class="draft-marker">Draft</span>}
   </div>
-  <p>{post.data.description}</p>
+  {byline && <p class="byline">{byline}</p>}
+  <p>{entry.data.description}</p>
   {
     tags.length > 0 && (
       <ul class="tag-list" role="list" aria-label="Tags">
@@ -41,6 +77,33 @@ const tags = showTags
 </article>
 
 <style>
+  .post-card-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .post-card-meta span,
+  .byline {
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .type-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .type-icon {
+    line-height: 1;
+  }
+
   .post-card-title {
     display: flex;
     flex-wrap: wrap;

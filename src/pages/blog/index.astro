@@ -3,23 +3,23 @@ import BasicLayout from "@/layouts/BasicLayout.astro";
 import Pagination from "@/components/blog/Pagination.astro";
 import PostList from "@/components/blog/PostList.astro";
 import { SITE } from "@/site-data";
-import { getPosts, POSTS_PER_PAGE } from "@/lib/posts";
+import { getFeedEntries, POSTS_PER_PAGE } from "@/lib/posts";
 
-const posts = await getPosts();
-const totalPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
-const pagePosts = posts.slice(0, POSTS_PER_PAGE);
+const entries = await getFeedEntries();
+const totalPages = Math.max(1, Math.ceil(entries.length / POSTS_PER_PAGE));
+const pageEntries = entries.slice(0, POSTS_PER_PAGE);
 ---
 
 <BasicLayout
   title="Blog"
-  description={`Posts from ${SITE.title}.`}
+  description={`Posts, books, and videos from ${SITE.title}.`}
   nextPage={totalPages > 1 ? "/blog/page/2/" : undefined}
 >
   <header class="page-header">
-    <p class="eyebrow">Writing</p>
+    <p class="eyebrow">Posts, books, and videos</p>
     <h1>Blog</h1>
   </header>
 
-  <PostList posts={pagePosts} />
+  <PostList entries={pageEntries} />
   <Pagination currentPage={1} totalPages={totalPages} />
 </BasicLayout>
