@@ -1,10 +1,10 @@
 {
-  "_template-author": {
-    "name": "Author name",
-    "description": "A short description of the author."
+  "karl-voit": {
+    "name": "Karl Voit",
+    "description": "A short description of the creator."
   },
-  "_template-creator": {
-    "name": "Creator name",
+  "dusty-phillips": {
+    "name": "Karl Voit",
     "description": "A short description of the creator."
   }
 }

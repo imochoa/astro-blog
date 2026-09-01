@@ -1,0 +1,80 @@
+---
+title: The Advantages of file name conventions and tagging Talk
+description: A short note about the video.
+creators:
+  - karl-voit
+watchedAt: 2026-09-01
+url: https://media.ccc.de/v/GLT18_-_321_-_en_-_g_ap147_004_-_201804281550_-_the_advantages_of_file_name_conventions_and_tagging_-_karl_voit/
+draft: false
+tags:
+  - life
+---
+
+# Filetags
+
+- https://github.com/novoid/filetags
+- [The Advantages of file name conventions and tagging Talk](https://media.ccc.de/v/GLT18_-_321_-_en_-_g_ap147_004_-_201804281550_-_the_advantages_of_file_name_conventions_and_tagging_-_karl_voit/)
+- [Blog: managing digital photographs](https://karl-voit.at/managing-digital-photographs/)
+
+# Tagging best practice
+
+- Use a controlled vocabulary and TAB-completion
+- not more than 100 tags max
+  - the fewer, the better
+- tags always in plural
+  - book -> books
+- keep tags general
+  - volleyball -> sports
+- no tags which can be derived from file extension
+  - image, spreadsheets, photos
+- use mutually exclusive tags or datestamps instead of version numbers
+  - perhaps only draft/final
+- other useful tags:
+  - taxes, bill, ideas, manuals, scan/screenshots, confidential/internal
+- Use **CREATION** times, not **MODIFICATION** times, since they are constant
+
+# [gThumb](https://help.ubuntu.com/community/gThumb)
+
+makes life easier...
+
+https://yap.bozart.eu/articles/gthumb/flags.html
+
+1. Standardize names: `fdfind . -x pipx run date2name`
+
+# [filetags](https://github.com/novoid/filetags)
+
+```shell
+pipx install filetags
+```
+
+## `.filetags`
+
+- When invoked for interactive tagging, it is looking for files named `.filetags` in the current working directory and its parent directories as well. The first file of this name found is read in.
+
+- Each line represents one tag. Those tags are used for tag completion.
+- you can remove existing tags by prepending a `-` character to the tag: `-tagname`. This also works interactively using the tab completion feature.
+
+- You can use comments in .filetags files: everything after a `#` character is considered a comment. You can even add a comment after a tag like `mytag # this is a test tag`
+
+- If you do use tags you do not want to get proposed for tagging, you can write them in lines like the following ones to omit their proposal (case insensitive):
+
+```
+#donotsuggest omit-this-tag dontshow`
+#donotsuggest wontpropose
+```
+
+# [date2name](https://github.com/novoid/date2name)
+
+# [appendfilename](https://github.com/novoid/appendfilename)
+
+# [move2archive](https://github.com/novoid/move2archive)
+
+# Plugins
+
+## [Thunar plugin](https://github.com/novoid/filetags/blob/master/Integration.org#integration-into-thunar)
+
+## [Nautilus plugin](https://github.com/novoid/filetags/blob/master/Integration.org#integrarion-into-nautilus)
+
+## [Geeqie plugin](https://github.com/novoid/filetags/blob/master/Integration.org#integrating-into-geeqie)
+
+- [Git: geeqie](http://geeqie.org/cgi-bin/gitweb.cgi?p=geeqie.git;a=summary)
