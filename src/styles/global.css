@@ -473,6 +473,12 @@ time {
   font-weight: 700;
 }
 
+.prose .expressive-code details {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
 .prose dl {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);

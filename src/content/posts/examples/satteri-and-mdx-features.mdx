@@ -80,15 +80,17 @@ again.[^satteri]
 
 ## Syntax highlighting
 
-Fenced code blocks are highlighted by Astro's configured highlighter.
+Sätteri parses fenced code blocks and passes them to the configured Expressive
+Code plugin. The plugin adds syntax highlighting, filename frames, and a copy
+button.
 
 ```ts title="example.ts"
 const greeting: string = "Hello from a highlighted code block";
 console.log(greeting);
 ```
 
-The `title` value is available as fence metadata, but displaying a filename
-frame would require a custom code component.
+The `title` value in the fence metadata supplies the filename shown above the
+code.
 
 ### Local source files with `?raw`
 
@@ -111,8 +113,8 @@ post does not need a copied version of the component source.
 
 ### Meta-based highlighting
 
-A brace range in the fence metadata highlights selected lines. A `/word/`
-pattern highlights matching words.
+A brace range in the fence metadata marks selected lines. A `/word/` pattern
+marks matching text.
 
 ```ts {2,4-5} /count/
 const start = 1;
@@ -122,48 +124,48 @@ console.log(count);
 console.log({ count });
 ```
 
-### Comment notation
-
-Notation comments are removed from the rendered code after applying their
-styles. They can highlight lines or individual words.
-
-```ts
-// [!code highlight:2]
-const host = "localhost";
-const port = 4321;
-// [!code word:server:1]
-const server = `http://${host}:${port}`;
-console.log(server);
-```
-
 ### Diffs
 
-Use `++` and `--` notation to mark additions and removals.
+Use `del` and `ins` ranges to mark removed and added lines.
 
-```ts
-const mode = "foreground"; // [!code --]
-const mode = "background"; // [!code ++]
+```ts del={1} ins={2}
+const mode = "foreground";
+const mode = "background";
 ```
 
-### Focus and diagnostics
+### Folding code sections
 
-Focused blocks dim the surrounding lines. Error, warning, and info notation can
-mark diagnostics without changing the example source.
+Folding is available through Sätteri's Expressive Code plugin and its optional
+collapsible-sections plugin. Add `collapse={X-Y}` to the fence metadata. This
+example starts with its configuration type folded; click the summary to expand
+it, then click it again to close it.
 
-```ts
-const input = "42";
-const value = Number.parseInt(input, 10); // [!code focus]
-console.log(value);
+```ts title="server.ts" collapse={1-7} collapseStyle=collapsible-start
+type ServerConfig = {
+  host: string;
+  port: number;
+  secure: boolean;
+  logLevel: "debug" | "info" | "warn";
+  retries: number;
+};
+
+const config: ServerConfig = {
+  host: "localhost",
+  port: 4321,
+  secure: false,
+  logLevel: "info",
+  retries: 3,
+};
+
+export function getServerUrl(): string {
+  const protocol = config.secure ? "https" : "http";
+  return `${protocol}://${config.host}:${config.port}`;
+}
 ```
 
-```ts
-const count: number = "four"; // [!code error]
-const fallback = 0; // [!code warning]
-console.log(fallback); // [!code info]
-```
-
-These transformers add presentation classes; they do not format source code or
-provide folding and copy buttons. Those require a dedicated component.
+The parser preserves the fence metadata. Expressive Code turns the selected
+line range into native `details` and `summary` elements, so expanding it does
+not need a client-side component.
 
 ## Smart punctuation
 

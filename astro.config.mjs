@@ -3,20 +3,13 @@ import { execFileSync } from "node:child_process";
 import { env } from "node:process";
 import { URL } from "node:url";
 import { defineConfig, logHandlers } from "astro/config";
+import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { satteri } from "@astrojs/markdown-satteri";
 import mdx from "@astrojs/mdx";
 import svelte from "@astrojs/svelte";
 import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
-import {
-  transformerMetaHighlight,
-  transformerMetaWordHighlight,
-  transformerNotationDiff,
-  transformerNotationErrorLevel,
-  transformerNotationFocus,
-  transformerNotationHighlight,
-  transformerNotationWordHighlight,
-} from "@shikijs/transformers";
+import expressiveCode from "satteri-expressive-code";
 import { directivePlugin } from "./src/markdown/directives.mjs";
 import { displayMathPlugin, katexPlugin } from "./src/markdown/katex.mjs";
 import { plantUMLPlugin } from "./src/markdown/plantuml.mjs";
@@ -84,28 +77,22 @@ export default defineConfig({
     },
   },
   markdown: {
-    shikiConfig: {
-      themes: {
-        light: "github-light",
-        dark: "github-dark",
-      },
-      defaultColor: false,
-      transformers: [
-        transformerMetaHighlight(),
-        transformerMetaWordHighlight(),
-        transformerNotationDiff(),
-        transformerNotationErrorLevel(),
-        transformerNotationFocus(),
-        transformerNotationHighlight(),
-        transformerNotationWordHighlight(),
-      ],
-    },
+    // Expressive Code handles fenced blocks in the Sätteri HAST pipeline.
+    syntaxHighlight: false,
     processor: satteri({
       // Keep the display-math preservation pass before the KaTeX HAST pass.
-      // Sätteri otherwise highlights display math as indistinguishable plaintext.
+      // Sätteri otherwise treats display math as indistinguishable plaintext.
       // See docs/markdown-math.md before changing this order.
       mdastPlugins: [directivePlugin, displayMathPlugin, plantUMLPlugin],
-      hastPlugins: [katexPlugin],
+      hastPlugins: [
+        expressiveCode({
+          themes: ["github-light", "github-dark"],
+          shiki: { langAlias: { conf: "nginx", svg: "xml" } },
+          plugins: [pluginCollapsibleSections()],
+          themeCssSelector: (theme) => `[data-theme="${theme.type}"]`,
+        }),
+        katexPlugin,
+      ],
       features: {
         gfm: true,
         frontmatter: true,

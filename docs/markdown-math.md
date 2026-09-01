@@ -7,15 +7,15 @@ The blog renders `$...$` and `$$...$$` with KaTeX at build time. There is no bro
 Sätteri parses both forms when its `math` feature is enabled, but it does not render KaTeX. Inline and display math also reach Sätteri's HAST plugins differently:
 
 - Inline math survives as a `<code class="math-inline">` element.
-- Display math passes through syntax highlighting first. With the currently pinned `@astrojs/markdown-satteri` and Sätteri versions, its original math identity is lost and the HAST plugin receives an ordinary `<pre data-language="plaintext">` block.
+- Without the MDAST preservation pass, display math looks like a fenced block to the HAST pipeline. Expressive Code claims that block before the KaTeX plugin runs, and the original math identity is no longer available.
 
-A HAST-only plugin can therefore identify inline math, but cannot safely distinguish display math from a genuine unlabelled code block.
+A HAST-only plugin can therefore identify inline math, but it cannot safely recover display math after the code renderer has processed it.
 
 ## The two-stage workaround
 
 `src/markdown/katex.mjs` deliberately uses one MDAST plugin and one HAST plugin:
 
-1. `displayMathPlugin` runs before syntax highlighting. It replaces each display-math MDAST node with a standard `paragraph` node carrying `hName: "div"` and a `dataMathDisplay` marker.
+1. `displayMathPlugin` runs before Expressive Code. It replaces each display-math MDAST node with a standard `paragraph` node carrying `hName: "div"` and a `dataMathDisplay` marker.
 2. A standard `paragraph` node is intentional. Sätteri's structural op-stream accepts it, while an arbitrary custom node type does not.
 3. `katexPlugin` runs in the HAST phase. It recognizes either `code.math-inline` or the marked display-math `div` and calls `katex.renderToString()` with the appropriate `displayMode`.
 4. KaTeX returns an HTML string. `hast-util-from-html` converts that string into a real HAST element before it replaces the source node. Returning the string directly would escape the KaTeX markup.
@@ -24,8 +24,8 @@ A HAST-only plugin can therefore identify inline math, but cannot safely disting
 The plugin order in `astro.config.mjs` is part of the workaround:
 
 ```js
-mdastPlugins: [directivePlugin, displayMathPlugin],
-hastPlugins: [katexPlugin],
+mdastPlugins: [directivePlugin, displayMathPlugin, plantUMLPlugin],
+hastPlugins: [expressiveCode(options), katexPlugin],
 ```
 
 Do not remove `displayMathPlugin`, move display handling back to a `pre` visitor, or change the marker without updating both phases.
@@ -36,11 +36,11 @@ The JSDoc literal annotations around `"paragraph"` and `"text"` are also intenti
 
 These were tested against the current processor and should not be retried without first confirming that Sätteri has changed:
 
-- Looking only for `pre[data-language="math"]`: syntax highlighting changes it to `plaintext` before HAST plugins run.
-- Adding a Shiki `math` to `latex` language alias: Sätteri still emits the display node as plaintext in this pipeline.
+- Looking only for `pre > code.math-display` in the KaTeX plugin: Expressive Code has already replaced that source node by the time the plugin runs.
+- Adding a Shiki `math` to `latex` language alias: syntax highlighting the expression still does not render it as math.
 - Adding `hProperties` directly to the original MDAST math node: Sätteri's math conversion does not retain that marker.
 - Returning a custom MDAST node such as `katexDisplaySource`: Sätteri throws `cannot encode replacement content ... into the structural op-stream`.
-- Recovering the original `$$` delimiters from HAST source positions: the highlighted `pre` node has no source offsets.
+- Recovering the original `$$` delimiters from HAST source positions: the rendered code block has no useful source offsets.
 - Treating every plaintext code block as math: that would corrupt legitimate unlabelled code examples.
 
 ## Assets and runtime behavior
@@ -55,7 +55,7 @@ The current math demonstration is in the draft post `src/content/posts/satteri-a
 
 ```sh
 just dev
-curl -fsS http://localhost:4321/blog/satteri-and-mdx-features/ > /tmp/math-page.html
+curl -fsS http://localhost:4321/blog/examples/satteri-and-mdx-features/ > /tmp/math-page.html
 grep -o 'class="katex"' /tmp/math-page.html | wc -l
 # Expected for the current post: 2
 
