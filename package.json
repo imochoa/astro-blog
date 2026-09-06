@@ -9,7 +9,7 @@
   },
   "scripts": {
     "generate:assets": "node scripts/generate-assets.mjs",
-    "dev": "astro dev",
+    "dev": "astro dev --force",
     "start": "astro dev",
     "prebuild": "pnpm run generate:assets",
     "build": "astro build",
