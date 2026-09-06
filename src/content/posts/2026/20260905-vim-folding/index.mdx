@@ -1,53 +1,34 @@
 ---
-title: Where is my TOC?
-description: How to structure long files
-publishedAt: 2026-08-29
+title: Building an in-file TOC for (neo)vim
+description: A little trick for big files
+publishedAt: 2026-09-06
+draft: false
 tags:
   - neovim
 ---
 
-## Bringing
+import { Image } from "astro:assets";
+import svgSrc from "./starship-toml.svg";
+import CollapsedContent from "@/ui/CollapsedContent.astro";
 
-Modern IDEs bring
-It's easy to get lost while moving around in a long file. Sometimes the IDE is able to digest it and offer folding and navigation features, but not always... This is usually the case when dealing with long configuration files (e.g. `tmux.conf` or `.bahsrc`).
+## In-file TOCs
 
-## The Solution
+I'm sure I can't be the only person doing this but I haven't seen it anywhere else so I thought it's worth talking about: you can use custom fold markers as an ad-hoc <abbr title="Table Of Contents">TOC</abbr>.
 
-One nice way I have found to help is by using vim folding markers in comments to add that missing structure.
+It is fairly simple: just place `{{{1` in a comemnt wherever you want to fold
+- `{{{` is the default fold marker
+- `1` puts it at "fold level 1" i.e. put all of them at the same level despite the missing the closing `}}}` markers. Otherwise each marker would nest the fold one level deeper.
 
-### [1/2] Set the folding method to marker
+To make sure that the correct vim fold settings are there, I usually just add this [modeline](https://neovim.io/doc/user/usr_21.html#_modelines)[^security] at the end of the file:
 
-I usually just add this [modeline](https://neovim.io/doc/user/usr_21.html#_modelines)[^security] at the end of the file. This uses the default `{{{` marker, but you can override that if you prefer something else
+<CollapsedContent summary="vim: fdm=marker:fen:fdl=0:">
+- `fdm=marker`: (`foldmethod=marker`) Sets the method for folding code. marker looks for specific markers (default is `{{{` and `}}}`) to define the boundaries of a fold.
+- `fen`: (`foldenable`) Enables code folding for this file. If this were nofen, folding would be disabled.
+- `fdl=0`:(`foldlevel=0`) Sets the starting fold level. A level of 0 means that all folds are closed by default when you open the file
 
-```bash
-# Inside of a comment, replace '#' as required
-# vim: fdm=marker:fen:fdl=0:
-```
+</CollapsedContent>
 
-[^security]: I'm aware that enabling modelines is a potential security risk. I am not sure this is still relevant in more-recent (neo)vim installations, but if you want to be extra safe you can set the settings via the commands directly
-
-### [2/2] Place your markers
-
-| _Implied_ level | Style |
-| --------------: | :---- |
-
-I use only "level 1" markers `{{{1` so that they stay visible at the highest
-folding level, but you can fold them if you prefer by using higher levels (e.g.
-`{{{2`)
-
-```
-# {{{1 This is a "Heading 1"
-...
-#   {{{1 This is a "Heading 2"
-...
-#     {{{1 This is a "Heading 3"
-...
-```
-
-> The spacing before the markers is just there help visualize the levels. You do
-> need the `#` to put it in a comment though
-
-## Here's an example in a small file
+## Here's a small example
 
 ### Before folding
 
@@ -89,3 +70,19 @@ vim.filetype.add({
 -- |  {{{1 poetry
 -- |  {{{1 docker
 ```
+
+## Here's a real-world example
+Take a look at my ~550 line [starship](https://starship.rs/) config:
+
+<figure>
+  <Image
+    src={svgSrc}
+    alt="File show-casing using custom fold markers as a TOC"
+  />
+  <figcaption>`starship.toml` config file[^martin-wimpress]</figcaption>
+</figure>
+
+
+[^security]: I'm aware that enabling modelines is a potential security risk. I am not sure this is still relevant in more-recent (neo)vim installations, but if you want to be extra safe you can set the settings via the commands directly
+
+[^martin-wimpress]: updated version of [this `starship.toml` file](https://gist.github.com/flexiondotorg/d823f23a2c0b2f1f4fd181e521b1618f) from [Martin Wimpress](/people/martin-wimpress/)
