@@ -1,9 +1,9 @@
 ---
 import PostCard from "@/components/blog/PostCard.astro";
-import type { FeedEntry } from "@/lib/posts";
+import type { PostEntry } from "@/lib/posts";
 
 interface Props {
-  entries: FeedEntry[];
+  entries: PostEntry[];
   emptyMessage?: string;
   showTags?: boolean;
 }

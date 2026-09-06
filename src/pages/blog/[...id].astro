@@ -1,6 +1,7 @@
 ---
 import { getEntry, render, type CollectionEntry } from "astro:content";
 import PostNavigation from "@/components/blog/PostNavigation.astro";
+import PostReferences from "@/components/blog/PostReferences.astro";
 import TableOfContents from "@/components/blog/TableOfContents.astro";
 import FormattedDate from "@/ui/FormattedDate.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
@@ -92,6 +93,8 @@ const nextPage = next ? `/blog/${next.id}/` : undefined;
         <Content components={mdxComponents} />
       </div>
     </div>
+
+    <PostReferences {post} />
   </article>
 
   <PostNavigation {previous} {next} />

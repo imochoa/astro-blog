@@ -3,10 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import MediaEntry from "@/components/blog/MediaEntry.astro";
 
 export async function getStaticPaths() {
-  const books = await getCollection(
-    "books",
-    ({ data }) => import.meta.env.DEV || !data.draft,
-  );
+  const books = await getCollection("books");
 
   return books.map((entry) => ({
     params: { id: entry.id },

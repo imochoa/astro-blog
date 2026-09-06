@@ -1,0 +1,40 @@
+---
+import MediaCard from "@/components/blog/MediaCard.astro";
+import type { MediaEntry } from "@/lib/posts";
+
+interface Props {
+  entries: MediaEntry[];
+  emptyMessage?: string;
+}
+
+const { entries, emptyMessage = "Nothing here yet." } = Astro.props;
+---
+
+{
+  entries.length > 0 ? (
+    <ul class="media-list" role="list">
+      {entries.map((entry) => (
+        <li>
+          <MediaCard {entry} />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>{emptyMessage}</p>
+  )
+}
+
+<style>
+  .media-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    min-width: 0;
+  }
+</style>

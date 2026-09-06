@@ -4,8 +4,7 @@
     "description": "Terminal session recording, playback, and web embeds."
   },
   "math": {
-    "name": "Math",
-    "description": "Terminal session recording, playback, and web embeds."
+    "name": "Math"
   },
   "talon": {
     "name": "TalonVoice",
@@ -16,12 +15,10 @@
     "description": "I used to be a stickler for definitions"
   },
   "software": {
-    "name": "Software",
-    "description": "Terminal session recording, playback, and web embeds."
+    "name": "Software"
   },
   "rust": {
-    "name": "Rust",
-    "description": "Terminal session recording, playback, and web embeds."
+    "name": "Rust"
   },
   "book": {
     "name": "Book",
@@ -36,12 +33,11 @@
     "description": "Terminal session recording, playback, and web embeds."
   },
   "diy": {
-    "name": "DIY",
-    "description": "Terminal session recording, playback, and web embeds."
+    "name": "DIY"
   },
   "keyboards": {
     "name": "Keyboards",
-    "description": "Terminal session recording, playback, and web embeds."
+    "description": "(not digital pianos)"
   },
   "astro": {
     "name": "Astro",
@@ -72,12 +68,10 @@
     "description": "Text-based diagrams rendered during the static build."
   },
   "webassembly": {
-    "name": "WASM",
-    "description": "WebAssembly (WASM) "
+    "name": "WASM"
   },
   "threejs": {
-    "name": "Three.js",
-    "description": "Interactive 3D scenes rendered in the browser with Three.js."
+    "name": "Three.js"
   },
   "neovim": {
     "name": "Neovim",

@@ -1,7 +1,9 @@
 ---
-import { getEntry, render, type CollectionEntry } from "astro:content";
+import { getEntry, type CollectionEntry } from "astro:content";
 import BasicLayout from "@/layouts/BasicLayout.astro";
+import PostList from "@/components/blog/PostList.astro";
 import FormattedDate from "@/ui/FormattedDate.astro";
+import { getPostsMentioning } from "@/lib/posts";
 
 type MediaEntry = CollectionEntry<"books"> | CollectionEntry<"videos">;
 
@@ -10,78 +12,162 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const rendered = await render(entry);
-const { Content } = rendered;
-const mdxComponents = "components" in rendered ? rendered.components : {};
-const tags = await Promise.all(entry.data.tags.map((tag) => getEntry(tag)));
-const tagNames = tags.flatMap((tag) => (tag ? [tag.data.name] : []));
 const isBook = entry.collection === "books";
 const people = isBook
   ? await Promise.all(entry.data.authors.map((author) => getEntry(author)))
   : await Promise.all(entry.data.creators.map((creator) => getEntry(creator)));
-const peopleNames = people.flatMap((person) =>
-  person ? [person.data.name] : [],
-);
-const date = isBook ? entry.data.readAt : entry.data.watchedAt;
-const dateLabel = isBook ? "Read" : "Watched";
-const typeLabel = isBook ? "Book" : "Video";
-const byline =
-  peopleNames.length > 0
-    ? `by ${new Intl.ListFormat("en", { style: "long", type: "conjunction" }).format(peopleNames)}`
-    : undefined;
-const externalURL = isBook ? entry.data.link : entry.data.url;
-const externalLabel = isBook ? "Book details" : "Watch video";
+const mentionedIn = await getPostsMentioning(entry);
+const externalURL = entry.data.url;
+const externalLabel = isBook ? "View book details" : "Watch video";
+const personalDate = isBook ? entry.data.readAt : entry.data.watchedAt;
 ---
 
-<BasicLayout
-  title={entry.data.title}
-  description={entry.data.description}
-  pageType="article"
-  publishedAt={date}
-  tags={tagNames}
->
-  <article class="post" data-pagefind-body>
+<BasicLayout title={entry.data.title} description={entry.data.description}>
+  <article class="media-entry">
     <header class="page-header">
-      <p class="eyebrow">{typeLabel}</p>
-      <FormattedDate {date} label={dateLabel} />
-      <h1 data-pagefind-meta="title">{entry.data.title}</h1>
-      {byline && <p class="byline">{byline}</p>}
+      <p class="eyebrow">{isBook ? "Book" : "Video"}</p>
+      <h1>{entry.data.title}</h1>
       <p>{entry.data.description}</p>
-      {
-        tags.length > 0 && (
-          <ul class="tag-list" role="list" aria-label="Tags">
-            {tags.map(
-              (tag) =>
-                tag && (
-                  <li>
-                    <a class="tag" href={`/tags/${tag.id}/`}>
-                      {tag.data.name}
-                    </a>
-                  </li>
-                ),
-            )}
-          </ul>
-        )
-      }
-      {
-        externalURL && (
-          <p>
-            <a href={externalURL}>{externalLabel} →</a>
-          </p>
-        )
-      }
     </header>
 
-    <div class="prose">
-      <Content components={mdxComponents} />
-    </div>
+    <dl class="media-details">
+      <div>
+        <dt>{isBook ? "Authors" : "Creators"}</dt>
+        <dd>
+          <ul class="people-list" role="list">
+            {
+              people.map(
+                (person) =>
+                  person && (
+                    <li>
+                      <a href={`/people/${person.id}/`}>{person.data.name}</a>
+                    </li>
+                  ),
+              )
+            }
+          </ul>
+        </dd>
+      </div>
+      {
+        entry.data.publishedAt && (
+          <div>
+            <dt>Published</dt>
+            <dd>
+              <FormattedDate date={entry.data.publishedAt} />
+            </dd>
+          </div>
+        )
+      }
+      {
+        personalDate && (
+          <div>
+            <dt>{isBook ? "Read" : "Watched"}</dt>
+            <dd>
+              <FormattedDate date={personalDate} />
+            </dd>
+          </div>
+        )
+      }
+      {
+        isBook && entry.data.isbn && (
+          <div>
+            <dt>ISBN</dt>
+            <dd>{entry.data.isbn}</dd>
+          </div>
+        )
+      }
+      {
+        !isBook && entry.data.duration && (
+          <div>
+            <dt>Duration</dt>
+            <dd>{entry.data.duration}</dd>
+          </div>
+        )
+      }
+    </dl>
+
+    {
+      externalURL && (
+        <p class="external-link">
+          <a href={externalURL} rel="external">
+            {externalLabel} →
+          </a>
+        </p>
+      )
+    }
   </article>
+
+  <section class="mentioned-in" aria-labelledby="mentioned-in-heading">
+    <header class="section-header">
+      <h2 id="mentioned-in-heading">Mentioned in</h2>
+      <p>Posts that reference this {isBook ? "book" : "video"}.</p>
+    </header>
+    <PostList
+      entries={mentionedIn}
+      emptyMessage="This hasn't been mentioned in a published post yet."
+    />
+  </section>
 </BasicLayout>
 
 <style>
-  .byline {
+  .media-entry,
+  .mentioned-in {
+    width: min(100%, 48rem);
+    margin-inline: auto;
+  }
+
+  .media-details {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  .media-details > div {
+    display: grid;
+    grid-template-columns: minmax(6rem, 9rem) 1fr;
+    gap: var(--space-md);
+  }
+
+  dt {
     color: var(--color-muted);
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .people-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .external-link {
+    margin-top: var(--space-md);
+  }
+
+  .mentioned-in {
+    display: grid;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 30rem) {
+    .media-details > div {
+      grid-template-columns: 1fr;
+      gap: var(--space-xs);
+    }
   }
 </style>

@@ -1,0 +1,66 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import MediaList from "@/components/blog/MediaList.astro";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+import type { MediaEntry } from "@/lib/posts";
+
+export async function getStaticPaths() {
+  const people = await getCollection("people");
+
+  return people.map((person) => ({
+    params: { id: person.id },
+    props: { person },
+  }));
+}
+
+interface Props {
+  person: CollectionEntry<"people">;
+}
+
+const { person } = Astro.props;
+const [books, videos] = await Promise.all([
+  getCollection("books"),
+  getCollection("videos"),
+]);
+const entries: MediaEntry[] = [...books, ...videos]
+  .filter((entry) => {
+    const people =
+      entry.collection === "books" ? entry.data.authors : entry.data.creators;
+    return people.some((entryPerson) => entryPerson.id === person.id);
+  })
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<BasicLayout title={person.data.name} description={person.data.description}>
+  <header class="page-header">
+    <p class="eyebrow">Person</p>
+    <h1>{person.data.name}</h1>
+    {person.data.description && <p>{person.data.description}</p>}
+    {
+      person.data.url && (
+        <p>
+          <a href={person.data.url} rel="external">
+            Visit website →
+          </a>
+        </p>
+      )
+    }
+  </header>
+
+  <section class="works" aria-labelledby="works-heading">
+    <header class="section-header">
+      <h2 id="works-heading">Books and videos</h2>
+    </header>
+    <MediaList
+      {entries}
+      emptyMessage="No books or videos by this person yet."
+    />
+  </section>
+</BasicLayout>
+
+<style>
+  .works {
+    display: grid;
+    gap: var(--space-lg);
+  }
+</style>

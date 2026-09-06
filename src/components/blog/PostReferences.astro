@@ -1,0 +1,38 @@
+---
+import { getEntry } from "astro:content";
+import MediaList from "@/components/blog/MediaList.astro";
+import type { MediaEntry, PostEntry } from "@/lib/posts";
+
+interface Props {
+  post: PostEntry;
+}
+
+const { post } = Astro.props;
+const [books, videos] = await Promise.all([
+  Promise.all(post.data.books.map((book) => getEntry(book))),
+  Promise.all(post.data.videos.map((video) => getEntry(video))),
+]);
+const entries = [...books, ...videos].filter(
+  (entry): entry is MediaEntry => entry !== undefined,
+);
+---
+
+{
+  entries.length > 0 && (
+    <section class="post-references" aria-labelledby="references-heading">
+      <h2 id="references-heading">Books and videos mentioned</h2>
+      <MediaList {entries} />
+    </section>
+  )
+}
+
+<style>
+  .post-references {
+    width: min(100%, 48rem);
+    display: grid;
+    gap: var(--space-md);
+    margin: var(--space-xl) auto 0;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+  }
+</style>

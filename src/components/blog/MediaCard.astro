@@ -1,0 +1,74 @@
+---
+import { getEntry } from "astro:content";
+import { getMediaPath, type MediaEntry } from "@/lib/posts";
+
+interface Props {
+  entry: MediaEntry;
+}
+
+const { entry } = Astro.props;
+const isBook = entry.collection === "books";
+const people = isBook
+  ? await Promise.all(entry.data.authors.map((author) => getEntry(author)))
+  : await Promise.all(entry.data.creators.map((creator) => getEntry(creator)));
+const peopleNames = people.flatMap((person) =>
+  person ? [person.data.name] : [],
+);
+const byline = new Intl.ListFormat("en", {
+  style: "long",
+  type: "conjunction",
+}).format(peopleNames);
+const href = getMediaPath(entry);
+---
+
+<article class="media-card">
+  <p class="eyebrow">{isBook ? "Book" : "Video"}</p>
+  <h3><a {href}>{entry.data.title}</a></h3>
+  {byline && <p class="byline">by {byline}</p>}
+  <p>{entry.data.description}</p>
+</article>
+
+<style>
+  .media-card {
+    position: relative;
+    height: 100%;
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  h3 a::after {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    content: "";
+  }
+
+  h3 a:hover {
+    color: var(--color-accent);
+  }
+
+  h3 a:focus-visible {
+    outline: none;
+  }
+
+  h3 a:focus-visible::after {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .byline {
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+</style>

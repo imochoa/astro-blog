@@ -14,36 +14,36 @@ const people = defineCollection({
   loader: file("src/content/people.json"),
   schema: z.object({
     name: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     url: z.url().optional(),
   }),
 });
 
-const sharedEntryFields = {
-  title: z.string(),
-  description: z.string(),
-  draft: z.boolean().default(false),
-  tags: z.array(reference("tags")).default([]),
-};
+const books = defineCollection({
+  loader: file("src/content/books.json"),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    authors: z.array(reference("people")).min(1),
+    url: z.url().optional(),
+    isbn: z.string().optional(),
+    publishedAt: z.coerce.date().optional(),
+    readAt: z.coerce.date().optional(),
+  }),
+});
 
-function tagsWith(automaticTag: string) {
-  return z.preprocess(
-    (value) => {
-      const entryTags = Array.isArray(value) ? value : [];
-      const hasAutomaticTag = entryTags.some(
-        (tag) =>
-          tag === automaticTag ||
-          (typeof tag === "object" &&
-            tag !== null &&
-            (("id" in tag && tag.id === automaticTag) ||
-              ("slug" in tag && tag.slug === automaticTag))),
-      );
-
-      return hasAutomaticTag ? entryTags : [automaticTag, ...entryTags];
-    },
-    z.array(reference("tags")),
-  );
-}
+const videos = defineCollection({
+  loader: file("src/content/videos.json"),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    creators: z.array(reference("people")).min(1),
+    url: z.url().optional(),
+    duration: z.string().optional(),
+    publishedAt: z.coerce.date().optional(),
+    watchedAt: z.coerce.date().optional(),
+  }),
+});
 
 const posts = defineCollection({
   loader: glob({
@@ -51,38 +51,15 @@ const posts = defineCollection({
     pattern: ["**/*.{md,mdx}", "!**/AGENTS.md"],
   }),
   schema: z.object({
-    ...sharedEntryFields,
+    title: z.string(),
+    description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+    tags: z.array(reference("tags")).default([]),
+    books: z.array(reference("books")).default([]),
+    videos: z.array(reference("videos")).default([]),
     socialImage: z.string().startsWith("/").optional(),
-  }),
-});
-
-const books = defineCollection({
-  loader: glob({
-    base: "./src/content/books",
-    pattern: "**/*.{md,mdx}",
-  }),
-  schema: z.object({
-    ...sharedEntryFields,
-    tags: tagsWith("book"),
-    authors: z.array(reference("people")).min(1),
-    readAt: z.coerce.date(),
-    link: z.url().optional(),
-  }),
-});
-
-const videos = defineCollection({
-  loader: glob({
-    base: "./src/content/videos",
-    pattern: "**/*.{md,mdx}",
-  }),
-  schema: z.object({
-    ...sharedEntryFields,
-    tags: tagsWith("video"),
-    creators: z.array(reference("people")).min(1),
-    watchedAt: z.coerce.date(),
-    url: z.url(),
   }),
 });
 

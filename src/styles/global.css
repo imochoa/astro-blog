@@ -323,6 +323,26 @@ time {
   text-decoration: none;
 }
 
+.directory-sections,
+.directory-section {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.directory-section + .directory-section {
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+.section-header {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.section-header p {
+  color: var(--color-muted);
+}
+
 .tag-index {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
@@ -333,15 +353,14 @@ time {
   min-width: 0;
 }
 
-.tag-card {
+.directory-card {
   height: 100%;
   display: grid;
+  align-content: start;
   gap: var(--space-xs);
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
   color: var(--color-text);
-  background: var(--color-surface);
   text-decoration: none;
   transition:
     border-color 160ms ease,
@@ -349,18 +368,58 @@ time {
     transform 160ms ease;
 }
 
-.tag-card:hover {
+.tag-card {
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: inset 0 0.25rem 0 var(--color-border-strong);
+}
+
+.person-card {
+  border-color: var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-soft),
+    var(--color-surface) 70%
+  );
+  box-shadow: inset 0.3rem 0 0 var(--color-accent);
+}
+
+.directory-card:hover {
   border-color: var(--color-border-strong);
   box-shadow: var(--shadow-md);
   text-decoration: none;
   transform: translateY(-0.2rem);
 }
 
-.tag-card:hover h2 {
+.directory-card:hover h3 {
   color: var(--color-accent);
 }
 
-.tag-card small {
+.directory-card h3 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: -0.02em;
+}
+
+.directory-card-kind {
+  width: fit-content;
+  padding: 0.1rem var(--space-xs);
+  border-radius: 999px;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.person-card .directory-card-kind {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+}
+
+.directory-card small {
   color: var(--color-muted);
 }
 
@@ -424,14 +483,19 @@ time {
   padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .prose .plantuml-image {
   width: auto;
   max-width: 100%;
+  height: auto;
   margin-inline: auto;
   border: 0;
+}
+
+.prose .plantuml-image text {
+  user-select: text;
 }
 
 .prose figcaption {
@@ -702,7 +766,7 @@ time {
 
   .button,
   .post-card,
-  .tag-card {
+  .directory-card {
     transition: none;
   }
 }

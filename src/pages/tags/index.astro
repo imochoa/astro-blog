@@ -1,48 +1,113 @@
 ---
 import { getCollection } from "astro:content";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { getFeedEntries } from "@/lib/posts";
+import { getPosts } from "@/lib/posts";
 
-const [tags, entries] = await Promise.all([
+const [tags, people, books, videos, posts] = await Promise.all([
   getCollection("tags"),
-  getFeedEntries(),
+  getCollection("people"),
+  getCollection("books"),
+  getCollection("videos"),
+  getPosts(),
 ]);
 
-const entryCounts = new Map<string, number>();
-for (const entry of entries) {
-  for (const tag of entry.data.tags) {
-    entryCounts.set(tag.id, (entryCounts.get(tag.id) ?? 0) + 1);
+const tagCounts = new Map<string, number>();
+const personCounts = new Map<string, number>();
+
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag.id, (tagCounts.get(tag.id) ?? 0) + 1);
+  }
+}
+
+for (const entry of [...books, ...videos]) {
+  const entryPeople =
+    entry.collection === "books" ? entry.data.authors : entry.data.creators;
+
+  for (const person of entryPeople) {
+    personCounts.set(person.id, (personCounts.get(person.id) ?? 0) + 1);
   }
 }
 
 const usedTags = tags
-  .filter((tag) => entryCounts.has(tag.id))
+  .filter((tag) => tagCounts.has(tag.id))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+const usedPeople = people
+  .filter((person) => personCounts.has(person.id))
   .sort((a, b) => a.data.name.localeCompare(b.data.name));
 ---
 
-<BasicLayout title="Tags" description="Browse entries by tag.">
+<BasicLayout
+  title="Tags and people"
+  description="Browse posts by tag and media by author or creator."
+>
   <header class="page-header">
-    <p class="eyebrow">Topics</p>
-    <h1>Tags</h1>
+    <p class="eyebrow">Browse</p>
+    <h1>Tags and people</h1>
   </header>
 
-  <ul class="tag-index" role="list">
-    {
-      usedTags.map((tag) => {
-        const entryCount = entryCounts.get(tag.id) ?? 0;
+  <div class="directory-sections">
+    <section class="directory-section" aria-labelledby="tags-heading">
+      <header class="section-header">
+        <h2 id="tags-heading">Tags</h2>
+        <p>Browse posts by topic.</p>
+      </header>
 
-        return (
-          <li>
-            <a class="tag-card" href={`/tags/${tag.id}/`}>
-              <h2>{tag.data.name}</h2>
-              {tag.data.description && <p>{tag.data.description}</p>}
-              <small>
-                {entryCount} {entryCount === 1 ? "entry" : "entries"}
-              </small>
-            </a>
-          </li>
-        );
-      })
-    }
-  </ul>
+      <ul class="tag-index" role="list">
+        {
+          usedTags.map((tag) => {
+            const entryCount = tagCounts.get(tag.id) ?? 0;
+
+            return (
+              <li>
+                <a class="directory-card tag-card" href={`/tags/${tag.id}/`}>
+                  <span class="directory-card-kind">
+                    <span aria-hidden="true">#</span> Tag
+                  </span>
+                  <h3>{tag.data.name}</h3>
+                  {tag.data.description && <p>{tag.data.description}</p>}
+                  <small>
+                    {entryCount} {entryCount === 1 ? "post" : "posts"}
+                  </small>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+
+    <section class="directory-section" aria-labelledby="people-heading">
+      <header class="section-header">
+        <h2 id="people-heading">People</h2>
+        <p>Browse books and videos by author or creator.</p>
+      </header>
+
+      <ul class="tag-index" role="list">
+        {
+          usedPeople.map((person) => {
+            const entryCount = personCounts.get(person.id) ?? 0;
+
+            return (
+              <li>
+                <a
+                  class="directory-card person-card"
+                  href={`/people/${person.id}/`}
+                >
+                  <span class="directory-card-kind">
+                    <span aria-hidden="true">@</span> Person
+                  </span>
+                  <h3>{person.data.name}</h3>
+                  {person.data.description && <p>{person.data.description}</p>}
+                  <small>
+                    {entryCount} {entryCount === 1 ? "work" : "works"}
+                  </small>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+  </div>
 </BasicLayout>
