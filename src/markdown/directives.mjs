@@ -34,6 +34,7 @@ export const directivePlugin = {
     context.setProperty(node, "data", renderAs(node, "div"));
   },
   textDirective(node, context) {
-    context.setProperty(node, "data", renderAs(node, "span"));
+    const tagName = node.name === "abbr" ? "abbr" : "span";
+    context.setProperty(node, "data", renderAs(node, tagName));
   },
 };
