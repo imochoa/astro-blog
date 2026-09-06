@@ -78,6 +78,10 @@ export default defineConfig({
         // into the devcontainer, so poll for source edits instead.
         usePolling: true,
         interval: 500,
+        // Polling disables Chokidar's default atomic-write handling. Without
+        // this, an editor's rename-on-save can briefly remove a post from the
+        // content store and leave its getStaticPaths route unavailable.
+        atomic: 1000,
         ignored: [
           "**/.output/**",
           "**/.pnpm-store/**",
