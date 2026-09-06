@@ -1,0 +1,208 @@
+' Blog palette for PlantUML. The Markdown renderer imports the light palette,
+' then maps its colors to page CSS variables. A manual import defaults to light.
+
+!if %not(%variable_exists("$BLOG_PLANTUML_MODE"))
+  !$BLOG_PLANTUML_MODE = "light"
+!endif
+
+!if $BLOG_PLANTUML_MODE == "dark"
+  !$BLOG_PUML_BACKGROUND = "#182235"
+  !$BLOG_PUML_SURFACE = "#182235"
+  !$BLOG_PUML_TEXT = "#F1ECDF"
+  !$BLOG_PUML_MUTED = "#A9AFBA"
+  !$BLOG_PUML_ACCENT = "#EF886E"
+  !$BLOG_PUML_ACCENT_SOFT = "#402B2D"
+  !$BLOG_PUML_BORDER = "#566178"
+  !$BLOG_PUML_HIGHLIGHT = "#F4B860"
+!else
+  !$BLOG_PUML_BACKGROUND = "#FFFDF8"
+  !$BLOG_PUML_SURFACE = "#FFFDF8"
+  !$BLOG_PUML_TEXT = "#182235"
+  !$BLOG_PUML_MUTED = "#626977"
+  !$BLOG_PUML_ACCENT = "#B94F38"
+  !$BLOG_PUML_ACCENT_SOFT = "#F2DCD3"
+  !$BLOG_PUML_BORDER = "#AEA698"
+  !$BLOG_PUML_HIGHLIGHT = "#F4B860"
+!endif
+
+' PlantUML's CSS-like style system is the primary styling mechanism.
+<style>
+  root {
+    BackgroundColor $BLOG_PUML_BACKGROUND
+    FontColor $BLOG_PUML_TEXT
+    FontName sans-serif
+    HyperLinkColor $BLOG_PUML_ACCENT
+    LineColor $BLOG_PUML_BORDER
+    LineThickness 1
+    Margin 10
+    Shadowing 0
+  }
+  element {
+    BackgroundColor $BLOG_PUML_ACCENT_SOFT
+    FontColor $BLOG_PUML_TEXT
+    LineColor $BLOG_PUML_BORDER
+  }
+  node {
+    BackgroundColor $BLOG_PUML_ACCENT_SOFT
+    FontColor $BLOG_PUML_TEXT
+    LineColor $BLOG_PUML_BORDER
+    RoundCorner 7
+  }
+  participant {
+    BackgroundColor $BLOG_PUML_ACCENT_SOFT
+    FontColor $BLOG_PUML_TEXT
+    LineColor $BLOG_PUML_BORDER
+    RoundCorner 7
+  }
+  arrow {
+    FontColor $BLOG_PUML_TEXT
+    LineColor $BLOG_PUML_ACCENT
+  }
+  note {
+    BackgroundColor $BLOG_PUML_ACCENT_SOFT
+    FontColor $BLOG_PUML_TEXT
+    LineColor $BLOG_PUML_HIGHLIGHT
+  }
+  groupHeader {
+    BackgroundColor $BLOG_PUML_ACCENT_SOFT
+    FontColor $BLOG_PUML_TEXT
+  }
+  separator {
+    BackgroundColor $BLOG_PUML_BORDER
+    FontColor $BLOG_PUML_TEXT
+  }
+  title {
+    FontColor $BLOG_PUML_TEXT
+    LineThickness 0
+  }
+</style>
+
+' Keep the palette usable for diagram types that still rely on skinparams.
+skinparam BackgroundColor $BLOG_PUML_BACKGROUND
+skinparam DefaultFontColor $BLOG_PUML_TEXT
+skinparam DefaultFontName sans-serif
+skinparam DefaultMonospacedFontName monospace
+skinparam HyperlinkColor $BLOG_PUML_ACCENT
+skinparam ArrowColor $BLOG_PUML_ACCENT
+skinparam ArrowFontColor $BLOG_PUML_TEXT
+skinparam ArrowLollipopColor $BLOG_PUML_ACCENT
+skinparam Shadowing false
+skinparam RoundCorner 7
+skinparam LifelineStrategy nosolid
+
+skinparam Actor {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+}
+skinparam Participant {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+}
+skinparam Sequence {
+  BoxBorderColor $BLOG_PUML_BORDER
+  BoxFontColor $BLOG_PUML_TEXT
+  DividerBackgroundColor $BLOG_PUML_ACCENT_SOFT
+  DividerBorderColor $BLOG_PUML_BORDER
+  DividerFontColor $BLOG_PUML_TEXT
+  GroupBackgroundColor $BLOG_PUML_SURFACE
+  GroupBorderColor $BLOG_PUML_BORDER
+  GroupFontColor $BLOG_PUML_TEXT
+  GroupHeaderFontColor $BLOG_PUML_TEXT
+  LifeLineBackgroundColor $BLOG_PUML_SURFACE
+  LifeLineBorderColor $BLOG_PUML_BORDER
+  ReferenceBackgroundColor $BLOG_PUML_SURFACE
+  ReferenceBorderColor $BLOG_PUML_BORDER
+  ReferenceFontColor $BLOG_PUML_TEXT
+}
+skinparam Note {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_HIGHLIGHT
+  FontColor $BLOG_PUML_TEXT
+}
+skinparam Class {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  AttributeFontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Object {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  AttributeFontColor $BLOG_PUML_TEXT
+}
+skinparam Activity {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  DiamondBackgroundColor $BLOG_PUML_SURFACE
+  DiamondBorderColor $BLOG_PUML_BORDER
+  DiamondFontColor $BLOG_PUML_TEXT
+  FontColor $BLOG_PUML_TEXT
+  StartColor $BLOG_PUML_ACCENT
+  EndColor $BLOG_PUML_ACCENT
+  BarColor $BLOG_PUML_ACCENT
+}
+skinparam State {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  AttributeFontColor $BLOG_PUML_TEXT
+  StartColor $BLOG_PUML_ACCENT
+  EndColor $BLOG_PUML_ACCENT
+}
+skinparam Component {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Package {
+  BackgroundColor $BLOG_PUML_SURFACE
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Node {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Database {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Usecase {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Rectangle {
+  BackgroundColor $BLOG_PUML_ACCENT_SOFT
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+  StereotypeFontColor $BLOG_PUML_MUTED
+}
+skinparam Legend {
+  BackgroundColor $BLOG_PUML_SURFACE
+  BorderColor $BLOG_PUML_BORDER
+  FontColor $BLOG_PUML_TEXT
+}
+skinparam Title {
+  FontColor $BLOG_PUML_TEXT
+}
+skinparam Caption {
+  FontColor $BLOG_PUML_MUTED
+}
+skinparam Header {
+  FontColor $BLOG_PUML_MUTED
+}
+skinparam Footer {
+  FontColor $BLOG_PUML_MUTED
+}

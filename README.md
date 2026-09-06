@@ -50,6 +50,10 @@ updatedAt: 2026-08-20 # optional
 socialImage: /social/my-post.png # optional; place the file under public/
 tags:
   - astro
+books:
+  - lazyvim # optional reference to src/content/books.json
+videos:
+  - 20260831-tagging # optional reference to src/content/videos.json
 draft: false
 ---
 ```
@@ -60,9 +64,52 @@ against that file during `astro check`. Post-specific assets can live under
 The blog index uses Astro's built-in pagination, with the page size configured
 in `src/lib/posts.ts`.
 
+Books and videos are reference data rather than posts. Add them to
+`src/content/books.json` or `src/content/videos.json`, then list their IDs in a
+post's `books` or `videos` frontmatter. Astro checks those references at build
+time. The post gets a standard list of the referenced items, and each generated
+book or video page lists the posts that mention it. Author and creator IDs come
+from `src/content/people.json`.
+
 Write math with `$...$` or `$$...$$`; it is rendered to local KaTeX HTML and
 MathML during the build. The Sätteri compatibility bridge is explained in
 [`docs/markdown-math.md`](docs/markdown-math.md).
+
+## Pulling posts from Joplin
+
+[`scripts/pull-joplin.py`](scripts/pull-joplin.py) reads selected notes directly
+from Joplin Desktop's Web Clipper REST API. Run it on the host, where the desktop
+application is available. It requires [uv](https://docs.astral.sh/uv/) and reads
+the API token from the environment:
+
+```sh
+export JOPLIN_TOKEN='token from Joplin Web Clipper settings'
+just joplin-list --search "part of a note title"
+```
+
+Add the resulting note ID and its destination to
+[`joplin-notes.toml`](joplin-notes.toml):
+
+```toml
+[[notes]]
+id = "0123456789abcdef0123456789abcdef"
+path = "src/content/posts/example.md"
+```
+
+Pulling is a dry run by default. Pass `--no-dry-run` to write the Markdown and
+any attached resources:
+
+```sh
+just joplin-pull
+just joplin-pull --no-dry-run
+```
+
+The note body is written as-is, so a note destined for the posts collection must
+contain the frontmatter described above. Attached Joplin resources are placed in
+a sibling `<post>.assets/` directory and their `:/resource-id` links are
+rewritten. Joplin links to other notes are left unchanged and reported as
+warnings. The script does not perform two-way synchronization or delete local
+files.
 
 ## Discovery and metadata
 

@@ -1,6 +1,6 @@
 # PlantUML rendering
 
-The blog renders fenced `plantuml` code blocks to SVG during Markdown and MDX compilation. The implementation is in [`src/markdown/plantuml.mjs`](../src/markdown/plantuml.mjs) and is registered as a Sätteri MDAST plugin in [`astro.config.mjs`](../astro.config.mjs).
+The blog renders fenced `plantuml` code blocks to inline SVG during Markdown and MDX compilation. The implementation is in [`src/markdown/plantuml.mjs`](../src/markdown/plantuml.mjs) and is registered as paired Sätteri MDAST and HAST plugins in [`astro.config.mjs`](../astro.config.mjs).
 
 ## Authoring
 
@@ -35,25 +35,37 @@ just up
 
 ## Pipeline
 
-For every PlantUML code node, the plugin:
+For every PlantUML code node, the plugins:
 
-1. Runs `java -jar "$PLANTUML_JAR" --svg --pipe --charset UTF-8 --disable-metadata` without a shell.
-2. Uses the content file's directory as the child process working directory so relative `!include` paths resolve beside the post.
-3. Rejects process failures, non-SVG output, and output larger than 10 MiB.
-4. Base64-encodes the SVG as a `data:image/svg+xml` image in a `.plantuml-diagram` figure.
-5. Copies the `alt` fence metadata to the image and marks the figure with `data-pagefind-ignore`.
+1. Import [`src/markdown/plantuml-theme.iuml`](../src/markdown/plantuml-theme.iuml) with its light palette after the diagram's `@start...` line.
+2. Run `java -jar "$PLANTUML_JAR" --svg --pipe --charset UTF-8 --disable-metadata` once without a shell.
+3. Use the content file's directory as the child process working directory so relative `!include` paths resolve beside the post.
+4. Reject process failures, non-SVG output, and output larger than 10 MiB.
+5. Preserve the result in a figure placeholder until the HAST pass.
+6. Parse and sanitize the SVG, prefix generated IDs and their references, and replace the site palette's fixed colors with inherited CSS variables.
+7. Add an accessible title from the fence's `alt` metadata and mark the figure with `data-pagefind-ignore`.
 
-A data image keeps each SVG in its own document. This avoids ID collisions when a page contains several PlantUML diagrams and prevents generated SVG markup from sharing the article DOM.
-
-The rendering plugin is asynchronous. Keep it in `mdastPlugins`; moving it to the HAST phase would run after syntax highlighting has already turned the source into an ordinary code block.
+The asynchronous renderer must remain in `mdastPlugins`; moving it to the HAST phase would run after syntax highlighting has turned the source into an ordinary code block. The paired `plantUMLHastPlugin` performs the safe inline insertion after the MDAST-to-HAST conversion.
 
 ## Styling
 
-PlantUML figure styles live in [`src/styles/global.css`](../src/styles/global.css). The wrapper uses a white background in both site themes because PlantUML's default palette assumes a light canvas. Authors can select another PlantUML theme inside the diagram source.
+No built-in PlantUML theme is selected. Without site styling or an explicit `!theme`, PlantUML uses its default palette. The example previously selected `!theme plain`, which is PlantUML's black-on-white theme.
+
+The renderer imports [`src/markdown/plantuml-theme.iuml`](../src/markdown/plantuml-theme.iuml) automatically. It uses PlantUML's CSS-like `<style>` syntax and includes legacy `skinparam` rules for diagram types that do not use the newer style system consistently.
+
+PlantUML needs concrete colors while laying out the diagram, so the renderer uses the light palette as tokens. Before inserting the SVG, it replaces those colors with the corresponding variables from [`src/styles/global.css`](../src/styles/global.css). Because inline SVG inherits CSS variables from the page, one diagram follows both the initial theme and the theme toggle without client-side diagram code.
+
+The site theme is inserted immediately after `@start...`, so later PlantUML directives in a fenced block can override it. Colors introduced by an explicit `!theme` remain fixed unless they use the site's token palette.
+
+## Inline SVG safety
+
+Inline SVG makes labels selectable and links interactive, but removes the security and CSS boundary provided by an `img`. The HAST plugin strips active elements, event-handler attributes, unsafe URLs, and styles containing external URLs or executable CSS. It also prefixes every generated ID using the content file, source location, and diagram source, then rewrites local references such as marker URLs.
+
+PlantUML's embedded `<style>` elements are removed to prevent rules from leaking into the article. Safe presentation attributes and inline styles remain. The root receives `role="img"`, an `aria-labelledby` reference, and a generated `<title>` containing the authored alternative text.
 
 ## Validation
 
-The published demonstration in [`src/content/posts/render-plantuml-diagrams-in-astro.mdx`](../src/content/posts/render-plantuml-diagrams-in-astro.mdx) makes the production build exercise the renderer. Run:
+The demonstration in [`src/content/posts/examples/render-plantuml-diagrams-in-astro.mdx`](../src/content/posts/examples/render-plantuml-diagrams-in-astro.mdx) exercises the renderer in development. Run:
 
 ```sh
 just check

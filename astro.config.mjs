@@ -19,7 +19,10 @@ import {
 } from "@shikijs/transformers";
 import { directivePlugin } from "./src/markdown/directives.mjs";
 import { displayMathPlugin, katexPlugin } from "./src/markdown/katex.mjs";
-import { plantUMLPlugin } from "./src/markdown/plantuml.mjs";
+import {
+  plantUMLHastPlugin,
+  plantUMLPlugin,
+} from "./src/markdown/plantuml.mjs";
 import { SITE } from "./src/site-data.ts";
 
 /** @param {string[]} args */
@@ -58,11 +61,12 @@ export default defineConfig({
       "import.meta.env.SITE_BUILD_DIRTY": JSON.stringify(buildDirty),
     },
     // Draft routes are not part of production's static route scan. Pre-bundle
-    // Three.js so its client-only island is still ready on first dev request.
-    // Rapier's compat package is already one ESM file with embedded Wasm, and
-    // Vite's optimizer fails to emit it reliably. Serve only that package as-is.
+    // dependencies used only by their client islands so they are ready on the
+    // first dev request. Rapier's compat package is already one ESM file with
+    // embedded Wasm, and Vite's optimizer fails to emit it reliably. Serve only
+    // that package as-is.
     optimizeDeps: {
-      include: ["three"],
+      include: ["asciinema-player", "three"],
       exclude: ["@dimforge/rapier3d-compat"],
     },
     // These generated/local directories are not site source and can contain
@@ -105,7 +109,7 @@ export default defineConfig({
       // Sätteri otherwise highlights display math as indistinguishable plaintext.
       // See docs/markdown-math.md before changing this order.
       mdastPlugins: [directivePlugin, displayMathPlugin, plantUMLPlugin],
-      hastPlugins: [katexPlugin],
+      hastPlugins: [katexPlugin, plantUMLHastPlugin],
       features: {
         gfm: true,
         frontmatter: true,
