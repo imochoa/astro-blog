@@ -7,25 +7,25 @@ tags:
   - neovim
 ---
 
-import { Image } from "astro:assets";
-import svgSrc from "./starship-toml.svg";
 import CollapsedContent from "@/ui/CollapsedContent.astro";
+import Figure from "@/ui/Figure.astro";
+import starshipTomlSvg from "./starship-toml.svg";
 
 ## In-file TOCs
 
-I'm sure I can't be the only person doing this but I haven't seen it anywhere else so I thought it's worth talking about: you can use custom fold markers as an ad-hoc <abbr title="Table Of Contents">TOC</abbr>.
+I'm sure I can't be the only person doing this, but I haven't seen it anywhere else, so I thought it's worth talking about: you can use custom fold markers as an ad hoc <abbr title="Table Of Contents">TOC</abbr>.
 
-It is fairly simple: just place `{{{1` in a comemnt wherever you want to fold
+It is fairly simple: just place `{{{1` in a comment wherever you want to fold
+
 - `{{{` is the default fold marker
-- `1` puts it at "fold level 1" i.e. put all of them at the same level despite the missing the closing `}}}` markers. Otherwise each marker would nest the fold one level deeper.
+- `1` puts it at "fold level 1," i.e., put all of them at the same level despite the missing closing `}}}` markers. Otherwise, each marker would nest the fold one level deeper.
 
 To make sure that the correct vim fold settings are there, I usually just add this [modeline](https://neovim.io/doc/user/usr_21.html#_modelines)[^security] at the end of the file:
 
 <CollapsedContent summary="vim: fdm=marker:fen:fdl=0:">
 - `fdm=marker`: (`foldmethod=marker`) Sets the method for folding code. marker looks for specific markers (default is `{{{` and `}}}`) to define the boundaries of a fold.
 - `fen`: (`foldenable`) Enables code folding for this file. If this were nofen, folding would be disabled.
-- `fdl=0`:(`foldlevel=0`) Sets the starting fold level. A level of 0 means that all folds are closed by default when you open the file
-
+- `fdl=0`: (`foldlevel=0`) Sets the starting fold level. A level of 0 means that all folds are closed by default when you open the file.
 </CollapsedContent>
 
 ## Here's a small example
@@ -72,17 +72,16 @@ vim.filetype.add({
 ```
 
 ## Here's a real-world example
+
 Take a look at my ~550 line [starship](https://starship.rs/) config:
 
-<figure>
-  <Image
-    src={svgSrc}
-    alt="File show-casing using custom fold markers as a TOC"
-  />
-  <figcaption>`starship.toml` config file[^martin-wimpress]</figcaption>
-</figure>
+<Figure
+  src={starshipTomlSvg}
+  alt="File showcasing using custom fold markers as a TOC"
+>
+  `starship.toml` config file[^martin-wimpress]
+</Figure>
 
+[^security]: I'm aware that enabling modelines is a potential security risk. I am not sure this is still relevant in more recent (neo)vim installations, but if you want to be extra safe, you can set the settings via the commands directly.
 
-[^security]: I'm aware that enabling modelines is a potential security risk. I am not sure this is still relevant in more-recent (neo)vim installations, but if you want to be extra safe you can set the settings via the commands directly
-
-[^martin-wimpress]: updated version of [this `starship.toml` file](https://gist.github.com/flexiondotorg/d823f23a2c0b2f1f4fd181e521b1618f) from [Martin Wimpress](/people/martin-wimpress/)
+[^martin-wimpress]: Updated version of [this gist](https://gist.github.com/flexiondotorg/d823f23a2c0b2f1f4fd181e521b1618f) from [Martin Wimpress](/people/martin-wimpress/)
