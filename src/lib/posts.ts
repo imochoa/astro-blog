@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 export const POSTS_PER_PAGE = 6;
 
 export type PostEntry = CollectionEntry<"posts">;
+export type PersonEntry = CollectionEntry<"people">;
 export type MediaEntry = CollectionEntry<"books"> | CollectionEntry<"videos">;
 
 function sortPosts(posts: PostEntry[]): PostEntry[] {
@@ -26,6 +27,17 @@ export async function getPosts(
 
 export function getMediaPath(entry: MediaEntry): string {
   return `/${entry.collection}/${entry.id}/`;
+}
+
+export async function getPostsMentioningPerson(
+  person: PersonEntry,
+  includeDrafts = import.meta.env.DEV,
+): Promise<PostEntry[]> {
+  const posts = await getPosts(includeDrafts);
+
+  return posts.filter((post) =>
+    post.data.people.some((reference) => reference.id === person.id),
+  );
 }
 
 export async function getPostsMentioning(

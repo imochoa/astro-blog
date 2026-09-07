@@ -57,6 +57,7 @@ const posts = defineCollection({
     updatedAt: z.coerce.date().optional(),
     draft: z.boolean().default(false),
     tags: z.array(reference("tags")).default([]),
+    people: z.array(reference("people")).default([]),
     books: z.array(reference("books")).default([]),
     videos: z.array(reference("videos")).default([]),
     socialImage: z.string().startsWith("/").optional(),

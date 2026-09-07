@@ -1,0 +1,18 @@
+---
+import { getEntry } from "astro:content";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const video = await getEntry("videos", id);
+
+if (!video) {
+  throw new Error(
+    `Unknown video "${id}" passed to <Video>. Add it to src/content/videos.json.`,
+  );
+}
+---
+
+<a href={`/videos/${video.id}/`}><slot>{video.data.title}</slot></a>

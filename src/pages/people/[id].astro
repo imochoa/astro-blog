@@ -1,8 +1,9 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import MediaList from "@/components/blog/MediaList.astro";
+import PostList from "@/components/blog/PostList.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import type { MediaEntry } from "@/lib/posts";
+import { getPostsMentioningPerson, type MediaEntry } from "@/lib/posts";
 
 export async function getStaticPaths() {
   const people = await getCollection("people");
@@ -18,9 +19,10 @@ interface Props {
 }
 
 const { person } = Astro.props;
-const [books, videos] = await Promise.all([
+const [books, videos, mentionedIn] = await Promise.all([
   getCollection("books"),
   getCollection("videos"),
+  getPostsMentioningPerson(person),
 ]);
 const entries: MediaEntry[] = [...books, ...videos]
   .filter((entry) => {
@@ -56,11 +58,29 @@ const entries: MediaEntry[] = [...books, ...videos]
       emptyMessage="No books or videos by this person yet."
     />
   </section>
+
+  <section class="mentioned-in" aria-labelledby="mentioned-in-heading">
+    <header class="section-header">
+      <h2 id="mentioned-in-heading">Mentioned in</h2>
+      <p>Posts that reference this person.</p>
+    </header>
+    <PostList
+      entries={mentionedIn}
+      emptyMessage="This person hasn't been mentioned in a published post yet."
+    />
+  </section>
 </BasicLayout>
 
 <style>
-  .works {
+  .works,
+  .mentioned-in {
     display: grid;
     gap: var(--space-lg);
+  }
+
+  .mentioned-in {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
   }
 </style>

@@ -1,0 +1,18 @@
+---
+import { getEntry } from "astro:content";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const book = await getEntry("books", id);
+
+if (!book) {
+  throw new Error(
+    `Unknown book "${id}" passed to <Book>. Add it to src/content/books.json.`,
+  );
+}
+---
+
+<a href={`/books/${book.id}/`}><slot>{book.data.title}</slot></a>

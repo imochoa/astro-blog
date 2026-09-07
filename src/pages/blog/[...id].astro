@@ -1,8 +1,11 @@
 ---
 import { getEntry, render, type CollectionEntry } from "astro:content";
+import Book from "@/components/blog/Book.astro";
+import Person from "@/components/blog/Person.astro";
 import PostNavigation from "@/components/blog/PostNavigation.astro";
 import PostReferences from "@/components/blog/PostReferences.astro";
 import TableOfContents from "@/components/blog/TableOfContents.astro";
+import Video from "@/components/blog/Video.astro";
 import FormattedDate from "@/ui/FormattedDate.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
 import { getPosts } from "@/lib/posts";
@@ -23,7 +26,13 @@ interface Props {
 const { post } = Astro.props;
 const rendered = await render(post);
 const { Content } = rendered;
-const mdxComponents = "components" in rendered ? rendered.components : {};
+const mdxComponents =
+  "components" in rendered &&
+  typeof rendered.components === "object" &&
+  rendered.components !== null
+    ? rendered.components
+    : {};
+const contentComponents = { Book, Person, Video, ...mdxComponents };
 const tocHeadings = rendered.headings.filter(
   ({ depth }) => depth >= 2 && depth <= 3,
 );
@@ -90,7 +99,7 @@ const nextPage = next ? `/blog/${next.id}/` : undefined;
         )
       }
       <div class="prose">
-        <Content components={mdxComponents} />
+        <Content components={contentComponents} />
       </div>
     </div>
 
