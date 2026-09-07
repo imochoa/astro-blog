@@ -29,7 +29,7 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
             title={alt}
             loading="lazy"
             sandbox="allow-same-origin"
-            data-figure-frame
+            data-figure-preview-frame
           />
         ) : (
           <Image src={src} alt={alt} />
@@ -62,7 +62,23 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
   <div class="dialog-toolbar">
     <button type="button" data-figure-close>Close</button>
   </div>
-  <div class="figure-stage" data-figure-stage></div>
+  <div class="figure-stage">
+    <div class="figure-expanded" style={figureStyle}>
+      {
+        isSvg ? (
+          <iframe
+            src={src.src}
+            title={alt}
+            loading="lazy"
+            sandbox="allow-same-origin"
+            data-figure-expanded-frame
+          />
+        ) : (
+          <Image src={src} alt={alt} />
+        )
+      }
+    </div>
+  </div>
 </dialog>
 
 <script>
@@ -77,8 +93,8 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
     const visual = figure.querySelector<HTMLElement>("[data-figure-visual]");
     const openLink =
       figure.querySelector<HTMLAnchorElement>("[data-figure-open]");
-    const frame = figure.querySelector<HTMLIFrameElement>(
-      "[data-figure-frame]",
+    const previewFrame = figure.querySelector<HTMLIFrameElement>(
+      "[data-figure-preview-frame]",
     );
     const dialog = figure.nextElementSibling;
 
@@ -91,26 +107,17 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
       continue;
     }
 
-    const stage = dialog.querySelector<HTMLElement>("[data-figure-stage]");
     const closeButton = dialog.querySelector<HTMLButtonElement>(
       "[data-figure-close]",
     );
 
-    if (!stage || !closeButton) continue;
+    if (!closeButton) continue;
 
     const open = () => {
       if (dialog.open) return;
 
-      home.style.minHeight = `${home.getBoundingClientRect().height}px`;
-      stage.append(visual);
       dialog.showModal();
       closeButton.focus();
-    };
-
-    const restore = () => {
-      home.prepend(visual);
-      home.style.removeProperty("min-height");
-      openLink.focus();
     };
 
     const hasSelection = (selection: Selection | null, container: Node) =>
@@ -127,10 +134,10 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
     });
     closeButton.addEventListener("click", () => dialog.close());
 
-    if (frame) {
+    if (previewFrame) {
       const attachFrameInteraction = () => {
-        const frameDocument = frame.contentDocument;
-        const frameWindow = frame.contentWindow;
+        const frameDocument = previewFrame.contentDocument;
+        const frameWindow = previewFrame.contentWindow;
         if (!frameDocument || !frameWindow) return;
 
         const root = frameDocument.documentElement;
@@ -151,7 +158,7 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
         });
       };
 
-      frame.addEventListener("load", attachFrameInteraction);
+      previewFrame.addEventListener("load", attachFrameInteraction);
       attachFrameInteraction();
     } else {
       visual.addEventListener("click", (event) => {
@@ -165,7 +172,7 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) dialog.close();
     });
-    dialog.addEventListener("close", restore);
+    dialog.addEventListener("close", () => openLink.focus());
   }
 </script>
 
@@ -281,14 +288,13 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
     background: var(--color-surface);
   }
 
-  .figure-stage .figure-visual {
+  .figure-expanded {
     width: var(--figure-width);
     max-width: none;
-    cursor: default;
   }
 
-  .figure-stage .figure-visual :global(img),
-  .figure-stage .figure-visual iframe {
+  .figure-expanded :global(img),
+  .figure-expanded iframe {
     display: block;
     width: 100%;
     max-width: none;
