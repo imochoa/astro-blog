@@ -2,6 +2,10 @@
 # These recipes are meant to run inside the devcontainer, where pnpm, just and
 # pre-commit are all provided. The "ci" recipe is the same gate used locally.
 
+alias f := format
+alias d := dev
+alias b := build
+
 # List available recipes
 default:
     @just --list
@@ -89,6 +93,16 @@ ci: install-ci pre-commit check-links
 # Build deployable output without running the CI checks. Temporal runs this
 # independently from `ci-container`, so a check failure does not block publishing.
 publish: install-ci build
+
+# List Joplin note IDs through the desktop Web Clipper API
+[group("host")]
+joplin-list *args:
+    ./scripts/pull-joplin.py list {{ args }}
+
+# Pull configured Joplin notes (dry run unless --no-dry-run is passed)
+[group("host")]
+joplin-pull *args:
+    ./scripts/pull-joplin.py pull {{ args }}
 
 # Bring the devcontainer up (podman via --docker-path)
 [group("host")]
