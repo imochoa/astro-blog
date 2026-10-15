@@ -1,4 +1,7 @@
-' GitHub pull-request and referenced Jira-ticket diagram helpers.
+' Gist-ready GitHub pull-request and referenced Jira-ticket diagram helpers.
+'
+' Local use: !include path/to/github-work-items.iuml
+' Gist use:  !includeurl https://gist.githubusercontent.com/.../raw/github-work-items.iuml
 '
 ' Pull-request specs may be fully qualified (owner/repo#42), relative to the
 ' default owner (repo#42), or relative to both defaults (#42).

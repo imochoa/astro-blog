@@ -41,10 +41,3 @@ repos:
         language: system
         files: \.(astro|svelte|ts|tsx)$
         pass_filenames: false
-
-      - id: github-prs-generator
-        name: GitHub PR PlantUML generator
-        entry: pnpm run test:github-prs
-        language: system
-        files: ^(plantuml/github-pull-requests\.puml|scripts/github-prs-to-plantuml(?:\.test)?\.mjs|scripts/fixtures/github-prs\.json|src/markdown/plantuml(?:\.test)?\.mjs)$
-        pass_filenames: false

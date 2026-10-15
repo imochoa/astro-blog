@@ -16,7 +16,6 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:links": "node scripts/check-links.mjs",
-    "test:github-prs": "node --test scripts/github-prs-to-plantuml.test.mjs src/markdown/plantuml.test.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

@@ -427,9 +427,7 @@ time {
 }
 
 .prose .plantuml-image {
-  display: block;
   width: auto;
-  height: auto;
   max-width: 100%;
   margin-inline: auto;
   border: 0;

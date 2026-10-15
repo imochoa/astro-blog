@@ -1,0 +1,31 @@
+@startuml
+title A stack of pull requests
+top to bottom direction
+
+!include ../github-work-items.iuml
+
+$GHPR_DEFAULTS("acme", "web")
+
+$GHPR_OWNER_BEGIN("acme", "organization", "org_acme")
+$GHPR_REPO_BEGIN("web", "repo_web")
+$GHPR_BRANCH("main", "branch_main", "base branch")
+$GHPR_BRANCH("feature/shell", "branch_shell", "head and base branch")
+$GHPR_BRANCH("feature/navigation", "branch_navigation", "head and base branch")
+$GHPR_BRANCH("feature/tests", "branch_tests", "head branch")
+
+$GHPR_PR("#8", "Build application shell", "feature/shell", "main", "approved", "pr_8", "PR #8\nBuild application shell\nApproved", %true())
+$GHPR_PR("#9", "Add navigation", "feature/navigation", "feature/shell", "review-required", "pr_9", "PR #9\nAdd navigation\nWaiting for review", %true())
+$GHPR_PR("#10", "Test navigation", "feature/tests", "feature/navigation", "draft", "pr_10", "PR #10\nTest navigation\nDraft", %true())
+$GHPR_END()
+$GHPR_END()
+
+$GHPR_OPENS(branch_shell, pr_8)
+$GHPR_OPENS(branch_navigation, pr_9)
+$GHPR_OPENS(branch_tests, pr_10)
+$GHPR_TARGETS(pr_8, branch_main)
+$GHPR_TARGETS(pr_9, branch_shell)
+$GHPR_TARGETS(pr_10, branch_navigation)
+$GHPR_STACK(pr_8, pr_9, "stack 1 -> 2")
+$GHPR_STACK(pr_9, pr_10, "stack 2 -> 3")
+$GHPR_LEGEND()
+@enduml
