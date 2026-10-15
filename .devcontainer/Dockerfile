@@ -7,7 +7,7 @@
 # Node 24 is the current LTS and even-numbered (Astro only supports even Node
 # majors). Its bundled Corepack is recent enough to avoid the old pnpm
 # signature-verification bug.
-FROM node:24-bookworm
+FROM docker.io/library/node:24-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 

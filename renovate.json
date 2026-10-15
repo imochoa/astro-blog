@@ -9,6 +9,19 @@
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "devDependencies (non-major)"
+    },
+    {
+      "description": "Automerge non-major updates after Temporal CI passes",
+      "matchUpdateTypes": [
+        "digest",
+        "lockFileMaintenance",
+        "minor",
+        "patch",
+        "pin"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": false
     }
   ]
 }
