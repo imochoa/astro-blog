@@ -71,6 +71,14 @@
     "name": "PlantUML",
     "description": "Text-based diagrams rendered during the static build."
   },
+  "github": {
+    "name": "GitHub",
+    "description": "GitHub repositories, pull requests, and developer workflows."
+  },
+  "jira": {
+    "name": "Jira",
+    "description": "Jira issues, ticket references, and delivery workflows."
+  },
   "webassembly": {
     "name": "WASM",
     "description": "WebAssembly (WASM) "

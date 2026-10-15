@@ -28,7 +28,7 @@ Author -> Astro: Build MDX post
 Astro -> Plugin: Visit plantuml fence
 Plugin -> PlantUML: Source on stdin
 PlantUML --> Plugin: SVG on stdout
-Plugin --> Astro: SVG data image
+Plugin --> Astro: Sanitized inline SVG
 Astro --> Author: Static HTML
 @enduml
 ```
@@ -129,31 +129,37 @@ mdastPlugins: [directivePlugin, displayMathPlugin, plantUMLPlugin];
 The visitor is asynchronous, so Astro waits for the Java process before it
 finishes compiling the post.
 
-## Keep each SVG isolated
+## Keep inline SVG safe
 
 PlantUML's SVG output can contain IDs for arrows, elements, and markers. Pasting
-several generated SVGs directly into one document risks duplicate IDs. Instead,
-the plugin base64-encodes each SVG into an image URL:
+several generated SVGs directly into one document risks duplicate IDs. However,
+inline SVG is required for PlantUML's hyperlinks and native hover tooltips to
+remain interactive.
+
+Before embedding a diagram, the plugin prefixes its IDs and removes scripts,
+embedded documents, event-handler attributes, and unsafe link protocols:
 
 ```html
 <figure class="plantuml-diagram" data-pagefind-ignore>
-  <img
+  <svg
     class="plantuml-image"
-    src="data:image/svg+xml;base64,..."
-    alt="Sequence diagram of the local build"
-    loading="lazy"
-    decoding="async"
-  />
+    role="img"
+    aria-labelledby="plantuml-example-title"
+  >
+    <title id="plantuml-example-title">
+      Sequence diagram of the local build
+    </title>
+    <!-- Generated PlantUML geometry and links -->
+  </svg>
 </figure>
 ```
 
-The browser still renders vector geometry at the final display size, but the SVG
-has its own document boundary. The generated diagram source is also excluded
-from Pagefind, which keeps labels from appearing as disconnected search text.
+The generated diagram is excluded from Pagefind, which keeps labels from
+appearing as disconnected search text.
 
 PlantUML's default diagrams use a light background, so the wrapper remains white
 in both site themes. A post can select a different built-in PlantUML theme with
 `!theme` when it needs another palette.
 
 No client JavaScript is involved. By the time the static site reaches Nginx, the
-diagram is an ordinary SVG-backed image inside the generated HTML.
+diagram is accessible inline SVG inside the generated HTML.

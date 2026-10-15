@@ -1,0 +1,138 @@
+---
+title: Generate PlantUML maps from open GitHub pull requests
+publishedAt: 2026-10-15
+description:
+  Query open pull requests with GitHub GraphQL, detect native and conventional
+  stacks and forks, then generate a PlantUML map without publishing live data.
+draft: true
+tags:
+  - github
+  - jira
+  - plantuml
+---
+
+Manually authored pull-request maps are useful for planning, but they become
+stale quickly. I paired my PlantUML library with a Node script that queries
+GitHub through the already authenticated `gh` CLI and writes the same macro
+calls automatically.
+
+The default view is every open PR authored by the current account:
+
+```sh
+node scripts/github-prs-to-plantuml.mjs \
+  --output /tmp/open-pull-requests.puml
+```
+
+The output is intentionally outside the repository. Repository names, branch
+names, and PR titles may be private even when the generator itself is public.
+Inspect the file before moving it into documentation or a blog post.
+
+Generated PR cards are compact by default. Hovering a PR number reveals its
+title, review state, head and base branches, and detected Jira keys. Pass
+`--expanded` when those details should remain visible in the diagram.
+
+The generator recognizes Jira-style keys in PR titles, descriptions, and head
+branch names. Set `JIRA_BASE_URL=https://jira.example.test` or pass
+`--jira-base-url https://jira.example.test` to make bare `PAY-101` keys
+clickable. A full `https://jira.example.test/browse/PAY-101` reference is
+used directly. Jira is not queried, so this adds no Jira credential or network
+dependency.
+
+## Choose the GitHub view
+
+The script accepts the same qualifiers as GitHub issue and pull-request search.
+For example, this view follows PRs involving me in one organization:
+
+```sh
+node scripts/github-prs-to-plantuml.mjs \
+  --query 'is:pr is:open org:acme involves:@me' \
+  --output /tmp/acme-pull-requests.puml
+```
+
+Other useful starting points include `author:@me`, `review-requested:@me`, and a
+combination of `org:` or `repo:` qualifiers. GitHub documents the available
+[pull-request search filters](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/filtering-and-searching-issues-and-pull-requests).
+
+## Prefer exact stack metadata
+
+GitHub now exposes read-only `stack` and `stackEntry` fields on the GraphQL
+`PullRequest` type. A stack entry includes its numeric position, where position
+one is closest to the target branch. The generator uses this exact metadata
+first and adds other PRs in the same stack even when they were not direct search
+results.
+
+Not every stacked workflow uses GitHub's native stack feature, so there are two
+fallbacks:
+
+1. If one PR's base branch equals another open PR's head branch in the same
+   repository, the latter is treated as the lower PR.
+2. Descriptions such as `Depends on #41`, `stacked on acme/payments#41`, and
+   `built on https://github.com/acme/payments/pull/41` create a declared edge
+   when the referenced PR is in the result set.
+
+Use `--no-heuristic-stacks` when only GitHub-native relationships should appear.
+
+This synthetic example contains all three forms:
+
+```plantuml alt="Pull requests in two repositories showing a native stack, a branch-based stack, and a declared dependency"
+@startuml
+!include ../../../../plantuml/github-pull-requests.puml
+
+$GHPR_DEFAULTS("acme", "payments")
+$GHPR_OWNER_BEGIN("acme", "organization", "owner_acme")
+$GHPR_REPO_BEGIN("payments", "repo_payments")
+$GHPR_BRANCH("main", "payments_main", "base branch")
+$GHPR_BRANCH("feature/api", "payments_api", "base / head branch")
+$GHPR_BRANCH("feature/retries", "payments_retries", "head branch")
+$GHPR_PR("#41", "Add payment API", "feature/api", "main", "approved", "payments_41")
+$GHPR_PR("#42", "Retry declined payments", "feature/retries", "feature/api", "draft", "payments_42")
+$GHPR_END()
+$GHPR_END()
+
+$GHPR_DEFAULTS("octo-labs", "web")
+$GHPR_OWNER_BEGIN("octo-labs", "organization", "owner_octolabs")
+$GHPR_REPO_BEGIN("web", "repo_web")
+$GHPR_BRANCH("main", "web_main", "base branch")
+$GHPR_BRANCH("ui/shell", "web_shell", "base / head branch")
+$GHPR_BRANCH("ui/navigation", "web_navigation", "head branch")
+$GHPR_BRANCH("ui/tests", "web_tests", "head branch")
+$GHPR_PR("#8", "Build application shell", "ui/shell", "main", "changes-requested", "web_8")
+$GHPR_PR("#9", "Add navigation", "ui/navigation", "ui/shell", "open", "web_9")
+$GHPR_PR("#10", "Test navigation", "ui/tests", "main", "open", "web_10")
+$GHPR_END()
+$GHPR_END()
+
+$GHPR_STACK(payments_41, payments_42, "GitHub stack")
+$GHPR_STACK(web_8, web_9, "branch stack")
+$GHPR_STACK(web_9, web_10, "declared stack")
+$GHPR_LEGEND()
+@enduml
+```
+
+## Detect forks from repository metadata
+
+The GraphQL query asks for both `baseRepository` and `headRepository`, including
+the head repository's `isFork` and `parent` fields. The generated diagram puts
+the head branch inside the fork owner's repository, puts the PR inside the base
+repository, and draws a fork relationship between the repository containers.
+
+That is more useful than treating every cross-repository PR as a label: the
+diagram still shows which branch disappears if a contributor deletes their
+fork.
+
+## Test without account data
+
+The checked-in fixture has invented organizations and repositories:
+
+```sh
+node scripts/github-prs-to-plantuml.mjs \
+  --fixture scripts/fixtures/github-prs.json \
+  --output /tmp/synthetic-pull-requests.puml
+
+just test-github-prs
+```
+
+The fixture exercises native stack expansion, both fallback strategies, fork
+detection, Jira references, grouping, compact hover text, and deterministic
+aliases. The rendered blog diagrams then exercise the PlantUML include during
+the normal Astro production build.

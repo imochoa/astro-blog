@@ -1,0 +1,267 @@
+{
+  "data": {
+    "viewer": {
+      "login": "alex"
+    },
+    "search": {
+      "issueCount": 5,
+      "pageInfo": {
+        "hasNextPage": false,
+        "endCursor": null
+      },
+      "nodes": [
+        {
+          "number": 41,
+          "title": "PAY-101 Add payment authorization API",
+          "url": "https://github.com/acme/payments/pull/41",
+          "bodyText": "First change in the payment stack.",
+          "state": "OPEN",
+          "isDraft": false,
+          "reviewDecision": "APPROVED",
+          "mergeStateStatus": "CLEAN",
+          "baseRefName": "main",
+          "headRefName": "feature/payment-api",
+          "isCrossRepository": false,
+          "baseRepository": {
+            "nameWithOwner": "acme/payments",
+            "isFork": false,
+            "owner": {
+              "login": "acme",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "headRepository": {
+            "nameWithOwner": "acme/payments",
+            "isFork": false,
+            "owner": {
+              "login": "acme",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "stack": {
+            "id": "STACK_acme_payments_1",
+            "number": 1,
+            "size": 2,
+            "baseRefName": "main",
+            "entries": {
+              "nodes": [
+                {
+                  "position": 1,
+                  "pullRequest": {
+                    "number": 41,
+                    "title": "PAY-101 Add payment authorization API",
+                    "url": "https://github.com/acme/payments/pull/41",
+                    "bodyText": "First change in the payment stack.",
+                    "state": "OPEN",
+                    "isDraft": false,
+                    "reviewDecision": "APPROVED",
+                    "mergeStateStatus": "CLEAN",
+                    "baseRefName": "main",
+                    "headRefName": "feature/payment-api",
+                    "isCrossRepository": false,
+                    "baseRepository": {
+                      "nameWithOwner": "acme/payments",
+                      "isFork": false,
+                      "owner": {
+                        "login": "acme",
+                        "__typename": "Organization"
+                      },
+                      "parent": null
+                    },
+                    "headRepository": {
+                      "nameWithOwner": "acme/payments",
+                      "isFork": false,
+                      "owner": {
+                        "login": "acme",
+                        "__typename": "Organization"
+                      },
+                      "parent": null
+                    }
+                  }
+                },
+                {
+                  "position": 2,
+                  "pullRequest": {
+                    "number": 42,
+                    "title": "Retry declined authorizations",
+                    "url": "https://github.com/acme/payments/pull/42",
+                    "bodyText": "Second change in the payment stack. Tracks https://jira.example.test/browse/PAY-102.",
+                    "state": "OPEN",
+                    "isDraft": true,
+                    "reviewDecision": null,
+                    "mergeStateStatus": "DRAFT",
+                    "baseRefName": "feature/payment-api",
+                    "headRefName": "feature/payment-retries",
+                    "isCrossRepository": false,
+                    "baseRepository": {
+                      "nameWithOwner": "acme/payments",
+                      "isFork": false,
+                      "owner": {
+                        "login": "acme",
+                        "__typename": "Organization"
+                      },
+                      "parent": null
+                    },
+                    "headRepository": {
+                      "nameWithOwner": "acme/payments",
+                      "isFork": false,
+                      "owner": {
+                        "login": "acme",
+                        "__typename": "Organization"
+                      },
+                      "parent": null
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "stackEntry": {
+            "position": 1
+          }
+        },
+        {
+          "number": 55,
+          "title": "Document payment webhooks",
+          "url": "https://github.com/acme/payments/pull/55",
+          "bodyText": "Documentation from a contributor fork.",
+          "state": "OPEN",
+          "isDraft": false,
+          "reviewDecision": "REVIEW_REQUIRED",
+          "mergeStateStatus": "BLOCKED",
+          "baseRefName": "main",
+          "headRefName": "docs/DOCS-55-webhooks",
+          "isCrossRepository": true,
+          "baseRepository": {
+            "nameWithOwner": "acme/payments",
+            "isFork": false,
+            "owner": {
+              "login": "acme",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "headRepository": {
+            "nameWithOwner": "dev-forks/payments",
+            "isFork": true,
+            "owner": {
+              "login": "dev-forks",
+              "__typename": "User"
+            },
+            "parent": {
+              "nameWithOwner": "acme/payments",
+              "isFork": false,
+              "owner": {
+                "login": "acme",
+                "__typename": "Organization"
+              }
+            }
+          },
+          "stack": null,
+          "stackEntry": null
+        },
+        {
+          "number": 8,
+          "title": "Build application shell",
+          "url": "https://github.com/octo-labs/web/pull/8",
+          "bodyText": "Base UI change.",
+          "state": "OPEN",
+          "isDraft": false,
+          "reviewDecision": "CHANGES_REQUESTED",
+          "mergeStateStatus": "BLOCKED",
+          "baseRefName": "main",
+          "headRefName": "ui/shell",
+          "isCrossRepository": false,
+          "baseRepository": {
+            "nameWithOwner": "octo-labs/web",
+            "isFork": false,
+            "owner": {
+              "login": "octo-labs",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "headRepository": {
+            "nameWithOwner": "octo-labs/web",
+            "isFork": false,
+            "owner": {
+              "login": "octo-labs",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "stack": null,
+          "stackEntry": null
+        },
+        {
+          "number": 9,
+          "title": "Add primary navigation",
+          "url": "https://github.com/octo-labs/web/pull/9",
+          "bodyText": "Based on the application shell branch for WEB-9.",
+          "state": "OPEN",
+          "isDraft": false,
+          "reviewDecision": null,
+          "mergeStateStatus": "BEHIND",
+          "baseRefName": "ui/shell",
+          "headRefName": "ui/navigation",
+          "isCrossRepository": false,
+          "baseRepository": {
+            "nameWithOwner": "octo-labs/web",
+            "isFork": false,
+            "owner": {
+              "login": "octo-labs",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "headRepository": {
+            "nameWithOwner": "octo-labs/web",
+            "isFork": false,
+            "owner": {
+              "login": "octo-labs",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "stack": null,
+          "stackEntry": null
+        },
+        {
+          "number": 10,
+          "title": "Test responsive navigation",
+          "url": "https://github.com/octo-labs/web/pull/10",
+          "bodyText": "Depends on #9.",
+          "state": "OPEN",
+          "isDraft": false,
+          "reviewDecision": null,
+          "mergeStateStatus": "UNKNOWN",
+          "baseRefName": "main",
+          "headRefName": "ui/navigation-tests",
+          "isCrossRepository": false,
+          "baseRepository": {
+            "nameWithOwner": "octo-labs/web",
+            "isFork": false,
+            "owner": {
+              "login": "octo-labs",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "headRepository": {
+            "nameWithOwner": "octo-labs/web",
+            "isFork": false,
+            "owner": {
+              "login": "octo-labs",
+              "__typename": "Organization"
+            },
+            "parent": null
+          },
+          "stack": null,
+          "stackEntry": null
+        }
+      ]
+    }
+  }
+}

@@ -24,7 +24,7 @@ list-npm:
 
 # Get list with...
 # jq ".scripts | keys" < package.json
-[arg("cmd", pattern="start|build|check|check:links|dev|format|format:check|generate:assets|lint|lint:fix|prebuild|preview", help="What pnpm package.json command to run")]
+[arg("cmd", pattern="start|build|check|check:links|dev|format|format:check|generate:assets|lint|lint:fix|prebuild|preview|test:github-prs", help="What pnpm package.json command to run")]
 pnpm cmd:
     pnpm run {{ cmd }}
 
@@ -66,6 +66,10 @@ lint: (pnpm "lint")
 # Auto-fix lint issues
 [group("package.json")]
 lint-fix: (pnpm "lint:fix")
+
+# Exercise native stacks, inferred stacks, and forks with synthetic GitHub data
+[group("package.json")]
+test-github-prs: (pnpm "test:github-prs")
 
 # Format and auto-fix lint issues
 [group("package.json")]

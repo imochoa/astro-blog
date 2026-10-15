@@ -40,10 +40,16 @@ For every PlantUML code node, the plugin:
 1. Runs `java -jar "$PLANTUML_JAR" --svg --pipe --charset UTF-8 --disable-metadata` without a shell.
 2. Uses the content file's directory as the child process working directory so relative `!include` paths resolve beside the post.
 3. Rejects process failures, non-SVG output, and output larger than 10 MiB.
-4. Base64-encodes the SVG as a `data:image/svg+xml` image in a `.plantuml-diagram` figure.
-5. Copies the `alt` fence metadata to the image and marks the figure with `data-pagefind-ignore`.
+4. Removes active SVG markup and unsafe link protocols, prefixes generated IDs,
+   and embeds the SVG inline in a `.plantuml-diagram` figure.
+5. Copies the `alt` fence metadata to an accessible SVG title and marks the
+   figure with `data-pagefind-ignore`.
 
-A data image keeps each SVG in its own document. This avoids ID collisions when a page contains several PlantUML diagrams and prevents generated SVG markup from sharing the article DOM.
+Inline SVG preserves PlantUML hyperlinks and native hover tooltips. Prefixing
+every generated ID avoids collisions when a page contains several diagrams.
+The sanitizer removes scripts, embedded documents, event-handler attributes,
+and links that do not use an explicitly allowed protocol before the SVG enters
+the article DOM.
 
 The rendering plugin is asynchronous. Keep it in `mdastPlugins`; moving it to the HAST phase would run after syntax highlighting has already turned the source into an ordinary code block.
 
@@ -61,3 +67,11 @@ just check-links
 ```
 
 A missing Java runtime or JAR causes the build to fail with a `Could not start PlantUML` message. A PlantUML syntax failure includes the renderer's stderr output.
+
+## Reusable pull-request diagrams
+
+[`plantuml/github-pull-requests.puml`](../plantuml/github-pull-requests.puml)
+defines reusable GitHub owner, repository, branch, pull-request, fork, and stack
+shapes. The companion generator queries GitHub through `gh` and emits a complete
+diagram. See [GitHub pull-request maps with PlantUML](github-pr-plantuml.md) for
+the macro reference, query examples, stack detection rules, and privacy notes.
