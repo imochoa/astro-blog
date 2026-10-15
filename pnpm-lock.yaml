@@ -39,8 +39,8 @@ importers:
         specifier: ^0.18.4
         version: 0.18.4
       nix-eval:
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
       svelte:
         specifier: ^5.56.9
         version: 5.56.9(@typescript-eslint/types@8.67.0)
@@ -2249,8 +2249,8 @@ packages:
     resolution: {integrity: sha512-WmmLty1YWwJl9yZi77v2dVIV6X2kuYV8YYBI/G3LWGKdGHmHUvL1z7FW0iDvEvGAwNEoc5x1tOOOyDnf5jJw/w==}
     engines: {node: '>= 10'}
 
-  nix-eval@0.0.2:
-    resolution: {integrity: sha512-N4Owu/IkDmkfhrj7Ea1kgNszdZ/USUexlK42e0Q2z7AOEGYwraZIerXM2M2GGbAnF54FqOzStje9rC0A63WYiA==}
+  nix-eval@0.0.3:
+    resolution: {integrity: sha512-9+zIpVQyVzElZ1ig4ZXTWB50GOdbifrnBqeqAKRoVCkLKp7RRi7ZkOepmz0u2zGIkjlhRCCCZ1lTTNyCQ+Dxxw==}
 
   nlcst-to-string@4.0.0:
     resolution: {integrity: sha512-YKLBCcUYKAg0FNlOBT6aI91qFmSiFKiluk655WzPF+DDMA02qIyy8uiRqI8QXtcFpEvll12LpL5MXqEmAZ+dcA==}
@@ -5590,7 +5590,7 @@ snapshots:
 
   neotraverse@1.0.1: {}
 
-  nix-eval@0.0.2: {}
+  nix-eval@0.0.3: {}
 
   nlcst-to-string@4.0.0:
     dependencies:
