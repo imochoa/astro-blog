@@ -21,7 +21,8 @@
       ],
       "automerge": true,
       "automergeType": "pr",
-      "platformAutomerge": false
+      "platformAutomerge": false,
+      "rebaseWhen": "conflicted"
     }
   ]
 }
