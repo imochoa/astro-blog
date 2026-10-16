@@ -21,11 +21,11 @@
   // Run as the image's non-root "node" user.
   "containerUser": "node",
   "remoteUser": "node",
-  "updateRemoteUserUID": true,
 
-  // Rootless podman: map the host UID/GID onto the container's node user (1000)
-  // so bind-mounted files (source, node_modules) are owned by the host user.
-  // Harmless under docker; remove if you build with rootful docker and hit issues.
+  // Keep the image's node user at UID/GID 1000. Rootless podman's keep-id maps
+  // the invoking host user onto those container IDs, regardless of the host IDs.
+  // Do not also let Dev Containers rewrite node's IDs on native Linux hosts.
+  "updateRemoteUserUID": false,
   "runArgs": ["--userns=keep-id:uid=1000,gid=1000"],
 
   // Astro dev server default port.
