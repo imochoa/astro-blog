@@ -27,7 +27,7 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "^9.0.1",
-    "@dimforge/rapier3d-compat": "^0.20.0",
+    "@dimforge/rapier3d-compat": "^0.21.0",
     "asciinema-player": "^3.17.0",
     "astro": "^7.2.2",
     "hast-util-from-html": "^2.0.3",
