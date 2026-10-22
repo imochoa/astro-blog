@@ -1,0 +1,26 @@
+@startuml
+title Pull requests and Jira issues in one repository
+left to right direction
+
+!include ../github-work-items.iuml
+
+' Defaults let repository, branch, and PR specs stay short.
+$GHPR_DEFAULTS("acme", "payments")
+
+$GHPR_OWNER_BEGIN("acme", "organization", "org_acme")
+$GHPR_REPO_BEGIN("", "repo_payments")
+$GHPR_BRANCH("main", "branch_main", "base branch")
+$GHPR_BRANCH("feature/authorization", "branch_authorization", "head branch")
+$GHPR_PR("#41", "Add authorization API", "feature/authorization", "main", "approved", "pr_41", "PR #41\nAdd authorization API\nApproved\nfeature/authorization -> main", %true())
+$GHPR_END()
+$GHPR_END()
+
+$GHPR_JIRA_BEGIN("Jira", "jira_tickets")
+$GHPR_JIRA("PAY-101", "Add authorization API", "https://jira.example.com/browse/PAY-101", "PAY-101\nAdd authorization API\nIn progress", "jira_pay_101")
+$GHPR_END()
+
+$GHPR_OPENS(branch_authorization, pr_41)
+$GHPR_TARGETS(pr_41, branch_main)
+$GHPR_REFERENCES(pr_41, jira_pay_101)
+$GHPR_LEGEND()
+@enduml
