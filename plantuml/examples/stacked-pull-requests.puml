@@ -2,7 +2,7 @@
 title A stack of pull requests
 top to bottom direction
 
-!include ../github-work-items.iuml
+!includeurl https://gist.githubusercontent.com/imochoa/bb704b7ae1c9019d318ac45ceded682b/raw/github-work-items.iuml
 
 $GHPR_DEFAULTS("acme", "web")
 
