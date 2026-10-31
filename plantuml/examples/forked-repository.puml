@@ -1,0 +1,26 @@
+@startuml
+title A pull request from a fork
+left to right direction
+
+!includeurl https://gist.githubusercontent.com/imochoa/bb704b7ae1c9019d318ac45ceded682b/raw/github-work-items.iuml
+
+$GHPR_DEFAULTS("acme", "payments")
+
+$GHPR_OWNER_BEGIN("acme", "organization", "org_acme")
+$GHPR_REPO_BEGIN("acme/payments", "repo_upstream")
+$GHPR_BRANCH("acme/payments:main", "branch_main", "base branch")
+$GHPR_PR("acme/payments#55", "Document payment webhooks", "docs/webhooks", "main", "review-required", "pr_55", "PR #55\nDocument payment webhooks\nOpened from dev-forks/payments", %true())
+$GHPR_END()
+$GHPR_END()
+
+$GHPR_OWNER_BEGIN("dev-forks", "user", "owner_contributor")
+$GHPR_REPO_BEGIN("dev-forks/payments", "repo_fork", "acme/payments")
+$GHPR_BRANCH("dev-forks/payments:docs/webhooks", "branch_docs", "head branch")
+$GHPR_END()
+$GHPR_END()
+
+$GHPR_OPENS(branch_docs, pr_55)
+$GHPR_TARGETS(pr_55, branch_main)
+$GHPR_FORK(repo_fork, repo_upstream)
+$GHPR_LEGEND()
+@enduml
