@@ -94,16 +94,6 @@ ci: install-ci pre-commit check-links
 # independently from `ci-container`, so a check failure does not block publishing.
 publish: install-ci build
 
-# List Joplin note IDs through the desktop Web Clipper API
-[group("host")]
-joplin-list *args:
-    ./scripts/pull-joplin.py list {{ args }}
-
-# Pull configured Joplin notes (dry run unless --no-dry-run is passed)
-[group("host")]
-joplin-pull *args:
-    ./scripts/pull-joplin.py pull {{ args }}
-
 # Bring the devcontainer up (podman via --docker-path)
 [group("host")]
 up:
