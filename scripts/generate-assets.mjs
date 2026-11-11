@@ -13,8 +13,8 @@ const projectRoot = path.resolve(
 );
 const faviconSource = path.join(projectRoot, "src/assets/favicon.svg");
 const socialFonts = {
-  regular: path.join(projectRoot, "src/assets/fonts/Inter-Regular.woff2"),
-  bold: path.join(projectRoot, "src/assets/fonts/Inter-Bold.woff2"),
+  regular: path.join(projectRoot, "src/assets/fonts/Inter-Regular.ttf"),
+  bold: path.join(projectRoot, "src/assets/fonts/Inter-Bold.ttf"),
 };
 
 const icons = [
