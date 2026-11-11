@@ -15,4 +15,6 @@ if (!person) {
 }
 ---
 
-<a href={`/people/${person.id}/`}><slot>{person.data.name}</slot></a>
+<a href={`/people/${person.id}/`}>
+  <slot>{person.data.name}</slot>
+</a>

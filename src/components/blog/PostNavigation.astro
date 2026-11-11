@@ -9,28 +9,26 @@ interface Props {
 const { previous, next } = Astro.props;
 ---
 
-{
-  (previous || next) && (
-    <nav
-      class="post-navigation"
-      aria-label="Post navigation"
-      data-pagefind-ignore
-    >
-      {previous && (
-        <a class="previous" href={`/blog/${previous.id}/`} rel="prev">
-          <span>← Previous post</span>
-          <strong>{previous.data.title}</strong>
-        </a>
-      )}
-      {next && (
-        <a class="next" href={`/blog/${next.id}/`} rel="next">
-          <span>Next post →</span>
-          <strong>{next.data.title}</strong>
-        </a>
-      )}
-    </nav>
-  )
-}
+{(previous || next) && (
+  <nav
+    class="post-navigation"
+    aria-label="Post navigation"
+    data-pagefind-ignore
+  >
+    {previous && (
+      <a class="previous" href={`/blog/${previous.id}/`} rel="prev">
+        <span>← Previous post</span>
+        <strong>{previous.data.title}</strong>
+      </a>
+    )}
+    {next && (
+      <a class="next" href={`/blog/${next.id}/`} rel="next">
+        <span>Next post →</span>
+        <strong>{next.data.title}</strong>
+      </a>
+    )}
+  </nav>
+)}
 
 <style>
   .post-navigation {

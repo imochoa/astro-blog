@@ -9,46 +9,41 @@ const pageURL = (page: number) =>
   page === 1 ? "/blog/" : `/blog/page/${page}/`;
 ---
 
-{
-  totalPages > 1 && (
-    <nav class="pagination" aria-label="Blog pages">
-      <a
-        class:list={["pagination-step", { disabled: currentPage === 1 }]}
-        href={currentPage > 1 ? pageURL(currentPage - 1) : undefined}
-        aria-disabled={currentPage === 1 ? "true" : undefined}
-      >
-        Previous
-      </a>
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Blog pages">
+    <a
+      class:list={["pagination-step", { disabled: currentPage === 1 }]}
+      href={currentPage > 1 ? pageURL(currentPage - 1) : undefined}
+      aria-disabled={currentPage === 1 ? "true" : undefined}
+    >
+      Previous
+    </a>
 
-      <ol role="list">
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-          (page) => (
-            <li>
-              <a
-                href={pageURL(page)}
-                aria-current={page === currentPage ? "page" : undefined}
-                aria-label={`Page ${page}`}
-              >
-                {page}
-              </a>
-            </li>
-          ),
-        )}
-      </ol>
+    <ol role="list">
+      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+        (page) => (
+          <li>
+            <a
+              href={pageURL(page)}
+              aria-current={page === currentPage ? "page" : undefined}
+              aria-label={`Page ${page}`}
+            >
+              {page}
+            </a>
+          </li>
+        ),
+      )}
+    </ol>
 
-      <a
-        class:list={[
-          "pagination-step",
-          { disabled: currentPage === totalPages },
-        ]}
-        href={currentPage < totalPages ? pageURL(currentPage + 1) : undefined}
-        aria-disabled={currentPage === totalPages ? "true" : undefined}
-      >
-        Next
-      </a>
-    </nav>
-  )
-}
+    <a
+      class:list={["pagination-step", { disabled: currentPage === totalPages }]}
+      href={currentPage < totalPages ? pageURL(currentPage + 1) : undefined}
+      aria-disabled={currentPage === totalPages ? "true" : undefined}
+    >
+      Next
+    </a>
+  </nav>
+)}
 
 <style>
   .pagination {

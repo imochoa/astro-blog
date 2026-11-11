@@ -7,6 +7,11 @@
   },
   "packageRules": [
     {
+      "description": "Keep TypeScript within the range supported by Astro check and typescript-eslint",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<6.1.0"
+    },
+    {
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "devDependencies (non-major)"

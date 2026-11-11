@@ -22,15 +22,13 @@ const isActive = (href: string) =>
       <span>{SITE.title}</span>
     </a>
     <ul role="list">
-      {
-        links.map(({ href, label }) => (
-          <li>
-            <a href={href} aria-current={isActive(href) ? "page" : undefined}>
-              {label}
-            </a>
-          </li>
-        ))
-      }
+      {links.map(({ href, label }) => (
+        <li>
+          <a href={href} aria-current={isActive(href) ? "page" : undefined}>
+            {label}
+          </a>
+        </li>
+      ))}
     </ul>
     <div class="site-search">
       <PagefindConfig instance="site-search" lang="en" />
@@ -38,7 +36,8 @@ const isActive = (href: string) =>
         instance="site-search"
         placeholder="Search posts"
         max-results="6"
-        show-sub-results></pagefind-searchbox>
+        show-sub-results
+      ></pagefind-searchbox>
     </div>
     <button
       class="theme-toggle"
@@ -52,8 +51,7 @@ const isActive = (href: string) =>
         viewBox="0 0 24 24"
         aria-hidden="true"
       >
-        <path d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"
-        ></path>
+        <path d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"></path>
       </svg>
       <svg
         class="theme-icon theme-icon-sun"
@@ -61,11 +59,11 @@ const isActive = (href: string) =>
         aria-hidden="true"
       >
         <circle cx="12" cy="12" r="3.5"></circle>
-        <path
-          d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
-        ></path>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
       </svg>
-      <span class="visually-hidden" data-theme-label>Switch to dark theme</span>
+      <span class="visually-hidden" data-theme-label>
+        Switch to dark theme
+      </span>
     </button>
   </nav>
 </header>

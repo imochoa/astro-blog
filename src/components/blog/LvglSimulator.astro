@@ -13,15 +13,14 @@ const { src, title, caption } = Astro.props;
     src={src}
     title={title}
     loading="lazy"
-    sandbox="allow-scripts allow-same-origin"></iframe>
-  {
-    caption && (
-      <figcaption>
-        <span>{caption}</span>
-        <a href={src}>Open the simulator on its own page</a>
-      </figcaption>
-    )
-  }
+    sandbox="allow-scripts allow-same-origin"
+  ></iframe>
+  {caption && (
+    <figcaption>
+      <span>{caption}</span>
+      <a href={src}>Open the simulator on its own page</a>
+    </figcaption>
+  )}
 </figure>
 
 <style>

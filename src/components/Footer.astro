@@ -19,23 +19,21 @@ const formattedBuildDate = `${new Intl.DateTimeFormat("en", {
 <footer class="site-footer">
   <div class="container">
     <div class="footer-details">
-      <small>&copy; <span id="copyrightYear">{year}</span> imochoa</small>
+      <small>
+        &copy; <span id="copyrightYear">{year}</span> imochoa
+      </small>
       <small class="build-metadata">
         Build
-        {
-          commitURL ? (
-            <a href={commitURL} title={buildCommit}>
-              <code>{shortCommit}</code>
-            </a>
-          ) : (
+        {commitURL ? (
+          <a href={commitURL} title={buildCommit}>
             <code>{shortCommit}</code>
-          )
-        }
-        {
-          buildDirty && (
-            <span title="Built with uncommitted changes">dirty</span>
-          )
-        }
+          </a>
+        ) : (
+          <code>{shortCommit}</code>
+        )}
+        {buildDirty && (
+          <span title="Built with uncommitted changes">dirty</span>
+        )}
         <span aria-hidden="true">&middot;</span>
         <time datetime={buildDate}>{formattedBuildDate}</time>
       </small>

@@ -17,14 +17,12 @@ const entries = [...books, ...videos].filter(
 );
 ---
 
-{
-  entries.length > 0 && (
-    <section class="post-references" aria-labelledby="references-heading">
-      <h2 id="references-heading">Books and videos mentioned</h2>
-      <MediaList {entries} />
-    </section>
-  )
-}
+{entries.length > 0 && (
+  <section class="post-references" aria-labelledby="references-heading">
+    <h2 id="references-heading">Books and videos mentioned</h2>
+    <MediaList {entries} />
+  </section>
+)}
 
 <style>
   .post-references {

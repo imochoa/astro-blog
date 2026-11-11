@@ -24,22 +24,20 @@ const href = `/blog/${entry.id}/`;
     {entry.data.draft && <span class="draft-marker">Draft</span>}
   </div>
   <p>{entry.data.description}</p>
-  {
-    tags.length > 0 && (
-      <ul class="tag-list" role="list" aria-label="Tags">
-        {tags.map(
-          (tag) =>
-            tag && (
-              <li>
-                <a class="tag" href={`/tags/${tag.id}/`}>
-                  {tag.data.name}
-                </a>
-              </li>
-            ),
-        )}
-      </ul>
-    )
-  }
+  {tags.length > 0 && (
+    <ul class="tag-list" role="list" aria-label="Tags">
+      {tags.map(
+        (tag) =>
+          tag && (
+            <li>
+              <a class="tag" href={`/tags/${tag.id}/`}>
+                {tag.data.name}
+              </a>
+            </li>
+          ),
+      )}
+    </ul>
+  )}
 </article>
 
 <style>

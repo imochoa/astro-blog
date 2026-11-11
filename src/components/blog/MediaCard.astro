@@ -23,7 +23,9 @@ const href = getMediaPath(entry);
 
 <article class="media-card">
   <p class="eyebrow">{isBook ? "Book" : "Video"}</p>
-  <h3><a {href}>{entry.data.title}</a></h3>
+  <h3>
+    <a {href}>{entry.data.title}</a>
+  </h3>
   {byline && <p class="byline">by {byline}</p>}
   <p>{entry.data.description}</p>
 </article>

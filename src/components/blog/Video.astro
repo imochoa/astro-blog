@@ -15,4 +15,6 @@ if (!video) {
 }
 ---
 
-<a href={`/videos/${video.id}/`}><slot>{video.data.title}</slot></a>
+<a href={`/videos/${video.id}/`}>
+  <slot>{video.data.title}</slot>
+</a>

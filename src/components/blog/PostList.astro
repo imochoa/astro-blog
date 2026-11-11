@@ -15,16 +15,14 @@ const {
 } = Astro.props;
 ---
 
-{
-  entries.length > 0 ? (
-    <ol class="post-list" role="list">
-      {entries.map((entry) => (
-        <li>
-          <PostCard {entry} {showTags} />
-        </li>
-      ))}
-    </ol>
-  ) : (
-    <p>{emptyMessage}</p>
-  )
-}
+{entries.length > 0 ? (
+  <ol class="post-list" role="list">
+    {entries.map((entry) => (
+      <li>
+        <PostCard {entry} {showTags} />
+      </li>
+    ))}
+  </ol>
+) : (
+  <p>{emptyMessage}</p>
+)}

@@ -160,7 +160,8 @@ const projectUrl = new URL(src, Astro.url).href;
 <motion-canvas-player
   aria-label={title}
   src={projectUrl}
-  style="aspect-ratio: 16 / 9"></motion-canvas-player>
+  style="aspect-ratio: 16 / 9"
+></motion-canvas-player>
 
 <script>
   import "@motion-canvas/player";

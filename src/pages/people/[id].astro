@@ -38,15 +38,13 @@ const entries: MediaEntry[] = [...books, ...videos]
     <p class="eyebrow">Person</p>
     <h1>{person.data.name}</h1>
     {person.data.description && <p>{person.data.description}</p>}
-    {
-      person.data.url && (
-        <p>
-          <a href={person.data.url} rel="external">
-            Visit website →
-          </a>
-        </p>
-      )
-    }
+    {person.data.url && (
+      <p>
+        <a href={person.data.url} rel="external">
+          Visit website →
+        </a>
+      </p>
+    )}
   </header>
 
   <section class="works" aria-labelledby="works-heading">

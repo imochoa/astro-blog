@@ -110,7 +110,8 @@ const { src, title, caption } = Astro.props;
     src={src}
     title={title}
     loading="lazy"
-    sandbox="allow-scripts allow-same-origin"></iframe>
+    sandbox="allow-scripts allow-same-origin"
+  ></iframe>
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
 ```
