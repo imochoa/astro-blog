@@ -8,7 +8,9 @@ const { title = "Note" } = Astro.props;
 
 <aside class="callout">
   <strong>{title}</strong>
-  <div><slot /></div>
+  <div>
+    <slot />
+  </div>
 </aside>
 
 <style>

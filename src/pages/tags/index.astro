@@ -62,26 +62,24 @@ const usedPeople = people
       </header>
 
       <ul class="tag-index" role="list">
-        {
-          usedTags.map((tag) => {
-            const entryCount = tagCounts.get(tag.id) ?? 0;
+        {usedTags.map((tag) => {
+          const entryCount = tagCounts.get(tag.id) ?? 0;
 
-            return (
-              <li>
-                <a class="directory-card tag-card" href={`/tags/${tag.id}/`}>
-                  <span class="directory-card-kind">
-                    <span aria-hidden="true">#</span> Tag
-                  </span>
-                  <h3>{tag.data.name}</h3>
-                  {tag.data.description && <p>{tag.data.description}</p>}
-                  <small>
-                    {entryCount} {entryCount === 1 ? "post" : "posts"}
-                  </small>
-                </a>
-              </li>
-            );
-          })
-        }
+          return (
+            <li>
+              <a class="directory-card tag-card" href={`/tags/${tag.id}/`}>
+                <span class="directory-card-kind">
+                  <span aria-hidden="true">#</span> Tag
+                </span>
+                <h3>{tag.data.name}</h3>
+                {tag.data.description && <p>{tag.data.description}</p>}
+                <small>
+                  {entryCount} {entryCount === 1 ? "post" : "posts"}
+                </small>
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </section>
 
@@ -92,34 +90,32 @@ const usedPeople = people
       </header>
 
       <ul class="tag-index" role="list">
-        {
-          usedPeople.map((person) => {
-            const postCount = personPostCounts.get(person.id) ?? 0;
-            const workCount = personWorkCounts.get(person.id) ?? 0;
-            const counts = [
-              workCount > 0 &&
-                `${workCount} ${workCount === 1 ? "work" : "works"}`,
-              postCount > 0 &&
-                `${postCount} ${postCount === 1 ? "post" : "posts"}`,
-            ].filter((count): count is string => Boolean(count));
+        {usedPeople.map((person) => {
+          const postCount = personPostCounts.get(person.id) ?? 0;
+          const workCount = personWorkCounts.get(person.id) ?? 0;
+          const counts = [
+            workCount > 0 &&
+              `${workCount} ${workCount === 1 ? "work" : "works"}`,
+            postCount > 0 &&
+              `${postCount} ${postCount === 1 ? "post" : "posts"}`,
+          ].filter((count): count is string => Boolean(count));
 
-            return (
-              <li>
-                <a
-                  class="directory-card person-card"
-                  href={`/people/${person.id}/`}
-                >
-                  <span class="directory-card-kind">
-                    <span aria-hidden="true">@</span> Person
-                  </span>
-                  <h3>{person.data.name}</h3>
-                  {person.data.description && <p>{person.data.description}</p>}
-                  <small>{counts.join(" · ")}</small>
-                </a>
-              </li>
-            );
-          })
-        }
+          return (
+            <li>
+              <a
+                class="directory-card person-card"
+                href={`/people/${person.id}/`}
+              >
+                <span class="directory-card-kind">
+                  <span aria-hidden="true">@</span> Person
+                </span>
+                <h3>{person.data.name}</h3>
+                {person.data.description && <p>{person.data.description}</p>}
+                <small>{counts.join(" · ")}</small>
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </section>
   </div>

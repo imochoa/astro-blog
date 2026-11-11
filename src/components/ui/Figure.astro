@@ -22,19 +22,17 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
 <figure class="zoomable-figure" data-zoomable-figure>
   <div class="figure-home" data-figure-home>
     <div class="figure-visual" data-figure-visual style={figureStyle}>
-      {
-        isSvg ? (
-          <iframe
-            src={src.src}
-            title={alt}
-            loading="lazy"
-            sandbox="allow-same-origin"
-            data-figure-preview-frame
-          />
-        ) : (
-          <Image src={src} alt={alt} />
-        )
-      }
+      {isSvg ? (
+        <iframe
+          src={src.src}
+          title={alt}
+          loading="lazy"
+          sandbox="allow-same-origin"
+          data-figure-preview-frame
+        />
+      ) : (
+        <Image src={src} alt={alt} />
+      )}
     </div>
     <a
       class="zoom-button"
@@ -51,7 +49,9 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
       </svg>
     </a>
   </div>
-  <figcaption><slot>{caption}</slot></figcaption>
+  <figcaption>
+    <slot>{caption}</slot>
+  </figcaption>
 </figure>
 
 <dialog
@@ -60,23 +60,23 @@ const figureStyle = `--figure-width: ${src.width}px; --figure-ratio: ${src.width
   data-figure-dialog
 >
   <div class="dialog-toolbar">
-    <button type="button" data-figure-close>Close</button>
+    <button type="button" data-figure-close>
+      Close
+    </button>
   </div>
   <div class="figure-stage">
     <div class="figure-expanded" style={figureStyle}>
-      {
-        isSvg ? (
-          <iframe
-            src={src.src}
-            title={alt}
-            loading="lazy"
-            sandbox="allow-same-origin"
-            data-figure-expanded-frame
-          />
-        ) : (
-          <Image src={src} alt={alt} />
-        )
-      }
+      {isSvg ? (
+        <iframe
+          src={src.src}
+          title={alt}
+          loading="lazy"
+          sandbox="allow-same-origin"
+          data-figure-expanded-frame
+        />
+      ) : (
+        <Image src={src} alt={alt} />
+      )}
     </div>
   </div>
 </dialog>

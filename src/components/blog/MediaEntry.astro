@@ -35,66 +35,54 @@ const personalDate = isBook ? entry.data.readAt : entry.data.watchedAt;
         <dt>{isBook ? "Authors" : "Creators"}</dt>
         <dd>
           <ul class="people-list" role="list">
-            {
-              people.map(
-                (person) =>
-                  person && (
-                    <li>
-                      <a href={`/people/${person.id}/`}>{person.data.name}</a>
-                    </li>
-                  ),
-              )
-            }
+            {people.map(
+              (person) =>
+                person && (
+                  <li>
+                    <a href={`/people/${person.id}/`}>{person.data.name}</a>
+                  </li>
+                ),
+            )}
           </ul>
         </dd>
       </div>
-      {
-        entry.data.publishedAt && (
-          <div>
-            <dt>Published</dt>
-            <dd>
-              <FormattedDate date={entry.data.publishedAt} />
-            </dd>
-          </div>
-        )
-      }
-      {
-        personalDate && (
-          <div>
-            <dt>{isBook ? "Read" : "Watched"}</dt>
-            <dd>
-              <FormattedDate date={personalDate} />
-            </dd>
-          </div>
-        )
-      }
-      {
-        isBook && entry.data.isbn && (
-          <div>
-            <dt>ISBN</dt>
-            <dd>{entry.data.isbn}</dd>
-          </div>
-        )
-      }
-      {
-        !isBook && entry.data.duration && (
-          <div>
-            <dt>Duration</dt>
-            <dd>{entry.data.duration}</dd>
-          </div>
-        )
-      }
+      {entry.data.publishedAt && (
+        <div>
+          <dt>Published</dt>
+          <dd>
+            <FormattedDate date={entry.data.publishedAt} />
+          </dd>
+        </div>
+      )}
+      {personalDate && (
+        <div>
+          <dt>{isBook ? "Read" : "Watched"}</dt>
+          <dd>
+            <FormattedDate date={personalDate} />
+          </dd>
+        </div>
+      )}
+      {isBook && entry.data.isbn && (
+        <div>
+          <dt>ISBN</dt>
+          <dd>{entry.data.isbn}</dd>
+        </div>
+      )}
+      {!isBook && entry.data.duration && (
+        <div>
+          <dt>Duration</dt>
+          <dd>{entry.data.duration}</dd>
+        </div>
+      )}
     </dl>
 
-    {
-      externalURL && (
-        <p class="external-link">
-          <a href={externalURL} rel="external">
-            {externalLabel} →
-          </a>
-        </p>
-      )
-    }
+    {externalURL && (
+      <p class="external-link">
+        <a href={externalURL} rel="external">
+          {externalLabel} →
+        </a>
+      </p>
+    )}
   </article>
 
   <section class="mentioned-in" aria-labelledby="mentioned-in-heading">

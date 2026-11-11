@@ -61,43 +61,37 @@ const nextPage = next ? `/blog/${next.id}/` : undefined;
     <header class="page-header">
       <p class="post-dates">
         <FormattedDate date={post.data.publishedAt} label="Published" />
-        {
-          post.data.updatedAt && (
-            <>
-              <span aria-hidden="true"> · </span>
-              <FormattedDate date={post.data.updatedAt} label="Updated" />
-            </>
-          )
-        }
+        {post.data.updatedAt && (
+          <>
+            <span aria-hidden="true"> · </span>
+            <FormattedDate date={post.data.updatedAt} label="Updated" />
+          </>
+        )}
       </p>
       <h1 data-pagefind-meta="title">{post.data.title}</h1>
       <p>{post.data.description}</p>
-      {
-        tags.length > 0 && (
-          <ul class="tag-list" role="list" aria-label="Tags">
-            {tags.map(
-              (tag) =>
-                tag && (
-                  <li>
-                    <a class="tag" href={`/tags/${tag.id}/`}>
-                      {tag.data.name}
-                    </a>
-                  </li>
-                ),
-            )}
-          </ul>
-        )
-      }
+      {tags.length > 0 && (
+        <ul class="tag-list" role="list" aria-label="Tags">
+          {tags.map(
+            (tag) =>
+              tag && (
+                <li>
+                  <a class="tag" href={`/tags/${tag.id}/`}>
+                    {tag.data.name}
+                  </a>
+                </li>
+              ),
+          )}
+        </ul>
+      )}
     </header>
 
     <div class="post-body">
-      {
-        tocHeadings.length >= 2 && (
-          <aside class="toc-column" data-pagefind-ignore>
-            <TableOfContents headings={tocHeadings} />
-          </aside>
-        )
-      }
+      {tocHeadings.length >= 2 && (
+        <aside class="toc-column" data-pagefind-ignore>
+          <TableOfContents headings={tocHeadings} />
+        </aside>
+      )}
       <div class="prose">
         <Content components={contentComponents} />
       </div>

@@ -15,4 +15,6 @@ if (!book) {
 }
 ---
 
-<a href={`/books/${book.id}/`}><slot>{book.data.title}</slot></a>
+<a href={`/books/${book.id}/`}>
+  <slot>{book.data.title}</slot>
+</a>
