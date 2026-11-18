@@ -58,17 +58,18 @@ draft: false
 ---
 ```
 
-Define tags once in `src/content/tags.json`. Post tag references are checked
-against that file during `astro check`. Post-specific assets can live under
+Define tags once in `src/content/tags.json`. The build fails if a post
+references a tag that is not defined there. Post-specific assets can live under
 `src/content/posts/assets/` and be imported from MDX with the `@posts/*` alias.
 The blog index uses Astro's built-in pagination, with the page size configured
 in `src/lib/posts.ts`.
 
 Books and videos are reference data rather than posts. Add them to
 `src/content/books.json` or `src/content/videos.json`, then list their IDs in a
-post's `books` or `videos` frontmatter. Astro checks those references at build
-time. The post gets a standard list of the referenced items, and each generated
-book or video page lists the posts that mention it. Author and creator IDs come
+post's `books` or `videos` frontmatter. The build fails if any of those
+references, or a book's or video's people, point to a missing entry. The post
+gets a standard list of the referenced items, and each generated book or video
+page lists the posts that mention it. Author and creator IDs come
 from `src/content/people.json`.
 
 Write math with `$...$` or `$$...$$`; it is rendered to local KaTeX HTML and
